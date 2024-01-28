@@ -61,7 +61,7 @@
   <ItemGroup>
     <None Include="build\*.targets">
       <Pack>True</Pack>
-      <Path>build</Path>
+      <PackagePath>build</PackagePath>
     </None>
     <None Include="..\..\LICENSE">
       <Pack>True</Pack>
