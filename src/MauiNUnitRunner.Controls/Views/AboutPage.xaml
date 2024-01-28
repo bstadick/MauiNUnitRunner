@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) bstadick and contributors. MIT License - see LICENSE file -->
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:MauiNUnitRunner.Controls.Views"
+             x:Class="MauiNUnitRunner.Controls.Views.AboutPage"
+             Title="{StaticResource AboutPageTitle}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/TestControlResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Logo image header -->
+        <StackLayout BackgroundColor="{StaticResource AboutAccent}" VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                <ContentView Padding="0,40,0,40" VerticalOptions="FillAndExpand">
+                    <Image Source="{StaticResource AboutPageLogoImagePath}" VerticalOptions="Center" HeightRequest="200" />
+                </ContentView>
+            </StackLayout>
+        </StackLayout>
+
+        <!-- About content -->
+        <ScrollView Grid.Row="1">
+            <StackLayout Orientation="Vertical" Padding="16,40,16,40" Spacing="10"
+                         BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:AboutPage}}}">
+                <!-- About library name and version -->
+                <Label FontSize="22">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <FormattedString.Spans>
+                                <Span Text="{StaticResource AssemblyName}" FontAttributes="Bold"
+                                      FontSize="22" />
+                                <Span Text=" " />
+                                <Span x:Name="VersionText" TextColor="{StaticResource AboutLightTextColor}" />
+                            </FormattedString.Spans>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <!-- About description -->
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <FormattedString.Spans>
+                                <Span Text="{StaticResource AboutPageLineOne}" />
+                            </FormattedString.Spans>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <FormattedString.Spans>
+                                <Span Text="{StaticResource AboutPageLineTwo}" />
+                            </FormattedString.Spans>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <!-- About learn more buttons -->
+                <!-- ReSharper disable once UnusedMember.Local -->
+                <Button x:Name="AboutMauiButton"
+                        Style="{StaticResource AboutButtonStyle}"
+                        Text="{StaticResource AboutPageMauiButton}"
+                        Clicked="OpenUrlButton_OnClicked" />
+                <!-- ReSharper disable once UnusedMember.Local -->
+                <Button x:Name="AboutNUnitButton"
+                        Style="{StaticResource AboutButtonStyle}"
+                        Text="{StaticResource AboutPageNUnitButton}"
+                        Clicked="OpenUrlButton_OnClicked" />
+                <!-- ReSharper disable once UnusedMember.Local -->
+                <Button x:Name="AboutProjectButton"
+                        Style="{StaticResource AboutButtonStyle}"
+                        Text="{StaticResource AboutPageProjectButton}"
+                        Clicked="OpenUrlButton_OnClicked" />
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

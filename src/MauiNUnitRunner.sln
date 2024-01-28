@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34408.163
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiNUnitRunner.Controls", "MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj", "{3206D411-68C4-4374-9BCB-8E4015D133E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiNUnitRunner.Examples", "MauiNUnitRunner.Examples\MauiNUnitRunner.Examples.csproj", "{DA503C53-A821-46FD-8721-492B566A7791}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Example|Any CPU = Example|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3206D411-68C4-4374-9BCB-8E4015D133E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3206D411-68C4-4374-9BCB-8E4015D133E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3206D411-68C4-4374-9BCB-8E4015D133E5}.Example|Any CPU.ActiveCfg = Debug|Any CPU
+		{3206D411-68C4-4374-9BCB-8E4015D133E5}.Example|Any CPU.Build.0 = Debug|Any CPU
+		{3206D411-68C4-4374-9BCB-8E4015D133E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3206D411-68C4-4374-9BCB-8E4015D133E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA503C53-A821-46FD-8721-492B566A7791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA503C53-A821-46FD-8721-492B566A7791}.Example|Any CPU.ActiveCfg = Example|Any CPU
+		{DA503C53-A821-46FD-8721-492B566A7791}.Example|Any CPU.Build.0 = Example|Any CPU
+		{DA503C53-A821-46FD-8721-492B566A7791}.Example|Any CPU.Deploy.0 = Example|Any CPU
+		{DA503C53-A821-46FD-8721-492B566A7791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D218340F-1164-4ADB-91DA-8C591AB1C9B7}
+	EndGlobalSection
+EndGlobal

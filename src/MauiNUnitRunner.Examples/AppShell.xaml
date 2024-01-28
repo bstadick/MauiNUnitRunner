@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright (c) bstadick and contributors. MIT License - see LICENSE file -->
+
+<Shell
+    x:Class="MauiNUnitRunner.Examples.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:MauiNUnitRunner.Controls.Views;assembly=MauiNUnitRunner.Controls"
+    FlyoutBehavior="Disabled"
+    Title="MauiNUnitRunner.Examples">
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate views:TestDynamicPage}"
+        Route="MainPage" />
+
+</Shell>

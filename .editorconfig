@@ -1,0 +1,25 @@
+# EditorConfig helps developers define and
+# maintain consistent coding styles between
+# different editors and IDEs
+
+# https://editorconfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = space
+insert_final_newline = false
+trim_trailing_whitespace = true
+charset = utf-8
+
+[*.{sln,*proj,props}]
+charset = utf-8-bom
+indent_size = 2
+
+[*.{json,config,targets,props,yml}]
+indent_size = 2
+
+[*.{cs,xaml}]
+indent_size = 4
+file_header_template = Copyright (c) bstadick and contributors. MIT License - see LICENSE file

@@ -1,0 +1,9 @@
+<Project>
+  <!-- Set package version using targets file instead of centrally managed packages as .NET MAUI doesn't seem to play nice with central management. -->
+
+  <!-- General Packages -->
+  <ItemGroup>
+    <PackageReference Update="CommunityToolkit.Maui" Version="7.0.1" />
+    <PackageReference Update="NUnit" Version="4.0.1" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright (c) bstadick and contributors. MIT License - see LICENSE file -->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiNUnitRunner.Controls.Resources.TestControlResources">
+
+    <!-- Control styles -->
+    <!-- Styles for labels -->
+    <Thickness x:Key="LabelTextStyleMargin" Left="5" Right="0" Top="0" Bottom="0" />
+    <Style x:Key="LabelTextStyle" TargetType="Label">
+        <Setter Property="LineBreakMode" Value="NoWrap" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Margin" Value="{StaticResource LabelTextStyleMargin}" />
+    </Style>
+    <Style x:Key="LabelSubTextStyle" TargetType="Label">
+        <Setter Property="LineBreakMode" Value="NoWrap" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Margin" Value="{StaticResource LabelTextStyleMargin}" />
+    </Style>
+    <!-- Styles for label text colors -->
+    <Style x:Key="LabelRedStyle" TargetType="Label" BasedOn="{StaticResource LabelSubTextStyle}">
+        <Setter Property="TextColor" Value="Red" />
+    </Style>
+    <Style x:Key="LabelGreenStyle" TargetType="Label" BasedOn="{StaticResource LabelSubTextStyle}">
+        <Setter Property="TextColor" Value="LimeGreen" />
+    </Style>
+    <Style x:Key="LabelOrangeStyle" TargetType="Label" BasedOn="{StaticResource LabelSubTextStyle}">
+        <Setter Property="TextColor" Value="Orange" />
+    </Style>
+    <Style x:Key="LabelBlueStyle" TargetType="Label" BasedOn="{StaticResource LabelSubTextStyle}">
+        <Setter Property="TextColor" Value="DodgerBlue" />
+    </Style>
+    <Style x:Key="LabelPurpleStyle" TargetType="Label" BasedOn="{StaticResource LabelSubTextStyle}">
+        <Setter Property="TextColor" Value="MediumPurple" />
+    </Style>
+    <!-- Styles for buttons -->
+    <Thickness x:Key="ButtonStyleMargin" Left="0" Right="10" Top="10" Bottom="10" />
+    <Style x:Key="ButtonStyle" TargetType="Button">
+        <Setter Property="MaximumWidthRequest" Value="250" />
+        <Setter Property="HorizontalOptions" Value="Start" />
+        <Setter Property="Margin" Value="{StaticResource ButtonStyleMargin}" />
+        <Setter Property="BackgroundColor" Value="#2196F3" />
+        <Setter Property="TextColor" Value="White" />
+    </Style>
+
+    <!--The name of the assembly.-->
+    <x:String x:Key="AssemblyName">MauiNUnitRunner</x:String>
+
+    <!-- About page strings and styles -->
+    <!-- About page styles -->
+    <Color x:Key="AboutAccent">#96d1ff</Color>
+    <Color x:Key="AboutLightTextColor">#999999</Color>
+    <Thickness x:Key="AboutButtonStyleMargin" Left="0" Right="0" Top="10" Bottom="0" />
+    <Style x:Key="AboutButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+        <Setter Property="MaximumWidthRequest" Value="500" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="Margin" Value="{StaticResource AboutButtonStyleMargin}" />
+    </Style>
+    <!--The first line on the About page.-->
+    <x:String x:Key="AboutPageLineOne">This app is written in C# and native APIs using the MAUI Platform. It runs unit tests using the NUnit Framework.</x:String>
+    <!--The second line on the About page.-->
+    <x:String x:Key="AboutPageLineTwo">It shares code with its iOS, Android, and Windows versions.</x:String>
+    <!--Resource path for the About page logo.-->
+    <x:String x:Key="AboutPageLogoImagePath">nunit_maui_logo.png</x:String>
+    <!--The content of the NUnit button on the About page.-->
+    <x:String x:Key="AboutPageNUnitButton">Learn more about NUnit</x:String>
+    <!--The content of the Project button on the About page.-->
+    <x:String x:Key="AboutPageProjectButton">Learn more about this project</x:String>
+    <!--Title used for the About page.-->
+    <x:String x:Key="AboutPageTitle">About</x:String>
+    <!--The content of the MAUI button on the About page.-->
+    <x:String x:Key="AboutPageMauiButton">Learn more about .NET MAUI</x:String>
+
+    <!-- Exception strings -->
+    <!--Used by ArgumentException when a parent element is not null and not a root filter.-->
+    <x:String x:Key="ArgumentExceptionForRootFilterElementNullMessage">The parent element cannot be non-null if the element type is RootFilter.</x:String>
+    <!--Used by ArgumentException when the leaf element of NUnitFilter.Build child is not null.-->
+    <x:String x:Key="ArgumentExceptionLeafElementMessage">The leaf element's child is not null thus the provided leaf element is not the true leaf element. This may indicate an error in the construction or parsing of the filter.</x:String>
+    <!--Used by ArgumentException when an object is null or empty, where format is replaced by the name of the parameter.-->
+    <x:String x:Key="ArgumentExceptionMessageForNullOrEmptyMessage">The {0} cannot be null or empty.</x:String>
+    <!--Used by ArgumentNullException when an object is null, where format is replaced by the name of the parameter.-->
+    <x:String x:Key="ArgumentNullExceptionMessage">The {0} cannot be null.</x:String>
+    <!--Used by ArgumentOutOfRangeException when the ElementType enum is out of range, where format is replaced by the element that was out of range.-->
+    <x:String x:Key="ArgumentOutOfRangeExceptionElementTypeEnumMessage">The given element type is not supported.{0}</x:String>
+    <!--Used by ArgumentOutOfRangeException when a value is less than zero, where format is replaced by the name of the parameter.-->
+    <x:String x:Key="ArgumentOutOfRangeExceptionForLessThanZeroMessage">The {0} must be greater than or equal to 0.</x:String>
+    <!--Used by InvalidOperationException when the child of NUnitFilterContainerElement has already been set.-->
+    <x:String x:Key="InvalidOperationExceptionChildAlreadySetMessage">The child element has already been set for this instance.</x:String>
+    <!--Used by InvalidOperationException when the NUnitFilter.Build traversal fails due to a parent element child mismatching the current element, where format is replaced by the parent element.-->
+    <x:String x:Key="InvalidOperationExceptionFilterBuildChildMismatchMessage">The parent element's {0} child was not the same reference as the current node.</x:String>
+    <!--Used by InvalidOperationException when the NUnitFilter.Build traversal fails due to a parent element child being null, where format is replaced by the parent element.-->
+    <x:String x:Key="InvalidOperationExceptionFilterBuildChildNullMessage">The parent element's {0} child was null.</x:String>
+    <!--Used by InvalidOperationException when the NUnitFilter.Build traversal fails due to element type not being the expected type, where format is replaced by the actual type.-->
+    <x:String x:Key="InvalidOperationExceptionFilterBuildElementTypeEnumMessage">The root element type was not the expected type of RootFilter but was instead {0}.</x:String>
+    <!--Used by InvalidOperationException when the NUnitFilter.Build traversal fails.-->
+    <x:String x:Key="InvalidOperationExceptionFilterBuildMessage">Forward traversal will not proceed properly. This may indicate an error in the construction or parsing of the filter.</x:String>
+
+    <!-- Test view strings -->
+    <!--The content of the Run Tests button or menu item.-->
+    <x:String x:Key="RunTestsButton">Run Tests</x:String>
+    <!--The content of the Save Results button or menu item.-->
+    <x:String x:Key="SaveResultsButton">Save Results</x:String>
+    <!--The content of the Save Results failed alert message.-->
+    <x:String x:Key="SaveResultsFailedAlert">Failed to save the test result to a file.</x:String>
+    <!--The content of the Save Results failed alert confirmation.-->
+    <x:String x:Key="SaveResultsFailedConfirmAlert">OK</x:String>
+    <!--Test assembly title header.-->
+    <x:String x:Key="TestAssemblyTitleHeader">Assembly</x:String>
+    <!--Test listener finished message.-->
+    <x:String x:Key="TestListenerFinished">Finished</x:String>
+    <!--Test listener message.-->
+    <x:String x:Key="TestListenerMessage">Message</x:String>
+    <!--Test listener output message.-->
+    <x:String x:Key="TestListenerOutput">Output</x:String>
+    <!--Test listener started message.-->
+    <x:String x:Key="TestListenerStarted">Started</x:String>
+    <!--Displayed when test was not executed.-->
+    <x:String x:Key="TestResultNotExecuted">Test not executed.</x:String>
+    <!--Label uses for the Test page assertion status.-->
+    <x:String x:Key="TestsPageAssertionStatus">Assertion Status:</x:String>
+    <!--Label used for the Test page tests assert count.-->
+    <x:String x:Key="TestsPageTestAssertionCount">Assert Count:</x:String>
+    <!--Label used for the Test page test count.-->
+    <x:String x:Key="TestsPageTestCount">Test Count:</x:String>
+    <!--Label used for the Test page tests duration.-->
+    <x:String x:Key="TestsPageTestDuration">Duration:</x:String>
+    <!--Label used for the Test page exception message.-->
+    <x:String x:Key="TestsPageTestException">Exception Message:</x:String>
+    <!--Label used for the Test page tests failed count.-->
+    <x:String x:Key="TestsPageTestFailCount">Failed:</x:String>
+    <!--Label used for the Test page test id.-->
+    <x:String x:Key="TestsPageTestId">Id:</x:String>
+    <!--Label used for the Test page tests ignored count.-->
+    <x:String x:Key="TestsPageTestIgnoreCount">Ignored:</x:String>
+    <!--Label used for the Test page tests inconclusive count.-->
+    <x:String x:Key="TestsPageTestInconclusiveCount">Inconclusive:</x:String>
+    <!--Label used for the Test page output messages.-->
+    <x:String x:Key="TestsPageTestOutput">Output Messages:</x:String>
+    <!--Label used for the Test page tests passed count.-->
+    <x:String x:Key="TestsPageTestPassCount">Passed:</x:String>
+    <!--Label used for the Test page tests results.-->
+    <x:String x:Key="TestsPageTestResult">Result:</x:String>
+    <!--Label used for the Test page stack trace.-->
+    <x:String x:Key="TestsPageTestStackTrace">StackTrace:</x:String>
+    <!--Label used for the Test page warning count.-->
+    <x:String x:Key="TestsPageTestWarningCount">Warning:</x:String>
+    <!--Title used for the Test page.-->
+    <x:String x:Key="TestsPageTitle">Tests</x:String>
+    <!--Unit for milliseconds.-->
+    <x:String x:Key="TestsPageUnitMillisecond">ms</x:String>
+    <!--Unit for seconds.-->
+    <x:String x:Key="TestsPageUnitSecond">sec</x:String>
+</ResourceDictionary>

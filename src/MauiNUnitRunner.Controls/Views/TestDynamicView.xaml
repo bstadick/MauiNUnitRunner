@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) bstadick and contributors. MIT License - see LICENSE file -->
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:MauiNUnitRunner.Controls.Views"
+             x:Class="MauiNUnitRunner.Controls.Views.TestDynamicView">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/TestControlResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Grid BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicView}}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!-- Display either the test detail view if a leaf node test (no child tests) or the test suite view -->
+        <views:TestDetailView Grid.Row="0"
+                              IsVisible="{Binding Source={RelativeSource Self}, Path=Test.HasNoChildren, FallbackValue=true}"
+                              Test="{Binding Test}"
+                              RunTestsClicked="TestDynamicView_OnRunTestsClicked"
+                              SaveResultsClicked="TestDynamicView_OnSaveResultsClicked" />
+        <views:TestSuiteView Grid.Row="0"
+                             IsVisible="{Binding Source={RelativeSource Self}, Path=Test.HasChildren, FallbackValue=false}"
+                             Test="{Binding Test}"
+                             TestItemSelected="TestDynamicView_OnTestItemSelected"
+                             RunTestsClicked="TestDynamicView_OnRunTestsClicked"
+                             SaveResultsClicked="TestDynamicView_OnSaveResultsClicked" />
+    </Grid>
+</ContentView>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Disable the Maui Community Toolkit's warning about the UseMauiCommunityToolkit since this library's own MAUI builder method calls it. -->
+    <NoWarn>$(NoWarn);MCT001</NoWarn>
+  </PropertyGroup>
+</Project>
