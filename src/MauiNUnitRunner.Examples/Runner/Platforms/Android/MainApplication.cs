@@ -3,7 +3,7 @@
 using Android.App;
 using Android.Runtime;
 
-namespace MauiNUnitRunner.Examples
+namespace MauiNUnitRunner.Examples.Runner
 {
     [Application]
     public class MainApplication : MauiApplication

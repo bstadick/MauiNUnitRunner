@@ -2,7 +2,7 @@
 
 using Foundation;
 
-namespace MauiNUnitRunner.Examples
+namespace MauiNUnitRunner.Examples.Runner
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

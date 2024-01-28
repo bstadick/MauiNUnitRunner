@@ -2,12 +2,12 @@
 <!-- Copyright (c) bstadick and contributors. MIT License - see LICENSE file -->
 
 <Shell
-    x:Class="MauiNUnitRunner.Examples.AppShell"
+    x:Class="MauiNUnitRunner.Examples.Runner.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:MauiNUnitRunner.Controls.Views;assembly=MauiNUnitRunner.Controls"
     FlyoutBehavior="Disabled"
-    Title="MauiNUnitRunner.Examples">
+    Title="MauiNUnitRunner.Examples.Runner">
 
     <ShellContent
         Title="Home"

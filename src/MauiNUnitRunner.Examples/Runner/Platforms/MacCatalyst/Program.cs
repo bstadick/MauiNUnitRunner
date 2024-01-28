@@ -2,7 +2,7 @@
 
 using UIKit;
 
-namespace MauiNUnitRunner.Examples
+namespace MauiNUnitRunner.Examples.Runner
 {
     public class Program
     {

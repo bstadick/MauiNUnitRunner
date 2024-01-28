@@ -5,7 +5,7 @@ using MauiNUnitRunner.Controls;
 using Microsoft.Extensions.Logging;
 #endif
 
-namespace MauiNUnitRunner.Examples;
+namespace MauiNUnitRunner.Examples.Runner;
 
 public static class MauiProgram
 {

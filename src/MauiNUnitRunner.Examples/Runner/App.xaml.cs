@@ -3,8 +3,9 @@
 using System.Reflection;
 //using MauiNUnitRunner.Controls.Services;
 using MauiNUnitRunner.Controls.Views;
+using MauiNUnitRunner.Examples.SubAssemblyTests;
 
-namespace MauiNUnitRunner.Examples;
+namespace MauiNUnitRunner.Examples.Runner;
 
 public partial class App : Application
 {
@@ -18,6 +19,7 @@ public partial class App : Application
         // Get assemblies with unit tests
         IList<Assembly> testAssemblies = new List<Assembly>();
         testAssemblies.Add(GetType().Assembly);
+        testAssemblies.Add(typeof(ExampleSubUnitTests).Assembly);
 
         // Specify any test settings
         Dictionary<string, object> settings = new Dictionary<string, object>();

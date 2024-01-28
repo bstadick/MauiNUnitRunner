@@ -2,16 +2,16 @@
 
 using NUnit.Framework;
 
-namespace MauiNUnitRunner.Examples;
+namespace MauiNUnitRunner.Examples.SubAssemblyTests;
 
 /// <summary>
-///     A suite of example test cases.
+///     A suite of example test cases in a sub-assembly. This class is a direct copy of the ExampleUnitTests class.
 /// </summary>
 /// <remarks>
 ///     Tests will toggle between passing and failing (besides the ignored test), with the first test run passing.
 /// </remarks>
 [TestFixture]
-public class ExampleUnitTests
+public class ExampleSubUnitTests
 {
     /// <summary>
     ///     Holds a toggled value, start as false so that the first test run will toggle it true.

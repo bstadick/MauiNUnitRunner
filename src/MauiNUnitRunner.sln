@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiNUnitRunner.Controls", "MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj", "{3206D411-68C4-4374-9BCB-8E4015D133E5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiNUnitRunner.Examples", "MauiNUnitRunner.Examples\MauiNUnitRunner.Examples.csproj", "{DA503C53-A821-46FD-8721-492B566A7791}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiNUnitRunner.Examples.Runner", "MauiNUnitRunner.Examples\Runner\MauiNUnitRunner.Examples.Runner.csproj", "{DA503C53-A821-46FD-8721-492B566A7791}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiNUnitRunner.Examples.SubAssemblyTests", "MauiNUnitRunner.Examples\SubAssemblyTests\MauiNUnitRunner.Examples.SubAssemblyTests.csproj", "{14341421-DE32-4700-81EB-028673AC9FD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +23,14 @@ Global
 		{3206D411-68C4-4374-9BCB-8E4015D133E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3206D411-68C4-4374-9BCB-8E4015D133E5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA503C53-A821-46FD-8721-492B566A7791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA503C53-A821-46FD-8721-492B566A7791}.Example|Any CPU.ActiveCfg = Example|Any CPU
-		{DA503C53-A821-46FD-8721-492B566A7791}.Example|Any CPU.Build.0 = Example|Any CPU
-		{DA503C53-A821-46FD-8721-492B566A7791}.Example|Any CPU.Deploy.0 = Example|Any CPU
+		{DA503C53-A821-46FD-8721-492B566A7791}.Example|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA503C53-A821-46FD-8721-492B566A7791}.Example|Any CPU.Build.0 = Debug|Any CPU
+		{DA503C53-A821-46FD-8721-492B566A7791}.Example|Any CPU.Deploy.0 = Debug|Any CPU
 		{DA503C53-A821-46FD-8721-492B566A7791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14341421-DE32-4700-81EB-028673AC9FD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14341421-DE32-4700-81EB-028673AC9FD9}.Example|Any CPU.ActiveCfg = Debug|Any CPU
+		{14341421-DE32-4700-81EB-028673AC9FD9}.Example|Any CPU.Build.0 = Debug|Any CPU
+		{14341421-DE32-4700-81EB-028673AC9FD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

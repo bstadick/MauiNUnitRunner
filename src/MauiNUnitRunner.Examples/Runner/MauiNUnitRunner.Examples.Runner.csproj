@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Configurations>Debug;Release;Example</Configurations>
     <TargetFrameworks>$(NetFrameworkVersion)-android;$(NetFrameworkVersion)-ios;$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>
     <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
@@ -15,15 +14,11 @@
     <!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
 
     <OutputType>Exe</OutputType>
-    <RootNamespace>MauiNUnitRunner.Examples</RootNamespace>
+    <RootNamespace>MauiNUnitRunner.Examples.Runner</RootNamespace>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <NoWarn>$(NoWarn);MCT001</NoWarn>
-
-    <DefaultItemExcludes>$(DefaultItemExcludes);NuGet.config</DefaultItemExcludes>
-    <DefineConstants Condition="'$(Configuration)' == 'Example'">$(DefineConstants);DEBUG</DefineConstants>
 
     <!-- Display name -->
     <ApplicationTitle>MauiNUnitRunner.Example</ApplicationTitle>
@@ -65,12 +60,19 @@
     <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+    <PackageReference Include="NUnit" />
   </ItemGroup>
 
-  <!-- MauiNUnitRunner.Controls Reference -->
   <ItemGroup>
-    <ProjectReference Include="..\MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj" Condition="'$(Configuration)' == 'Example'" />
-    <PackageReference Include="MauiNUnitRunner.Controls" Version="*-*" Condition="'$(Configuration)' != 'Example'" />
+    <ProjectReference Include="..\SubAssemblyTests\MauiNUnitRunner.Examples.SubAssemblyTests.csproj" />
+  </ItemGroup>
+
+  <!-- MauiNUnitRunner.Controls reference depends on if it is opened in the top level solution or the example solution -->
+  <ItemGroup Condition="'$(SolutionFileName)' != 'MauiNUnitRunner.Examples.sln'">
+    <ProjectReference Include="..\..\MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(SolutionFileName)' == 'MauiNUnitRunner.Examples.sln'">
+    <PackageReference Include="MauiNUnitRunner.Controls" Version="*-*" />
   </ItemGroup>
 
 </Project>
