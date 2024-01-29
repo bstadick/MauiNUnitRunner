@@ -65,14 +65,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SubAssemblyTests\MauiNUnitRunner.Examples.SubAssemblyTests.csproj" />
-  </ItemGroup>
-
-  <!-- MauiNUnitRunner.Controls reference depends on if it is opened in the top level solution or the example solution -->
-  <ItemGroup Condition="'$(SolutionFileName)' != 'MauiNUnitRunner.Examples.sln'">
     <ProjectReference Include="..\..\MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(SolutionFileName)' == 'MauiNUnitRunner.Examples.sln'">
-    <PackageReference Include="MauiNUnitRunner.Controls" Version="*-*" />
   </ItemGroup>
 
 </Project>

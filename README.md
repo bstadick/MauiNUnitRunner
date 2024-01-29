@@ -95,7 +95,7 @@ The MauiNUnitRunner project can be built and referenced using the pre-built Nuge
 
 ## Examples
 
-Example test runner projects can be found in the `./src/MauiNUnitRunner.Examples/MauiNUnitRunner.Examples.sln` solution folder. The examples require that the `MauiNUnitRunner.sln` is first built in **Release**.
+Example test runner projects can be found in the `./src/MauiNUnitRunner.Examples` project folders. The examples consist of an example test runner app and an separate test sub-assembly to include in the test runner app. The examples can be built from the project's solution using the **Example** configuration.
 
 ## Future Enhancements
 
