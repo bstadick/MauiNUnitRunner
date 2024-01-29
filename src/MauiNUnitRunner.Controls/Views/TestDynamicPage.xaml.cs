@@ -1,13 +1,10 @@
 // Copyright (c) bstadick and contributors. MIT License - see LICENSE file
 
-using System.Reflection;
-using System.Text;
-using System.Xml;
-using System.Xml.Linq;
 using CommunityToolkit.Maui.Storage;
 using MauiNUnitRunner.Controls.Filter;
 using MauiNUnitRunner.Controls.Models;
 using MauiNUnitRunner.Controls.Resources;
+using MauiNUnitRunner.Controls.Services;
 using NUnit.Framework.Api;
 using NUnit.Framework.Interfaces;
 using ExceptionHelper = MauiNUnitRunner.Controls.Resources.ExceptionHelper;
@@ -63,47 +60,29 @@ public partial class TestDynamicPage : ContentPage
     /// <summary>
     ///     Gets the NUnit test runner.
     /// </summary>
-    public NUnitTestAssemblyRunner TestRunner { get; }
-
-    /// <summary>
-    ///     Gets or sets the test listener.
-    /// </summary>
-    public ITestListener TestListener { get; set; }
+    public INUnitTestRunner TestRunner { get; }
 
     #endregion
 
     #region Constructors
 
     /// <summary>
-    ///     Initializes a new <see cref="TestDynamicPage"/> loading the tests from the given <paramref name="assemblies"/>.
+    ///     Initializes a new <see cref="TestDynamicPage"/> loading and running the tests from the given <paramref name="testRunner"/>.
     /// </summary>
-    /// <param name="assemblies">The list of assemblies to load the tests from.</param>
-    /// <param name="settings">The dictionary of test settings to pass to the test runner.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblies"/> is null.</exception>
-    public TestDynamicPage(ICollection<Assembly> assemblies, IDictionary<string, object> settings = null)
+    /// <param name="testRunner">The <see cref="INUnitTestRunner"/> with the loaded tests to run.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="testRunner"/> is null.</exception>
+    public TestDynamicPage(INUnitTestRunner testRunner)
     {
-        if (assemblies == null)
+        if (testRunner == null)
         {
-            throw ExceptionHelper.ThrowArgumentNullException(nameof(assemblies));
+            throw ExceptionHelper.ThrowArgumentNullException(nameof(testRunner));
         }
 
         InitializeComponent();
 
-        TestRunner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
-
-        // Load test assemblies
-        settings ??= new Dictionary<string, object>();
-        foreach (Assembly assembly in assemblies)
-        {
-            if (assembly != null)
-            {
-                TestRunner.Load(assembly, settings);
-            }
-        }
-
         // Explore and set tests
-        ITest tests = TestRunner.ExploreTests(NUnitFilter.Empty);
-        Test = new NUnitTest(tests);
+        TestRunner = testRunner;
+        Test = TestRunner.ExploreTests(NUnitFilter.Empty);
         Title = Test.DisplayName;
     }
 
@@ -113,7 +92,7 @@ public partial class TestDynamicPage : ContentPage
     /// <param name="test">The test to bind to the page.</param>
     /// <param name="runner">The NUnit test runner the test was loaded from.</param>
     /// <param name="showFooterLinks">If to show the page footer links</param>
-    private TestDynamicPage(INUnitTest test, NUnitTestAssemblyRunner runner, bool showFooterLinks)
+    private TestDynamicPage(INUnitTest test, INUnitTestRunner runner, bool showFooterLinks)
     {
         InitializeComponent();
 
@@ -134,11 +113,15 @@ public partial class TestDynamicPage : ContentPage
     /// <param name="e">The test selected event arguments.</param>
     protected virtual async void TestDynamicPage_OnItemSelected(object sender, NUnitTestEventArgs e)
     {
-        // Navigate to child test page
-        if (e.Test != null)
+        // Get test from event arg
+        INUnitTest test = e?.Test;
+        if (test == null || test.Test == null)
         {
-            await Navigation.PushAsync(new TestDynamicPage(e.Test, TestRunner, false));
+            return;
         }
+
+        // Navigate to child test page
+        await Navigation.PushAsync(new TestDynamicPage(test, TestRunner, false));
     }
 
     /// <summary>
@@ -148,27 +131,22 @@ public partial class TestDynamicPage : ContentPage
     /// <param name="e">The test run event arguments.</param>
     protected virtual async void TestDynamicPage_OnRunTestsClicked(object sender, NUnitTestEventArgs e)
     {
-        // Only allow one test run to run at a time
-        if (TestRunner.IsTestRunning)
-        {
-            return;
-        }
-
-        INUnitTest test = e.Test;
+        // Get test from event arg
+        INUnitTest test = e?.Test;
         if (test == null || test.Test == null)
         {
             return;
         }
 
-        // Run tests
-        Task<INUnitTestResult> runTask = Task.Run(() =>
-        {
-            ITestResult result = TestRunner.Run(TestListener, NUnitFilter.Where.Id(test.Test.Id).Build().Filter);
-            return (INUnitTestResult)(new NUnitTestResult(result));
-        });
+        // Create filter to run the selected test
+        ITestFilter filter = NUnitFilter.Where.Id(test.Test.Id).Build().Filter;
 
         // Wait for test to complete
-        INUnitTestResult result = await runTask;
+        INUnitTestResult result = await TestRunner.Run(filter);
+        if (result == null)
+        {
+            return;
+        }
 
         // Set test results
         e.Test.Result = result;
@@ -181,43 +159,21 @@ public partial class TestDynamicPage : ContentPage
     /// <param name="e">The export results event arguments.</param>
     protected virtual async void TestDynamicView_OnSaveResultsClicked(object sender, NUnitTestResultEventArgs e)
     {
-        INUnitTestResult result = e.Result;
-        if (result == null || !result.HasTestResult)
-        {
-            return;
-        }
-
-        // Get result as xml
-        TNode resultXml = result.Result.ToXml(true);
-
         try
         {
-            // Convert result string to stream, use an XmlTextWrite and XDocument to apply xml formatting
-            await using MemoryStream resultStream = new MemoryStream();
-            await using XmlTextWriter writer = new XmlTextWriter(resultStream, Encoding.UTF8);
-            writer.Formatting = Formatting.Indented;
-            XDocument doc = XDocument.Parse(resultXml.OuterXml);
-            doc.WriteTo(writer);
-            writer.Flush();
-            resultStream.Seek(0, SeekOrigin.Begin);
-
-            // Format full test name for initial file, remove any part of a test case string after a '(' and replacing spaces with '-'
-            INUnitTest test = new NUnitTest(result.Result.Test);
-            string testName = test.FullDisplayName;
-            int ind = testName.IndexOf('(', StringComparison.Ordinal);
-            if (ind > 0)
+            // Get test result as xml
+            await using Stream resultStream = TestRunner.GetTestResultsAsXmlStream(e?.Result, out string fileName);
+            if (resultStream == null)
             {
-                testName = testName.Substring(0, ind);
+                return;
             }
-
-            testName = testName.Replace(" ", "-");
 
             // Open save result dialog
             await v_FileSaver.SaveAsync(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"{testName}-{test.Id}.xml",
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), fileName,
                 resultStream);
         }
-        catch (Exception)
+        catch
         {
             // Alert user if save failed
             // Don't alert on the SaveAsync returned result since it doesn't differentiate between a user Cancel action and an exception

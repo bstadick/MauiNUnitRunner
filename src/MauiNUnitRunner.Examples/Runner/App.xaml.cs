@@ -1,7 +1,7 @@
 // Copyright (c) bstadick and contributors. MIT License - see LICENSE file
 
 using System.Reflection;
-//using MauiNUnitRunner.Controls.Services;
+using MauiNUnitRunner.Controls.Services;
 using MauiNUnitRunner.Controls.Views;
 using MauiNUnitRunner.Examples.SubAssemblyTests;
 
@@ -16,22 +16,22 @@ public partial class App : Application
         // Set app theme
         UserAppTheme = AppTheme.Dark;
 
-        // Get assemblies with unit tests
-        IList<Assembly> testAssemblies = new List<Assembly>();
-        testAssemblies.Add(GetType().Assembly);
-        testAssemblies.Add(typeof(ExampleSubUnitTests).Assembly);
-
         // Specify any test settings
         Dictionary<string, object> settings = new Dictionary<string, object>();
         settings.Add("MySetting", "value");
 
+        // Add assemblies with unit tests to test runner
+        NUnitTestRunner runner = new NUnitTestRunner();
+        runner.AddTestAssembly(GetType().Assembly, settings);
+        runner.AddTestAssembly(typeof(ExampleSubUnitTests).Assembly);
+
         // Create initial test page
-        TestDynamicPage page = new TestDynamicPage(testAssemblies, settings);
+        TestDynamicPage page = new TestDynamicPage(runner);
 
         // Add an optional test listener to get test output and progress
         //NUnitTestListener listener = new NUnitTestListener();
         //listener.WriteOutput += Console.WriteLine;
-        //page.TestListener = listener;
+        //runner.TestListener = listener;
 
         // Set test page as main page
         MainPage = new NavigationPage(page);
