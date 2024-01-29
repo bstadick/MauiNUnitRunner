@@ -1,0 +1,25 @@
+name: .NET Push
+
+on: [push]
+
+env:
+  CONFIGURATION: Release
+  SOLUTION: .\src\MauiNUnitRunner.sln
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4.0.0
+    - name: Build with dotnet
+      run: dotnet build "$SOLUTION" --configuration $CONFIGURATION
+    - name: Test with dotnet
+      run: dotnet test "$SOLUTION" --configuration $CONFIGURATION
+    - name: Pack with dotnet
+      run: dotnet pack "$SOLUTION" --configuration $CONFIGURATION
+    - name: Build examples with dotnet
+      run: dotnet build "$SOLUTION" --configuration Example

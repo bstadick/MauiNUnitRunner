@@ -1,0 +1,36 @@
+name: .NET Release
+
+on: [release]
+
+env:
+  CONFIGURATION: Release
+  PROJECTPATH: .\src\MauiNUnitRunner.Controls
+  SOLUTION: .\src\MauiNUnitRunner.sln
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.1.1
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4.0.0
+      with:
+        source-url: https://nuget.pkg.github.com/bstadick/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Setup Nuget.exe
+      uses: nuget/setup-nuget@v1.2.0
+      with:
+        nuget-api-key: ${{secrets.GITHUB_TOKEN}}
+    - name: Build with dotnet
+      run: dotnet build "$SOLUTION" --configuration $CONFIGURATION
+    - name: Test with dotnet
+      run: dotnet test "$SOLUTION" --configuration $CONFIGURATION
+    - name: Pack with dotnet
+      run: dotnet pack "$SOLUTION" --configuration $CONFIGURATION
+    - name: Build examples with dotnet
+      run: dotnet build "$SOLUTION" --configuration Example
+    - name: Deploy to GPR with dotnet
+      run: dotnet nuget push "$PROJECTPATH\bin\$CONFIGURATION\*.nupkg" -s https://nuget.pkg.github.com/bstadick/index.json -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
