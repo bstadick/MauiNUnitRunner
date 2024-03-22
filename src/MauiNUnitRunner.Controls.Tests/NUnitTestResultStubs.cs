@@ -34,8 +34,26 @@ public class TestResultStub : ITestResult
     /// <inheritdoc />
     public string FullName { get; set; }
 
+    /// <summary>
+    ///     Holds if the duration has been set.
+    /// </summary>
+    private bool v_DurationSet;
+
+    /// <summary>
+    ///     Holds the set duration.
+    /// </summary>
+    private double v_Duration;
+
     /// <inheritdoc />
-    public double Duration => (EndTime - StartTime).TotalSeconds;
+    public double Duration
+    {
+        get => v_DurationSet ? v_Duration : (EndTime - StartTime).TotalSeconds;
+        set
+        {
+            v_DurationSet = true;
+            v_Duration = value;
+        }
+    }
 
     /// <inheritdoc />
     public DateTime StartTime { get; set; }

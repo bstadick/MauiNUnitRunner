@@ -5,6 +5,10 @@ using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using MauiNUnitRunner.Controls.Models;
 
+// ReSharper disable UseObjectOrCollectionInitializer
+// ReSharper disable ArrangeObjectCreationWhenTypeEvident
+// ReSharper disable AssignNullToNotNullAttribute
+
 namespace MauiNUnitRunner.Controls.Tests.Models;
 
 [TestFixture]
@@ -15,7 +19,7 @@ public class NUnitTestResultTest
     [Test]
     public void TestConstructorWithTestResult([Values] bool isNull)
     {
-        ITestResult result = isNull ? null : new TestResultForTest();
+        ITestResult result = isNull ? null : new TestResultStub();
 
         INUnitTestResult test = new NUnitTestResult(result);
 
@@ -29,7 +33,7 @@ public class NUnitTestResultTest
     [Test]
     public void TestResultProperty([Values] bool isNull)
     {
-        ITestResult result = !isNull ? null : new TestResultForTest();
+        ITestResult result = !isNull ? null : new TestResultStub();
 
         INUnitTestResult test = new NUnitTestResult(result);
 
@@ -41,14 +45,14 @@ public class NUnitTestResultTest
     #region Tests for ResultStateStatus Property
 
     [Test]
-    public void TestResultStateStatusPropertyWithResultNullReturnsDefaultString([Values] bool hasResult)
+    public void TestResultStateStatusPropertyWithResultNullReturnsDefaultString()
     {
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.ResultState = null;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.ResultState = null;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result, Is.EqualTo(result));
         Assert.That(test.ResultStateStatus, Is.EqualTo("Test not executed."));
     }
@@ -57,7 +61,7 @@ public class NUnitTestResultTest
     public void TestResultStateStatusPropertyWithResultReturnsResultStateStatusString()
     {
         ResultState state = ResultState.Success;
-        TestResultForTest result = new TestResultForTest();
+        TestResultStub result = new TestResultStub();
         result.ResultState = state;
 
         INUnitTestResult test = new NUnitTestResult(result);
@@ -73,7 +77,7 @@ public class NUnitTestResultTest
     [Test]
     public void TestTextColorPropertyWithNullResultReturnsColorBlack([Values] bool hasResult)
     {
-        TestResultForTest resultInstance = new TestResultForTest();
+        TestResultStub resultInstance = new TestResultStub();
         resultInstance.ResultState = null;
         ITestResult result = hasResult ? resultInstance : null;
 
@@ -85,7 +89,7 @@ public class NUnitTestResultTest
     [Test]
     public void TestTextColorPropertyWithNotSupportedTestStatusReturnsColorBlack()
     {
-        TestResultForTest result = new TestResultForTest();
+        TestResultStub result = new TestResultStub();
         result.ResultState = new ResultState((TestStatus) (-1));
 
         INUnitTestResult test = new NUnitTestResult(result);
@@ -96,7 +100,7 @@ public class NUnitTestResultTest
     [Test]
     public void TestTextColorPropertyReturnsColorForResultState([Values] TestStatus status)
     {
-        TestResultForTest result = new TestResultForTest();
+        TestResultStub result = new TestResultStub();
         result.ResultState = new ResultState((TestStatus) (-1));
 
         Color expected = Colors.Black;
@@ -105,15 +109,15 @@ public class NUnitTestResultTest
         {
             case TestStatus.Inconclusive:
                 state = ResultState.Inconclusive;
-                expected = Colors.Purple;
+                expected = Colors.MediumPurple;
                 break;
             case TestStatus.Skipped:
                 state = ResultState.Ignored;
-                expected = Colors.Blue;
+                expected = Colors.DodgerBlue;
                 break;
             case TestStatus.Passed:
                 state = ResultState.Success;
-                expected = Colors.Green;
+                expected = Colors.LimeGreen;
                 break;
             case TestStatus.Warning:
                 state = ResultState.Warning;
@@ -146,7 +150,7 @@ public class NUnitTestResultTest
         double count = inMilliseconds ? 0.005123456 : 5.123456;
         string unit = inMilliseconds ? "ms" : "sec";
         string expected = hasResult ? "5.123 " + unit : "0 sec";
-        TestResultForTest resultInstance = new TestResultForTest();
+        TestResultStub resultInstance = new TestResultStub();
         resultInstance.Duration = count;
         ITestResult result = hasResult ? resultInstance : null;
 
@@ -160,14 +164,14 @@ public class NUnitTestResultTest
     #region Tests for HasInconclusive Property
 
     [Test]
-    public void TestHasInconclusivePropertyWithNotInconclusiveReturnsFalse([Values] bool hasResult)
+    public void TestHasInconclusivePropertyWithNotInconclusiveReturnsFalse()
     {
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.InconclusiveCount = 0;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.InconclusiveCount = 0;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.InconclusiveCount, Is.EqualTo(0));
         Assert.That(test.HasInconclusive, Is.False);
     }
@@ -176,11 +180,12 @@ public class NUnitTestResultTest
     public void TestHasInconclusivePropertyWithInconclusiveReturnsTrue()
     {
         const int count = 5;
-        TestResultForTest result = new TestResultForTest();
+        TestResultStub result = new TestResultStub();
         result.InconclusiveCount = count;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.InconclusiveCount, Is.EqualTo(count));
         Assert.That(test.HasInconclusive, Is.True);
     }
@@ -190,14 +195,14 @@ public class NUnitTestResultTest
     #region Tests for HasWarning Property
 
     [Test]
-    public void TestHasWarningPropertyWithNoWarningReturnsFalse([Values] bool hasResult)
+    public void TestHasWarningPropertyWithNoWarningReturnsFalse()
     {
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.InconclusiveCount = 0;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.InconclusiveCount = 0;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.WarningCount, Is.EqualTo(0));
         Assert.That(test.HasWarning, Is.False);
     }
@@ -206,11 +211,12 @@ public class NUnitTestResultTest
     public void TestHasWarningPropertyWithWarningReturnsTrue()
     {
         const int count = 5;
-        TestResultForTest result = new TestResultForTest();
+        TestResultStub result = new TestResultStub();
         result.WarningCount = count;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.WarningCount, Is.EqualTo(count));
         Assert.That(test.HasWarning, Is.True);
     }
@@ -220,14 +226,14 @@ public class NUnitTestResultTest
     #region Tests for HasSkip Property
 
     [Test]
-    public void TestHasSkipPropertyWithNoSkipReturnsFalse([Values] bool hasResult)
+    public void TestHasSkipPropertyWithNoSkipReturnsFalse()
     {
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.SkipCount = 0;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.SkipCount = 0;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.SkipCount, Is.EqualTo(0));
         Assert.That(test.HasSkip, Is.False);
     }
@@ -236,11 +242,12 @@ public class NUnitTestResultTest
     public void TestHasSkipPropertyWithSkipReturnsTrue()
     {
         const int count = 5;
-        TestResultForTest result = new TestResultForTest();
+        TestResultStub result = new TestResultStub();
         result.SkipCount = count;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.SkipCount, Is.EqualTo(count));
         Assert.That(test.HasSkip, Is.True);
     }
@@ -250,15 +257,16 @@ public class NUnitTestResultTest
     #region Tests for HasOutput Property
 
     [Test]
-    public void TestHasOutputPropertyWithNoOutputReturnsFalse([Values] bool hasResult, [Values] bool isNull)
+    public void TestHasOutputPropertyWithNoOutputReturnsFalse([Values] bool isNull)
     {
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.Output = isNull ? null : string.Empty;
-        ITestResult result = hasResult ? resultInstance : null;
+        string expected = isNull ? null : string.Empty;
+        TestResultStub result = new TestResultStub();
+        result.Output = expected;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.Output, Is.EqualTo(string.Empty));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.Output, Is.EqualTo(expected));
         Assert.That(test.HasOutput, Is.False);
     }
 
@@ -266,11 +274,12 @@ public class NUnitTestResultTest
     public void TestHasOutputPropertyWithOutputReturnsTrue()
     {
         const string msg = "This is a test message.";
-        TestResultForTest result = new TestResultForTest();
+        TestResultStub result = new TestResultStub();
         result.Output = msg;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.Output, Is.EqualTo(msg));
         Assert.That(test.HasOutput, Is.True);
     }
@@ -280,20 +289,21 @@ public class NUnitTestResultTest
     #region Tests for HasMessage Property
 
     [Test]
-    public void TestHasMessagePropertyWithNoMessageReturnsFalse([Values] bool hasResult, [Values] bool isNull)
+    public void TestHasMessagePropertyWithNoMessageReturnsFalse([Values] bool isNull)
     {
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.Message = isNull ? null : string.Empty;
-        ITestResult result = hasResult ? resultInstance : null;
+        string expected = isNull ? null : string.Empty;
+        TestResultStub result = new TestResultStub();
+        result.Message = expected;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.Message, Is.EqualTo(string.Empty));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.Message, Is.EqualTo(expected));
         Assert.That(test.HasMessage, Is.False);
     }
 
     [Test]
-    public void TestHasMessagePropertyWithMessageAndFailedAssertionsReturnsFalse([Values] bool hasResult)
+    public void TestHasMessagePropertyWithMessageAndFailedAssertionsReturnsFalse()
     {
         const string msg = "This is a test message.";
         IList<AssertionResult> assertions = new List<AssertionResult>
@@ -301,11 +311,12 @@ public class NUnitTestResultTest
             new AssertionResult(AssertionStatus.Failed, "message", "trace")
         };
 
-        TestResultForTest result = new TestResultForTest();
+        TestResultStub result = new TestResultStub();
         result.Message = msg;
         result.AssertionResults = assertions;
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.Message, Is.EqualTo(msg));
         Assert.That(test.HasFailedAssertions, Is.True);
         Assert.That(test.HasMessage, Is.False);
@@ -315,11 +326,12 @@ public class NUnitTestResultTest
     public void TestHasMessagePropertyWithMessageReturnsTrue()
     {
         const string msg = "This is a test message.";
-        TestResultForTest result = new TestResultForTest();
+        TestResultStub result = new TestResultStub();
         result.Message = msg;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.Message, Is.EqualTo(msg));
         Assert.That(test.HasMessage, Is.True);
     }
@@ -329,16 +341,16 @@ public class NUnitTestResultTest
     #region Tests for HasStackTrace Property
 
     [Test]
-    public void TestHasStackTracePropertyWithNoStackTraceReturnsFalse([Values] bool hasResult,
-        [Values] bool isNull)
+    public void TestHasStackTracePropertyWithNoStackTraceReturnsFalse([Values] bool isNull)
     {
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.StackTrace = isNull ? null : string.Empty;
-        ITestResult result = hasResult ? resultInstance : null;
+        string expected = isNull ? null : string.Empty;
+        TestResultStub result = new TestResultStub();
+        result.StackTrace = expected;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.StackTrace, Is.EqualTo(string.Empty));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.StackTrace, Is.EqualTo(expected));
         Assert.That(test.HasStackTrace, Is.False);
     }
 
@@ -351,11 +363,12 @@ public class NUnitTestResultTest
             new AssertionResult(AssertionStatus.Failed, "message", "trace")
         };
 
-        TestResultForTest result = new TestResultForTest();
+        TestResultStub result = new TestResultStub();
         result.StackTrace = msg;
         result.AssertionResults = assertions;
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.StackTrace, Is.EqualTo(msg));
         Assert.That(test.HasFailedAssertions, Is.True);
         Assert.That(test.HasStackTrace, Is.False);
@@ -365,11 +378,12 @@ public class NUnitTestResultTest
     public void TestHasStackTracePropertyWithStackTraceReturnsTrue()
     {
         const string msg = "This is a test message.";
-        TestResultForTest result = new TestResultForTest();
+        TestResultStub result = new TestResultStub();
         result.StackTrace = msg;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.StackTrace, Is.EqualTo(msg));
         Assert.That(test.HasStackTrace, Is.True);
     }
@@ -379,10 +393,10 @@ public class NUnitTestResultTest
     #region Tests for HasFailedAssertions Property
 
     [Test]
-    public void TestHasFailedAssertionsPropertyReturnsIfTestsHasFailedAssertion([Values] bool hasResult,
-        [Values] bool hasAssertions, [Values] AssertionStatus status)
+    public void TestHasFailedAssertionsPropertyReturnsIfTestsHasFailedAssertion([Values] bool hasAssertions,
+        [Values] AssertionStatus status, [Values] bool isNull)
     {
-        bool expected = hasResult && hasAssertions && status != AssertionStatus.Passed;
+        bool expected = hasAssertions && status != AssertionStatus.Passed;
         IList<AssertionResult> assertions = new List<AssertionResult>
         {
             new AssertionResult(AssertionStatus.Passed, "message", "trace"),
@@ -391,20 +405,20 @@ public class NUnitTestResultTest
             new AssertionResult(AssertionStatus.Passed, "message", "trace")
         };
 
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.AssertionResults = hasAssertions ? assertions : null;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.AssertionResults = hasAssertions ? assertions : isNull ? null : Array.Empty<AssertionResult>();
 
         INUnitTestResult test = new NUnitTestResult(result);
 
         Assert.That(test.HasFailedAssertions, Is.EqualTo(expected));
-        if (hasResult && hasAssertions)
+        Assert.That(test.Result, Is.Not.Null);
+        if (hasAssertions)
         {
             Assert.That(test.Result.AssertionResults, Is.EqualTo(assertions));
         }
         else
         {
-            Assert.That(test.Result.AssertionResults, Is.Empty);
+            Assert.That(test.Result.AssertionResults, Is.Null.Or.Empty);
         }
     }
 
@@ -413,16 +427,16 @@ public class NUnitTestResultTest
     #region Tests for FailedAssertionsString Property
 
     [Test]
-    public void TestFailedAssertionsStringPropertyReturnsIfFormattedFailedAssertionString([Values] bool hasResult,
-        [Values] bool hasAssertions, [Values] bool missingIsNull, [Values] AssertionStatus status)
+    public void TestFailedAssertionsStringPropertyReturnsIfFormattedFailedAssertionString([Values] bool hasAssertions,
+        [Values] bool missingIsNull, [Values] AssertionStatus status, [Values] bool isNull)
     {
         string nl = Environment.NewLine;
         string missing = missingIsNull ? null : string.Empty;
-        bool expected = hasResult && hasAssertions && status != AssertionStatus.Passed;
+        bool expected = hasAssertions && status != AssertionStatus.Passed;
         string expectedMsg = expected
-            ? $"Assertion Status: {status}{nl}message 2{nl}StackTrace:{nl}trace 2{nl}" +
-              $"Assertion Status: {status}{nl}StackTrace:{nl}trace 3{nl}" +
-              $"Assertion Status: {status}{nl}message 4"
+            ? $"Assertion Status:{status}{nl}message 2{nl}StackTrace:{nl}trace 2{nl}" +
+              $"Assertion Status:{status}{nl}StackTrace:{nl}trace 3{nl}" +
+              $"Assertion Status:{status}{nl}message 4"
             : string.Empty;
         IList<AssertionResult> assertions = new List<AssertionResult>
         {
@@ -433,21 +447,21 @@ public class NUnitTestResultTest
             new AssertionResult(status, "message 4", missing),
         };
 
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.AssertionResults = hasAssertions ? assertions : null;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.AssertionResults = hasAssertions ? assertions : isNull ? null : Array.Empty<AssertionResult>();
 
         INUnitTestResult test = new NUnitTestResult(result);
 
         Assert.That(test.HasFailedAssertions, Is.EqualTo(expected));
         Assert.That(test.FailedAssertionsString, Is.EqualTo(expectedMsg));
-        if (hasResult && hasAssertions)
+        Assert.That(test.Result, Is.Not.Null);
+        if (hasAssertions)
         {
             Assert.That(test.Result.AssertionResults, Is.EqualTo(assertions));
         }
         else
         {
-            Assert.That(test.Result.AssertionResults, Is.Empty);
+            Assert.That(test.Result.AssertionResults, Is.Null.Or.Empty);
         }
     }
 
@@ -456,23 +470,17 @@ public class NUnitTestResultTest
     #region Tests for ToXml
 
     [Test]
-    public void TestToXml([Values] bool hasResult, [Values] bool recursive)
+    public void TestToXml([Values] bool recursive)
     {
-        ITestResult resultInstance = new TestSuiteResult(new TestSuite("suite-name"));
-        ITestResult result = hasResult ? resultInstance : null;
+        ITestResult result = new TestSuiteResult(new TestSuite("suite-name"));
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
+
         TNode node = test.Result.ToXml(recursive);
 
-        if (hasResult)
-        {
-            Assert.That(node, Is.Not.Null);
-        }
-        else
-        {
-            Assert.That(node, Is.Null);
-        }
+        Assert.That(node, Is.Not.Null);
     }
 
     #endregion
@@ -480,17 +488,18 @@ public class NUnitTestResultTest
     #region Tests for AddToXml
 
     [Test]
-    public void TestAddToXml([Values] bool hasResult, [Values] bool isParentNull, [Values] bool recursive)
+    public void TestAddToXml([Values] bool isParentNull, [Values] bool recursive)
     {
-        ITestResult resultInstance = new TestSuiteResult(new TestSuite("suite-name"));
-        ITestResult result = hasResult ? resultInstance : null;
+        ITestResult result = new TestSuiteResult(new TestSuite("suite-name"));
 
         INUnitTestResult test = new NUnitTestResult(result);
 
         TNode parent = isParentNull ? null : new TNode("parent-node");
 
+        Assert.That(test.Result, Is.Not.Null);
+
         // Parent node null is not handled by NUnit implementation of ITestResult nor the thin wrapper being tested here
-        if (hasResult && isParentNull)
+        if (isParentNull)
         {
             // ReSharper disable once ExpressionIsAlwaysNull
             Assert.Throws(Is.TypeOf<NullReferenceException>(), () => test.Result.AddToXml(parent, recursive));
@@ -499,14 +508,7 @@ public class NUnitTestResultTest
 
         TNode node = test.Result.AddToXml(parent, recursive);
 
-        if (hasResult)
-        {
-            Assert.That(node, Is.Not.Null);
-        }
-        else
-        {
-            Assert.That(node, Is.Null);
-        }
+        Assert.That(node, Is.Not.Null);
     }
 
     #endregion
@@ -514,16 +516,16 @@ public class NUnitTestResultTest
     #region Tests for ResultState Property
 
     [Test]
-    public void TestResultStatePropertyReturnsResultState([Values] bool hasResult, [Values] bool hasState)
+    public void TestResultStatePropertyReturnsResultState([Values] bool hasState)
     {
         ResultState state = ResultState.Success;
-        ResultState expected = hasResult && hasState ? state : ResultState.Inconclusive;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.ResultState = hasState ? state : null;
-        ITestResult result = hasResult ? resultInstance : null;
+        ResultState expected = hasState ? state : ResultState.Inconclusive;
+        TestResultStub result = new TestResultStub();
+        result.ResultState = expected;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.ResultState, Is.EqualTo(expected));
     }
 
@@ -532,16 +534,16 @@ public class NUnitTestResultTest
     #region Tests for Name Property
 
     [Test]
-    public void TestNamePropertyReturnsResultName([Values] bool hasResult, [Values] bool hasName)
+    public void TestNamePropertyReturnsResultName([Values] bool hasName)
     {
         const string name = "result-name";
-        string expected = hasResult && hasName ? name : string.Empty;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.Name = hasName ? name : null;
-        ITestResult result = hasResult ? resultInstance : null;
+        string expected = hasName ? name : string.Empty;
+        TestResultStub result = new TestResultStub();
+        result.Name = expected;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.Name, Is.EqualTo(expected));
     }
 
@@ -550,16 +552,16 @@ public class NUnitTestResultTest
     #region Tests for FullName Property
 
     [Test]
-    public void TestFullNamePropertyReturnsResultFullName([Values] bool hasResult, [Values] bool hasName)
+    public void TestFullNamePropertyReturnsResultFullName([Values] bool hasName)
     {
         const string name = "result-name";
-        string expected = hasResult && hasName ? name : string.Empty;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.FullName = hasName ? name : null;
-        ITestResult result = hasResult ? resultInstance : null;
+        string expected = hasName ? name : string.Empty;
+        TestResultStub result = new TestResultStub();
+        result.FullName = expected;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.FullName, Is.EqualTo(expected));
     }
 
@@ -568,17 +570,16 @@ public class NUnitTestResultTest
     #region Tests for Duration Property
 
     [Test]
-    public void TestDurationPropertyReturnsTestDuration([Values] bool hasResult)
+    public void TestDurationPropertyReturnsTestDuration()
     {
         const double duration = 5.123456;
-        double expected = hasResult ? duration : 0;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.Duration = duration;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.Duration = duration;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.Duration, Is.EqualTo(expected));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.Duration, Is.EqualTo(duration));
     }
 
     #endregion
@@ -586,17 +587,16 @@ public class NUnitTestResultTest
     #region Tests for StartTime Property
 
     [Test]
-    public void TestStartTimePropertyReturnsTestStartTime([Values] bool hasResult)
+    public void TestStartTimePropertyReturnsTestStartTime()
     {
         DateTime time = DateTime.Now;
-        DateTime expected = hasResult ? time : DateTime.MinValue;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.StartTime = time;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.StartTime = time;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.StartTime, Is.EqualTo(expected));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.StartTime, Is.EqualTo(time));
     }
 
     #endregion
@@ -604,17 +604,16 @@ public class NUnitTestResultTest
     #region Tests for EndTime Property
 
     [Test]
-    public void TestEndTimePropertyReturnsTestEndTime([Values] bool hasResult)
+    public void TestEndTimePropertyReturnsTestEndTime()
     {
         DateTime time = DateTime.Now;
-        DateTime expected = hasResult ? time : DateTime.MaxValue;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.EndTime = time;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.EndTime = time;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.EndTime, Is.EqualTo(expected));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.EndTime, Is.EqualTo(time));
     }
 
     #endregion
@@ -622,16 +621,16 @@ public class NUnitTestResultTest
     #region Tests for Message Property
 
     [Test]
-    public void TestMessagePropertyReturnsResultExceptionMessage([Values] bool hasResult, [Values] bool hasMsg)
+    public void TestMessagePropertyReturnsResultExceptionMessage([Values] bool hasMsg)
     {
         const string msg = "This is a test message.";
-        string expected = hasResult && hasMsg ? msg : string.Empty;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.Message = hasMsg ? msg : null;
-        ITestResult result = hasResult ? resultInstance : null;
+        string expected = hasMsg ? msg : string.Empty;
+        TestResultStub result = new TestResultStub();
+        result.Message = expected;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.Message, Is.EqualTo(expected));
     }
 
@@ -640,17 +639,16 @@ public class NUnitTestResultTest
     #region Tests for StackTrace Property
 
     [Test]
-    public void TestStackTracePropertyReturnsResultExceptionStackTrace([Values] bool hasResult,
-        [Values] bool hasTrace)
+    public void TestStackTracePropertyReturnsResultExceptionStackTrace([Values] bool hasTrace)
     {
         const string trace = "This is a test message.";
-        string expected = hasResult && hasTrace ? trace : string.Empty;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.StackTrace = hasTrace ? trace : null;
-        ITestResult result = hasResult ? resultInstance : null;
+        string expected = hasTrace ? trace : string.Empty;
+        TestResultStub result = new TestResultStub();
+        result.StackTrace = expected;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.StackTrace, Is.EqualTo(expected));
     }
 
@@ -659,17 +657,16 @@ public class NUnitTestResultTest
     #region Tests for AssertCount Property
 
     [Test]
-    public void TestAssertCountPropertyReturnsAssertCount([Values] bool hasResult)
+    public void TestAssertCountPropertyReturnsAssertCount()
     {
         const int count = 5;
-        int expected = hasResult ? count : 0;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.AssertCount = count;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.AssertCount = count;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.AssertCount, Is.EqualTo(expected));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.AssertCount, Is.EqualTo(count));
     }
 
     #endregion
@@ -677,17 +674,16 @@ public class NUnitTestResultTest
     #region Tests for FailCount Property
 
     [Test]
-    public void TestFailCountPropertyReturnsFailCount([Values] bool hasResult)
+    public void TestFailCountPropertyReturnsFailCount()
     {
         const int count = 5;
-        int expected = hasResult ? count : 0;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.FailCount = count;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.FailCount = count;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.FailCount, Is.EqualTo(expected));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.FailCount, Is.EqualTo(count));
     }
 
     #endregion
@@ -695,17 +691,16 @@ public class NUnitTestResultTest
     #region Tests for WarningCount Property
 
     [Test]
-    public void TestWarningCountPropertyReturnsWarningCount([Values] bool hasResult)
+    public void TestWarningCountPropertyReturnsWarningCount()
     {
         const int count = 5;
-        int expected = hasResult ? count : 0;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.WarningCount = count;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.WarningCount = count;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.WarningCount, Is.EqualTo(expected));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.WarningCount, Is.EqualTo(count));
     }
 
     #endregion
@@ -713,17 +708,16 @@ public class NUnitTestResultTest
     #region Tests for PassCount Property
 
     [Test]
-    public void TestPassCountPropertyReturnsPassCount([Values] bool hasResult)
+    public void TestPassCountPropertyReturnsPassCount()
     {
         const int count = 5;
-        int expected = hasResult ? count : 0;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.PassCount = count;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.PassCount = count;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.PassCount, Is.EqualTo(expected));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.PassCount, Is.EqualTo(count));
     }
 
     #endregion
@@ -731,17 +725,16 @@ public class NUnitTestResultTest
     #region Tests for SkipCount Property
 
     [Test]
-    public void TestSkipCountPropertyReturnsSkipCount([Values] bool hasResult)
+    public void TestSkipCountPropertyReturnsSkipCount()
     {
         const int count = 5;
-        int expected = hasResult ? count : 0;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.SkipCount = count;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.SkipCount = count;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.SkipCount, Is.EqualTo(expected));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.SkipCount, Is.EqualTo(count));
     }
 
     #endregion
@@ -749,17 +742,16 @@ public class NUnitTestResultTest
     #region Tests for InconclusiveCount Property
 
     [Test]
-    public void TestInconclusiveCountPropertyReturnsInconclusiveCount([Values] bool hasResult)
+    public void TestInconclusiveCountPropertyReturnsInconclusiveCount()
     {
         const int count = 5;
-        int expected = hasResult ? count : 0;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.InconclusiveCount = count;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.InconclusiveCount = count;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Result.InconclusiveCount, Is.EqualTo(expected));
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.InconclusiveCount, Is.EqualTo(count));
     }
 
     #endregion
@@ -767,16 +759,16 @@ public class NUnitTestResultTest
     #region Tests for HasChildren Property
 
     [Test]
-    public void TestHasChildrenPropertyReturnsIfTestHasChildren([Values] bool hasResult, [Values] bool hasChildren)
+    public void TestHasChildrenPropertyReturnsIfTestHasChildren([Values] bool hasChildren, [Values] bool isNull)
     {
-        bool expected = hasResult && hasChildren;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.HasChildren = hasChildren;
-        ITestResult result = hasResult ? resultInstance : null;
+        IList<ITestResult> children = [new TestResultStub()];
+        IEnumerable<ITestResult> expected = hasChildren ? children : isNull ? null : Array.Empty<ITestResult>();
+        TestResultStub result = new TestResultStub();
+        result.Children = expected;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.HasChildren, Is.EqualTo(expected));
+        Assert.That(test.HasChildren, Is.EqualTo(hasChildren));
     }
 
     #endregion
@@ -784,17 +776,19 @@ public class NUnitTestResultTest
     #region Tests for Children Property
 
     [Test]
-    public void TestChildrenPropertyReturnsChildren([Values] bool hasResult, [Values] bool hasChildren)
+    public void TestChildrenPropertyReturnsChildren([Values] bool hasChildren, [Values] bool isNull)
     {
-        IEnumerable<ITestResult> children = new List<ITestResult>();
-        IEnumerable<ITestResult> expected = hasResult && hasChildren ? children : null;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.Children = expected;
-        ITestResult result = hasResult ? resultInstance : null;
+        ITestResult resultInstance = new TestResultStub();
+        IEnumerable<ITestResult> children = hasChildren ? [resultInstance] : isNull ? null : Array.Empty<ITestResult>();
+        TestResultStub result = new TestResultStub();
+        result.Children = children;
+
+        IEnumerable<INUnitTestResult> expected =
+            hasChildren ? [new NUnitTestResult(resultInstance)] : Array.Empty<INUnitTestResult>();
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        Assert.That(test.Children, Is.SameAs(expected));
+        Assert.That(test.Children, Is.EqualTo(expected));
     }
 
     #endregion
@@ -802,16 +796,16 @@ public class NUnitTestResultTest
     #region Tests for Test Property
 
     [Test]
-    public void TestTestPropertyReturnsTest([Values] bool hasResult, [Values] bool hasTest)
+    public void TestTestPropertyReturnsTest([Values] bool hasTest)
     {
         ITest testInstance = new TestSuite("suite-name");
-        ITest expected = hasResult && hasTest ? testInstance : null;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.Test = expected;
-        ITestResult result = hasResult ? resultInstance : null;
+        ITest expected = hasTest ? testInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.Test = expected;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.Test, Is.SameAs(expected));
     }
 
@@ -820,16 +814,16 @@ public class NUnitTestResultTest
     #region Tests for Output Property
 
     [Test]
-    public void TestOutputPropertyReturnsResultOutputMessages([Values] bool hasResult, [Values] bool hasOutput)
+    public void TestOutputPropertyReturnsResultOutputMessages([Values] bool hasOutput)
     {
         const string output = "This is a test message.";
-        string expected = hasResult && hasOutput ? output : string.Empty;
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.Output = hasOutput ? output : null;
-        ITestResult result = hasResult ? resultInstance : null;
+        string expected = hasOutput ? output : string.Empty;
+        TestResultStub result = new TestResultStub();
+        result.Output = expected;
 
         INUnitTestResult test = new NUnitTestResult(result);
 
+        Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.Output, Is.EqualTo(expected));
     }
 
@@ -838,24 +832,23 @@ public class NUnitTestResultTest
     #region Tests for AssertionResults Property
 
     [Test]
-    public void TestAssertionResultsPropertyReturnsTestAssertionResults([Values] bool hasResult,
-        [Values] bool hasAssertions)
+    public void TestAssertionResultsPropertyReturnsTestAssertionResults([Values] bool hasAssertions, [Values] bool isNull)
     {
         IList<AssertionResult> assertions = new List<AssertionResult>
             {new AssertionResult(AssertionStatus.Passed, "message", "trace")};
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.AssertionResults = hasAssertions ? assertions : null;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.AssertionResults = hasAssertions ? assertions : isNull ? null : Array.Empty<AssertionResult>();
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        if (hasResult && hasAssertions)
+        Assert.That(test.Result, Is.Not.Null);
+        if (hasAssertions)
         {
             Assert.That(test.Result.AssertionResults, Is.EqualTo(assertions));
         }
         else
         {
-            Assert.That(test.Result.AssertionResults, Is.Empty);
+            Assert.That(test.Result.AssertionResults, Is.Null.Or.Empty);
         }
     }
 
@@ -864,23 +857,22 @@ public class NUnitTestResultTest
     #region Tests for TestAttachments Property
 
     [Test]
-    public void TestTestAttachmentsPropertyReturnsTestAttachments([Values] bool hasResult,
-        [Values] bool hasAttachments)
+    public void TestTestAttachmentsPropertyReturnsTestAttachments([Values] bool hasAttachments, [Values] bool isNull)
     {
         IList<TestAttachment> attachments = new List<TestAttachment> {new TestAttachment("file.txt", "item")};
-        TestResultForTest resultInstance = new TestResultForTest();
-        resultInstance.TestAttachments = hasAttachments ? attachments : null;
-        ITestResult result = hasResult ? resultInstance : null;
+        TestResultStub result = new TestResultStub();
+        result.TestAttachments = hasAttachments ? attachments : isNull ? null : Array.Empty<TestAttachment>();
 
         INUnitTestResult test = new NUnitTestResult(result);
 
-        if (hasResult && hasAttachments)
+        Assert.That(test.Result, Is.Not.Null);
+        if (hasAttachments)
         {
             Assert.That(test.Result.TestAttachments, Is.EqualTo(attachments));
         }
         else
         {
-            Assert.That(test.Result.TestAttachments, Is.Empty);
+            Assert.That(test.Result.TestAttachments, Is.Null.Or.Empty);
         }
     }
 
@@ -889,23 +881,26 @@ public class NUnitTestResultTest
     #region Tests for Equals
 
     [Test]
-    public void TestEqualsWithSameResultReturnsTrue([Values] bool isNull)
+    public void TestEqualsWithSameResultReturnsTrue()
     {
-        TestResultForTest resultInstanceOne = new TestResultForTest();
-        ITestResult resultOne = isNull ? null : resultInstanceOne;
+        TestResultStub resultOne = new TestResultStub();
 
         INUnitTestResult testOne = new NUnitTestResult(resultOne);
+        INUnitTestResult testNull = new NUnitTestResult(null);
 
+        // ReSharper disable once SuspiciousTypeConversion.Global
         Assert.That(testOne.Equals(resultOne), Is.True);
         // ReSharper disable once EqualExpressionComparison
         Assert.That(testOne.Equals(testOne), Is.True);
+        // ReSharper disable once EqualExpressionComparison
+        Assert.That(testNull.Equals(testNull), Is.True);
     }
 
     [Test]
     public void TestEqualsWithNotSameResultReturnsFalse([Values] bool isNull)
     {
-        TestResultForTest resultInstanceOne = new TestResultForTest();
-        TestResultForTest resultInstanceTwo = new TestResultForTest();
+        TestResultStub resultInstanceOne = new TestResultStub();
+        TestResultStub resultInstanceTwo = new TestResultStub();
         resultInstanceTwo.Name = "result-name";
         ITestResult resultOne = isNull ? null : resultInstanceOne;
         ITestResult resultTwo = isNull ? resultInstanceTwo : null;
@@ -913,10 +908,31 @@ public class NUnitTestResultTest
 
         INUnitTestResult testOne = new NUnitTestResult(resultOne);
         INUnitTestResult testTwo = new NUnitTestResult(resultTwo);
+        INUnitTestResult testNull = new NUnitTestResult(null);
 
+        // ReSharper disable once SuspiciousTypeConversion.Global
         Assert.That(testOne.Equals(resultTwo), Is.False);
         Assert.That(testOne.Equals(testTwo), Is.False);
+        Assert.That(testOne.Equals(testNull), Is.False);
         Assert.That(testOne.Equals(resultWrong), Is.False);
+        Assert.That(testOne.Equals(null), Is.False);
+        Assert.That(testNull.Equals(null), Is.False);
+    }
+
+    #endregion
+
+    #region Tests for GetHashCode
+
+    [Test]
+    public void TestGetHashCode([Values] bool isNull)
+    {
+        TestResultStub resultInstanceOne = new TestResultStub();
+        int hashCode = isNull ? 0 : resultInstanceOne.GetHashCode();
+        ITestResult resultOne = isNull ? null : resultInstanceOne;
+
+        INUnitTestResult testOne = new NUnitTestResult(resultOne);
+
+        Assert.That(testOne.GetHashCode(), Is.EqualTo(hashCode));
     }
 
     #endregion

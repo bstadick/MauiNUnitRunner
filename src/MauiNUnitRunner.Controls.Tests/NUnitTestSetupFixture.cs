@@ -14,7 +14,11 @@ public class NUnitTestSetupFixture
     [OneTimeSetUp]
     public void RunBeforeAnyTests()
     {
+        // ReSharper disable once UseObjectOrCollectionInitializer
         Application.Current = new Application();
-        Application.Current.Resources = new TestControlResources();
+        Application.Current.Resources = new ResourceDictionary();
+        // Just create a new TestControlResources as it will add itself to the merged resource dictionary
+        // ReSharper disable once ObjectCreationAsStatement
+        new TestControlResources();
     }
 }

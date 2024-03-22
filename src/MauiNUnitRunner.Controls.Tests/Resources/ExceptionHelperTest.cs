@@ -78,6 +78,7 @@ public class ExceptionHelperTest
             actualValue = null;
         }
 
+        // ReSharper disable once MergeIntoPattern
         string expectedArg = arg != null && arg.Equals("parameter") ? " parameter" : arg;
         string expected = $"The given element type is not supported.{expectedArg}" +
                           (string.IsNullOrEmpty(paramName) ? string.Empty : $" (Parameter '{paramName}')") +

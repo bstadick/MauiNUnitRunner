@@ -154,4 +154,35 @@ public class NUnitTestResult : INUnitTestResult
         ) ?? new List<string>());
 
     #endregion
+
+    #region Overridden Methods
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj is ITestResult result) return Equals(result);
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((obj as NUnitTestResult)?.Result);
+    }
+
+    /// <summary>
+    ///     Compares the <see cref="NUnitTestResult" /> with the underlying <see cref="ITestResult"/>.
+    /// </summary>
+    /// <param name="other">The <see cref="ITestResult"/> to compare against.</param>
+    /// <returns>true if the instance is equivalent to the provided <see cref="ITestResult"/>, otherwise false.</returns>
+    protected bool Equals(ITestResult other)
+    {
+        if (other == null) return false;
+        return Equals(Result, other);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return Result?.GetHashCode() ?? 0;
+    }
+
+    #endregion
 }

@@ -19,7 +19,8 @@ public class NUnitTestArtifactTest
 
         NUnitTestArtifact artifact = new NUnitTestArtifact(test);
 
-        Assert.That(artifact.Test, Is.SameAs(test));
+        Assert.That(artifact.Test, Is.Not.Null);
+        Assert.That(artifact.Test.Test, Is.SameAs(test));
     }
 
     #endregion
@@ -33,7 +34,8 @@ public class NUnitTestArtifactTest
 
         NUnitTestArtifact artifact = new NUnitTestArtifact(test);
 
-        Assert.That(artifact.Test, Is.SameAs(test));
+        Assert.That(artifact.Test, Is.Not.Null);
+        Assert.That(artifact.Test.Test, Is.SameAs(test));
     }
 
     #endregion

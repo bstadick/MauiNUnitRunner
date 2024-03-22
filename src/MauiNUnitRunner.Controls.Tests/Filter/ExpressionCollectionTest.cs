@@ -303,7 +303,7 @@ public class ExpressionCollectionTest
 
         Assert.Throws(
             Is.TypeOf<ArgumentOutOfRangeException>().And.Message.EqualTo(
-                "Number was less than the array's lower bound in the first dimension. (Parameter 'destinationIndex')"),
+                $"destinationIndex ('-1') must be greater than or equal to '0'. (Parameter 'destinationIndex'){Environment.NewLine}Actual value was -1."),
             () => collection.CopyTo(array, -1));
     }
 

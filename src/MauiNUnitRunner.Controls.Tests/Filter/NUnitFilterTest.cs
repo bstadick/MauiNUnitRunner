@@ -4,6 +4,8 @@ using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using MauiNUnitRunner.Controls.Filter;
 
+// ReSharper disable UseObjectOrCollectionInitializer
+
 namespace MauiNUnitRunner.Controls.Tests.Filter;
 
 [TestFixture]
