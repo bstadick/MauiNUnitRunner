@@ -4,6 +4,9 @@ using System.ComponentModel;
 
 namespace MauiNUnitRunner.Controls.Views;
 
+/// <summary>
+///     Implements a page to show information about the MauiNUnitRunner project.
+/// </summary>
 [DesignTimeVisible(false)]
 public partial class AboutPage : ContentPage
 {

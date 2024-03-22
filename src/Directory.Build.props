@@ -1,7 +1,8 @@
-<Project>
+﻿<Project>
   <PropertyGroup>
     <!-- Global settings -->
     <NetFrameworkVersion>net8.0</NetFrameworkVersion>
+    <Configurations>Debug;Release;UnitTest</Configurations>
 
     <!-- Package Creation settings -->
     <Version>0.1.0</Version>
@@ -17,5 +18,9 @@
     <PackageTags>NUnit;MAUI;Unit Test Runner</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='UnitTest'">
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
 </Project>
