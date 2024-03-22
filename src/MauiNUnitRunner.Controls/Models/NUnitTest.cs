@@ -32,7 +32,8 @@ public class NUnitTest : INUnitTest
     public NUnitTest(ITest test, INUnitTestResult result = null)
     {
         Test = test;
-        IList<INUnitTest> children = test?.Tests.Select(childTest => (INUnitTest)(new NUnitTest(childTest))).ToList();
+        // ReSharper disable once ConstantConditionalAccessQualifier
+        IList<INUnitTest> children = test?.Tests?.Select(childTest => (INUnitTest)(new NUnitTest(childTest))).ToList();
         Children = children != null ? new ObservableCollection<INUnitTest>(children) : new ObservableCollection<INUnitTest>();
         Result = result;
     }
@@ -64,6 +65,7 @@ public class NUnitTest : INUnitTest
             v_Result = MatchChildResult(Id, value);
 
             // Recursively set results of children if both test and results have children
+            // ReSharper disable once MergeIntoPattern
             if (v_Result != null && v_Result.HasChildren && HasChildren)
             {
                 // Set result of each of the current test's children
@@ -156,7 +158,8 @@ public class NUnitTest : INUnitTest
         INUnitTest test = this;
 
         // Skip past tests that only have one child test as displaying them isn't very useful
-        while (test != null && test.HasChildren && test.Children.Count() == 1)
+        // ReSharper disable once MergeIntoPattern
+        while (test != null && test.HasChildren && test.Children.Count == 1)
         {
             test = test.Children.FirstOrDefault();
         }

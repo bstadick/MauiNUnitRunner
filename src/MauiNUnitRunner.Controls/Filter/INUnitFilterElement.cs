@@ -74,7 +74,7 @@ public interface INUnitFilterElement
     /// <exception cref="InvalidOperationException">
     ///     The <see cref="INUnitFilterBaseElement.ElementType" /> of the root element is not
     ///     <see cref="NUnitElementType.RootFilter" />
-    ///     or the <see cref="INUnitFilterBaseElement.Child" /> of an non-leaf element is <c>null</c>
+    ///     or the <see cref="INUnitFilterBaseElement.Child" /> of a non-leaf element is <c>null</c>
     ///     or the <see cref="INUnitFilterBaseElement.Child" /> and the corresponding
     ///     <see cref="INUnitFilterBaseElement.Parent" /> are not the same referenced object.
     /// </exception>

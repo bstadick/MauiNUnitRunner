@@ -8,6 +8,7 @@ namespace MauiNUnitRunner.Controls.Views;
 ///     Implements a page to show information about the MauiNUnitRunner project.
 /// </summary>
 [DesignTimeVisible(false)]
+// ReSharper disable once RedundantExtendsListEntry
 public partial class AboutPage : ContentPage
 {
     #region Private Members

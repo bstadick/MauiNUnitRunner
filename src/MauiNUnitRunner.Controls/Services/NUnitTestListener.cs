@@ -28,6 +28,7 @@ public class NUnitTestListener : ITestListener, IDisposable
     /// <summary>
     ///     The queue of log messages.
     /// </summary>
+    // ReSharper disable once ArrangeObjectCreationWhenTypeEvident
     private readonly ConcurrentQueue<string> v_LogQueue = new ConcurrentQueue<string>();
 
     #endregion
@@ -57,6 +58,7 @@ public class NUnitTestListener : ITestListener, IDisposable
     /// </summary>
     public NUnitTestListener()
     {
+        // ReSharper disable once UseObjectOrCollectionInitializer
         v_LoggingThread = new Thread(LogListener);
         v_LoggingThread.Name = "NUnitTestListenerLogListener";
         v_Listen = true;

@@ -14,6 +14,7 @@ namespace MauiNUnitRunner.Controls.Views;
 /// <summary>
 ///     Implements a basic test runner page to display a <see cref="TestDynamicView"/> that contains either a test suite in a <see cref="TestSummaryView"/> or a single test details in a <see cref="TestDetailView"/>.
 /// </summary>
+// ReSharper disable once RedundantExtendsListEntry
 public partial class TestDynamicPage : ContentPage
 {
     #region Private Members

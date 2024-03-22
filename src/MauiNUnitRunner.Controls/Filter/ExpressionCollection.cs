@@ -57,7 +57,7 @@ internal class ExpressionCollection<T> : INUnitFilterXmlSerializableElement, ICo
                 return v_Elements.First().ToXmlString(withXmlTag);
             default:
             {
-                // Join contained elements together and optionally group inside an Xml tag
+                // Join contained elements together and optionally group inside a Xml tag
                 string elements = string.Join(string.Empty, v_Elements.Select(x => x.ToXmlString()));
                 return withXmlTag ? $"<{XmlTag}>{elements}</{XmlTag}>" : elements;
             }

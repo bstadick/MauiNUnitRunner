@@ -5,6 +5,7 @@ namespace MauiNUnitRunner.Controls.Resources;
 /// <summary>
 ///     Defines the resources for use in Views and Code.
 /// </summary>
+// ReSharper disable once RedundantExtendsListEntry
 public partial class TestControlResources : ResourceDictionary
 {
     #region Constructors

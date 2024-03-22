@@ -7,6 +7,7 @@ namespace MauiNUnitRunner.Controls.Views;
 /// <summary>
 ///     Implements a <see cref="ContentView"/> that contains a suite of tests.
 /// </summary>
+// ReSharper disable once RedundantExtendsListEntry
 public partial class TestSuiteView : ContentView
 {
     #region Public Members

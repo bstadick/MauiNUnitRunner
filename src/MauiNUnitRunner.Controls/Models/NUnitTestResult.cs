@@ -20,7 +20,8 @@ public class NUnitTestResult : INUnitTestResult
     public NUnitTestResult(ITestResult result)
     {
         Result = result;
-        List<INUnitTestResult> children = Result?.Children.Select(x => (INUnitTestResult)(new NUnitTestResult(x))).ToList();
+        // ReSharper disable once ConstantConditionalAccessQualifier
+        List<INUnitTestResult> children = Result?.Children?.Select(x => (INUnitTestResult)(new NUnitTestResult(x))).ToList();
         Children = children != null ? new ObservableCollection<INUnitTestResult>(children) : new ObservableCollection<INUnitTestResult>();
     }
 
@@ -133,7 +134,8 @@ public class NUnitTestResult : INUnitTestResult
 
     /// <inheritdoc />
     // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-    public bool HasFailedAssertions => Result?.AssertionResults.Any(x => x != null && x.Status != AssertionStatus.Passed) ?? false;
+    // ReSharper disable once ConstantConditionalAccessQualifier
+    public bool HasFailedAssertions => Result?.AssertionResults?.Any(x => x != null && x.Status != AssertionStatus.Passed) ?? false;
 
     /// <inheritdoc />
     /// <remarks>
@@ -141,7 +143,8 @@ public class NUnitTestResult : INUnitTestResult
     /// </remarks>
     public string FailedAssertionsString => string.Join(Environment.NewLine,
         // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-        Result?.AssertionResults.Where(x => x != null && x.Status != AssertionStatus.Passed).Select(x =>
+        // ReSharper disable once ConstantConditionalAccessQualifier
+        Result?.AssertionResults?.Where(x => x != null && x.Status != AssertionStatus.Passed).Select(x =>
             $"{ResourceHelper.GetResourceString("TestsPageAssertionStatus") ?? string.Empty}{x.Status}" + (string.IsNullOrEmpty(x.Message)
                 ? string.Empty
                 : $"{Environment.NewLine}{x.Message}") +

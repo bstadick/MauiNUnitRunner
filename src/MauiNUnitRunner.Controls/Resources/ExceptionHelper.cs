@@ -118,6 +118,7 @@ internal static class ExceptionHelper
     /// </returns>
     private static string Format(string format, params object[] args)
     {
+        // ReSharper disable once ConvertToNullCoalescingCompoundAssignment
         format = format ?? string.Empty;
         return string.Format(CultureInfo.InvariantCulture, format, args);
     }
