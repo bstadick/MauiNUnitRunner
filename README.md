@@ -9,7 +9,8 @@ Features include:
 - Exploring loaded tests by namespace, class, and method.
 - Running tests and test cases individually or by namespace, class, or method.
 - Viewing overall results and individual results with details.
-- Writes output of test results to the console as tests are ran.
+- Saving test results to a file.
+- Ability to write the output of test results to the console as tests are ran.
 - Running tests on a background thread, leaving the UI thread available to perform other work.
   - This can also help avoid deadlock situations when a test requires the UI thread.
 - Supports all major platforms supported by .NET MAUI.
@@ -69,7 +70,7 @@ public partial class App : Application
 }
 ```
 
-6. Build the .NET MAUI app project in **Debug**. NUnit will not be able to work correctly in **Release** builds.
+6. Build the .NET MAUI app project in **Debug**. NUnit will not be able to work correctly on some platforms in **Release** builds.
 7. To add more or change tests that are loaded or change test settings, create and set a new `TestDynamicPage` as the `App.MainPage` or directly access the underlying `NUnit.Framework.Api.NUnitTestAssemblyRunner` from the `TestDynamicPage.TestRunner` property.
 
 ### Test Listener
@@ -85,21 +86,25 @@ page.TestListener = listener;
 
 ### Extensibility
 
-The `MauiNUnitRunner.Controls` namespace exposes the individual **ContentViews** used to populate the `TestDynamicPage` as well as marking a number of key methods virtual. This allows for the construction of custom view and pages or modification of existing page's behavior.
+The `MauiNUnitRunner.Controls` namespace exposes the individual **ContentViews** used to populate the `TestDynamicPage` as well as marking a number of key methods virtual. This allows for the construction of custom views and pages or modification of the existing page's behavior.
 
 ## Build
 
-Use the provided `./src/MauiNUnitRunner.sln` solution and Visual Studio 2022 with .NET 8 to build the project.
+Use the provided `./src/MauiNUnitRunner.sln` solution and Visual Studio 2022 with .NET 8 and the .NET MAUI workloads to build the project.
 
 The MauiNUnitRunner project can be built and referenced using the pre-built Nuget package.
 
 ## Examples
 
-Example test runner projects can be found in the `./src/MauiNUnitRunner.Examples` project folders. The examples consist of an example test runner app and an separate test sub-assembly to include in the test runner app. The examples can be built from the project's solution using the **Example** configuration.
+Example test runner projects can be found in the `./src/MauiNUnitRunner.Examples` project folders. The examples consist of an example test runner app and a separate test sub-assembly to include in the test runner app. The examples can be built from the project's solution using the **Example** configuration.
+
+## Unit Tests
+
+The project includes near complete code coverage of the `MauiNUnitRunner.Controls` namespace. Build and run the unit tests using the **UnitTest** configuration.
 
 ## Future Enhancements
 
-- User interface beatification
+- User interface beautification
 - Performance improvements
 - Running tests by category
 - Searching and filtering tests
@@ -109,7 +114,9 @@ Example test runner projects can be found in the `./src/MauiNUnitRunner.Examples
 
 ## Contributing
 
-Pull requests for new features or fixes and reporting issues are welcome. When developing, follow patterns in existing code when grouping code elements within classes. Additional resources should be included as MAUI Resources and strings included in a resx file where applicable. Consider testability and use TDD to develop new code and make changes. Unit tests should maintain at least 95% code coverage.
+Pull requests for new features or fixes and reporting issues are welcome. Before submitting a new issue or request, search the existing issues and requests to see if it has already been reported. Provide as much detail as possible when reporting a new issue or request.
+
+When developing code, follow the patterns and conventions in the existing code, such as naming, indentation, casing, and grouping code elements within classes. Standard code formatting and cleanup is defined in the included .editorconfig file as well as with the ReSharper DotSettings file, when ReSharper is available. When including additional resources they should be added as MAUI Resources and strings included in a xaml dictionary file. Consider testability and use TDD to develop new code and make changes. Unit tests should always all pass and maintain at least 95% code coverage.
 
 ## License
 
