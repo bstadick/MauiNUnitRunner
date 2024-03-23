@@ -11,7 +11,51 @@ namespace MauiNUnitRunner.Controls.Tests.Filter;
 [TestFixture]
 public class NUnitFilterTest
 {
-    // Tests for FilterXmlString and Filter Properties are covered by Build method tests.
+    #region Tests for Constructors
+
+    [Test]
+    [TestCase("<filter />")]
+    [TestCase(null)]
+    [TestCase("")]
+    public void TestConstructorSetsFilterXmlString(string xmlString)
+    {
+        NUnitFilter filter = new NUnitFilterForTest(xmlString);
+
+        Assert.That(filter.FilterXmlString, Is.EqualTo(xmlString));
+    }
+
+    #endregion
+
+    #region Tests for FilterXmlString Property
+
+    [Test]
+    [TestCase("<filter />")]
+    [TestCase(null)]
+    [TestCase("")]
+    public void TestFilterXmlStringPropertyReturnsFilterXmlString(string xmlString)
+    {
+        NUnitFilter filter = new NUnitFilterForTest(xmlString);
+
+        Assert.That(filter.FilterXmlString, Is.EqualTo(xmlString));
+    }
+
+    #endregion
+
+    #region Tests for Filter Property
+
+    [Test]
+    [TestCase("<filter></filter>", "<filter />", false)]
+    [TestCase("<filter><name>Value_1</name></filter>", "<filter><name>Value_1</name></filter>", true)]
+    [TestCase(null, "<filter />", false)]
+    [TestCase("", "<filter />", false)]
+    public void TestFilterPropertyReturnsBuiltFilter(string xmlString, string expected, bool withOuterTags)
+    {
+        NUnitFilter filter = new NUnitFilterForTest(xmlString);
+
+        Assert.That(GetXmlString(filter.Filter, withOuterTags), Is.EqualTo(expected));
+    }
+
+    #endregion
 
     #region Tests for Empty Property
 
@@ -442,6 +486,21 @@ public class NUnitFilterTest
     {
         string outerXml = filter.ToXml(true).OuterXml;
         return withOuterTags ? $"<filter>{outerXml}</filter>" : outerXml;
+    }
+
+    #endregion
+
+    #region Nested Class: NUnitFilterForTest
+
+    /// <summary>
+    ///     Extends NUnitFilter for use with tests.
+    /// </summary>
+    private class NUnitFilterForTest : NUnitFilter
+    {
+        /// <inheritdoc />
+        public NUnitFilterForTest(string filterXmlString) : base(filterXmlString)
+        {
+        }
     }
 
     #endregion

@@ -28,16 +28,89 @@ public class NUnitTestResultTest
 
     #endregion
 
+    #region Tests for Id Property
+
+    [Test]
+    public void TestIdProperty([Values] bool isResultNull, [Values] bool isTestNull, [Values] bool isIdNull)
+    {
+        string expected = isResultNull || isTestNull || isIdNull ? string.Empty : "test-123";
+        TestResultStub result = isResultNull ? null : new TestResultStub();
+        if (result != null)
+        {
+            result.Test = isTestNull ? null : new TestStub { Id = isIdNull ? null : "test-123" };
+        }
+
+        INUnitTestResult test = new NUnitTestResult(result);
+
+        Assert.That(test.Id, Is.EqualTo(expected));
+    }
+
+    #endregion
+
     #region Tests for Result Property
 
     [Test]
     public void TestResultProperty([Values] bool isNull)
     {
-        ITestResult result = !isNull ? null : new TestResultStub();
+        ITestResult result = isNull ? null : new TestResultStub();
 
         INUnitTestResult test = new NUnitTestResult(result);
 
         Assert.That(test.Result, Is.SameAs(result));
+    }
+
+    #endregion
+
+    #region Tests for Children Property
+
+    [Test]
+    public void TestChildrenPropertyReturnsChildren([Values] bool hasChildren, [Values] bool isNull)
+    {
+        ITestResult resultInstance = new TestResultStub();
+        IEnumerable<ITestResult> children = hasChildren ? [resultInstance] : isNull ? null : Array.Empty<ITestResult>();
+        TestResultStub result = new TestResultStub();
+        result.Children = children;
+
+        IEnumerable<INUnitTestResult> expected =
+            hasChildren ? [new NUnitTestResult(resultInstance)] : Array.Empty<INUnitTestResult>();
+
+        INUnitTestResult test = new NUnitTestResult(result);
+
+        Assert.That(test.Children, Is.EqualTo(expected));
+    }
+
+    #endregion
+
+    #region Tests for HasChildren Property
+
+    [Test]
+    public void TestHasChildrenPropertyReturnsIfTestHasChildren([Values] bool hasChildren, [Values] bool isNull)
+    {
+        IList<ITestResult> children = [new TestResultStub()];
+        IEnumerable<ITestResult> expected = hasChildren ? children : isNull ? null : Array.Empty<ITestResult>();
+        TestResultStub result = new TestResultStub();
+        result.Children = expected;
+
+        INUnitTestResult test = new NUnitTestResult(result);
+
+        Assert.That(test.HasChildren, Is.EqualTo(hasChildren));
+    }
+
+    #endregion
+
+    #region Tests for HasNoChildren Property
+
+    [Test]
+    public void TestHasNoChildrenPropertyReturnsIfTestHasNoChildren([Values] bool hasChildren, [Values] bool isNull)
+    {
+        IList<ITestResult> children = [new TestResultStub()];
+        IEnumerable<ITestResult> expected = hasChildren ? children : isNull ? null : Array.Empty<ITestResult>();
+        TestResultStub result = new TestResultStub();
+        result.Children = expected;
+
+        INUnitTestResult test = new NUnitTestResult(result);
+
+        Assert.That(test.HasNoChildren, Is.Not.EqualTo(hasChildren));
     }
 
     #endregion
@@ -157,6 +230,61 @@ public class NUnitTestResultTest
         INUnitTestResult test = new NUnitTestResult(result);
 
         Assert.That(test.DurationString, Is.EqualTo(expected));
+    }
+
+    #endregion
+
+    #region Tests for HasTestResult Property
+
+    [Test]
+    public void TestHasTestResultPropertyWithNoResultReturnsFalse()
+    {
+        INUnitTestResult test = new NUnitTestResult(null);
+
+        Assert.That(test.Result, Is.Null);
+        Assert.That(test.HasTestResult, Is.False);
+    }
+
+    [Test]
+    public void TestHasTestResultPropertyWithResultReturnsTrue()
+    {
+        TestResultStub result = new TestResultStub();
+
+        INUnitTestResult test = new NUnitTestResult(result);
+
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.HasTestResult, Is.True);
+    }
+
+    #endregion
+
+    #region Tests for HasFailed Property
+
+    [Test]
+    public void TestHasFailedPropertyWithNoFailedReturnsFalse()
+    {
+        TestResultStub result = new TestResultStub();
+        result.FailCount = 0;
+
+        INUnitTestResult test = new NUnitTestResult(result);
+
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.FailCount, Is.EqualTo(0));
+        Assert.That(test.HasFailed, Is.False);
+    }
+
+    [Test]
+    public void TestHasFailedPropertyWithFailedReturnsTrue()
+    {
+        const int count = 5;
+        TestResultStub result = new TestResultStub();
+        result.FailCount = count;
+
+        INUnitTestResult test = new NUnitTestResult(result);
+
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.FailCount, Is.EqualTo(count));
+        Assert.That(test.HasFailed, Is.True);
     }
 
     #endregion
@@ -752,43 +880,6 @@ public class NUnitTestResultTest
 
         Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.InconclusiveCount, Is.EqualTo(count));
-    }
-
-    #endregion
-
-    #region Tests for HasChildren Property
-
-    [Test]
-    public void TestHasChildrenPropertyReturnsIfTestHasChildren([Values] bool hasChildren, [Values] bool isNull)
-    {
-        IList<ITestResult> children = [new TestResultStub()];
-        IEnumerable<ITestResult> expected = hasChildren ? children : isNull ? null : Array.Empty<ITestResult>();
-        TestResultStub result = new TestResultStub();
-        result.Children = expected;
-
-        INUnitTestResult test = new NUnitTestResult(result);
-
-        Assert.That(test.HasChildren, Is.EqualTo(hasChildren));
-    }
-
-    #endregion
-
-    #region Tests for Children Property
-
-    [Test]
-    public void TestChildrenPropertyReturnsChildren([Values] bool hasChildren, [Values] bool isNull)
-    {
-        ITestResult resultInstance = new TestResultStub();
-        IEnumerable<ITestResult> children = hasChildren ? [resultInstance] : isNull ? null : Array.Empty<ITestResult>();
-        TestResultStub result = new TestResultStub();
-        result.Children = children;
-
-        IEnumerable<INUnitTestResult> expected =
-            hasChildren ? [new NUnitTestResult(resultInstance)] : Array.Empty<INUnitTestResult>();
-
-        INUnitTestResult test = new NUnitTestResult(result);
-
-        Assert.That(test.Children, Is.EqualTo(expected));
     }
 
     #endregion

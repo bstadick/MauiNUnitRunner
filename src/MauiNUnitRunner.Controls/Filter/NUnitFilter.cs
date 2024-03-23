@@ -65,7 +65,7 @@ public class NUnitFilter
     ///     Constructs an NUnit filter with the given NUnit filter Xml string.
     /// </summary>
     /// <param name="filterXmlString">The NUnit filter Xml string.</param>
-    private NUnitFilter(string filterXmlString)
+    protected NUnitFilter(string filterXmlString)
     {
         FilterXmlString = filterXmlString;
     }

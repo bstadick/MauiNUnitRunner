@@ -23,6 +23,7 @@ public class NUnitTestEventArgsTest
     #endregion
 
     #region Tests for Test Property
+
     [Test]
     public void TestGetTestProperty([Values] bool isNull)
     {
@@ -54,6 +55,7 @@ public class NUnitTestResultEventArgsTest
     #endregion
 
     #region Tests for Result Property
+
     [Test]
     public void TestGetResultProperty([Values] bool isNull)
     {

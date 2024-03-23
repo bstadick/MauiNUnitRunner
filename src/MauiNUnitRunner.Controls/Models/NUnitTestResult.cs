@@ -30,7 +30,8 @@ public class NUnitTestResult : INUnitTestResult
     #region Implementation of INUnitTestResult
 
     /// <inheritdoc />
-    public string Id => Result?.Test.Id ?? string.Empty;
+    // ReSharper disable once ConstantConditionalAccessQualifier
+    public string Id => Result?.Test?.Id ?? string.Empty;
 
     /// <inheritdoc />
     public ITestResult Result { get; }

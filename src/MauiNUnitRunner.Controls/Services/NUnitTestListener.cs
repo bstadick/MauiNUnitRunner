@@ -53,6 +53,8 @@ public class NUnitTestListener : ITestListener, IDisposable
 
     #endregion
 
+    #region Constructors
+
     /// <summary>
     ///     Instantiates a new <see cref="NUnitTestListener"/>.
     /// </summary>
@@ -65,6 +67,10 @@ public class NUnitTestListener : ITestListener, IDisposable
         v_LoggingThread.Start();
     }
 
+    #endregion
+
+    #region Public Methods
+
     /// <summary>
     ///     Disposes of the <see cref="NUnitTestListener"/>.
     /// </summary>
@@ -73,6 +79,8 @@ public class NUnitTestListener : ITestListener, IDisposable
         Dispose(true);
         GC.SuppressFinalize(this);
     }
+
+    #endregion
 
     #region Protected Methods
 
@@ -134,6 +142,15 @@ public class NUnitTestListener : ITestListener, IDisposable
         }
     }
 
+    /// <summary>
+    ///     Gets the underlying logging thread.
+    /// </summary>
+    /// <returns>The underlying logging thread.</returns>
+    protected Thread GetLoggingThread()
+    {
+        return v_LoggingThread;
+    }
+
     #endregion
 
     #region Implementation of ITestListener
@@ -179,9 +196,30 @@ public class NUnitTestListener : ITestListener, IDisposable
         // ReSharper enable HeuristicUnreachableCode
 
 
-        if (!string.IsNullOrEmpty(test.Id) && Tests.TryGetValue(test.Id, out NUnitTestArtifact testArtifact) && testArtifact != null)
+        if (!string.IsNullOrEmpty(test.Id))
         {
-            testArtifact.Test.Result = new NUnitTestResult(result);
+            if (Tests.TryGetValue(test.Id, out NUnitTestArtifact testArtifact))
+            {
+                if (testArtifact != null)
+                {
+                    // Update existing test
+                    testArtifact.Test.Result = new NUnitTestResult(result);
+                }
+                else
+                {
+                    // Replace null test
+                    testArtifact = new NUnitTestArtifact(test);
+                    testArtifact.Test.Result = new NUnitTestResult(result);
+                    Tests[test.Id] = testArtifact;
+                }
+            }
+            else
+            {
+                // Add new test entry, meaning test didn't go through TestStarted method
+                testArtifact = new NUnitTestArtifact(test);
+                testArtifact.Test.Result = new NUnitTestResult(result);
+                Tests.Add(test.Id, testArtifact);
+            }
         }
 
         WriteMessage("{0} {1}: {2}", ResourceHelper.GetResourceString("TestListenerFinished"), test.FullName,
@@ -197,14 +235,13 @@ public class NUnitTestListener : ITestListener, IDisposable
             return;
         }
 
-        string fullName = string.Empty;
+        string fullName = string.IsNullOrEmpty(output.TestName) ? output.TestId : output.TestName;
         if (!string.IsNullOrEmpty(output.TestId) && Tests.TryGetValue(output.TestId, out NUnitTestArtifact test) && test != null)
         {
             test.Outputs.Add(output);
-            fullName = test.Test.Test.FullName;
         }
 
-        WriteMessage("{0} {1}:{2}", ResourceHelper.GetResourceString("TestListenerOutput"), fullName, output.Text);
+        WriteMessage("{0} {1}: {2}", ResourceHelper.GetResourceString("TestListenerOutput"), fullName, output.Text);
     }
 
     /// <inheritdoc />
@@ -221,8 +258,10 @@ public class NUnitTestListener : ITestListener, IDisposable
             testArtifact != null)
         {
             testArtifact.Messages.Add(message);
-            fullName = testArtifact.Test.Test.FullName;
+            fullName = testArtifact.Test.Test?.FullName;
         }
+
+        fullName = string.IsNullOrEmpty(fullName) ? message.TestId : fullName;
 
         WriteMessage("{0} {1}[{2}]: {3}", ResourceHelper.GetResourceString("TestListenerMessage"), fullName,
             message.Destination, message.Message);

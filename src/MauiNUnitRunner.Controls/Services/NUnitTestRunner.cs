@@ -28,7 +28,7 @@ public class NUnitTestRunner : INUnitTestRunner
 
     #endregion
 
-    #region Implementation of ITestListener
+    #region Implementation of INUnitTestRunner
 
     /// <inheritdoc />
     public NUnitTestAssemblyRunner TestRunner { get; }
