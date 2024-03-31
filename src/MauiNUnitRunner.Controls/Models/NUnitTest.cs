@@ -143,7 +143,7 @@ public class NUnitTest : INUnitTest
     {
         get
         {
-            if (Test?.Name == null)
+            if (Test == null)
             {
                 return string.Empty;
             }
@@ -158,10 +158,15 @@ public class NUnitTest : INUnitTest
         INUnitTest test = this;
 
         // Skip past tests that only have one child test as displaying them isn't very useful
-        // ReSharper disable once MergeIntoPattern
-        while (test != null && test.HasChildren && test.Children.Count == 1)
+        while (test.HasChildren && test.Children.Count == 1)
         {
-            test = test.Children.FirstOrDefault();
+            INUnitTest nextTest = test.Children.FirstOrDefault();
+            if (nextTest?.Test == null)
+            {
+                break;
+            }
+
+            test = nextTest;
         }
 
         return test;
@@ -181,6 +186,37 @@ public class NUnitTest : INUnitTest
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    #endregion
+
+    #region Overridden Methods
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj is ITest result) return Equals(result);
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((obj as NUnitTest)?.Test);
+    }
+
+    /// <summary>
+    ///     Compares the <see cref="NUnitTest" /> with the underlying <see cref="ITest"/>.
+    /// </summary>
+    /// <param name="other">The <see cref="ITest"/> to compare against.</param>
+    /// <returns>true if the instance is equivalent to the provided <see cref="ITest"/>, otherwise false.</returns>
+    protected bool Equals(ITest other)
+    {
+        if (other == null) return false;
+        return Equals(Test, other);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return Test?.GetHashCode() ?? 0;
     }
 
     #endregion

@@ -1,8 +1,15 @@
 // Copyright (c) bstadick and contributors. MIT License - see LICENSE file
 
+using System.Reflection;
+using MauiNUnitRunner.Controls.Services;
+using NUnit.Framework;
+using NUnit.Framework.Api;
 using NUnit.Framework.Interfaces;
 
 // ReSharper disable NotNullOrRequiredMemberIsNotInitialized
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 
 namespace MauiNUnitRunner.Controls.Tests;
 
@@ -11,12 +18,21 @@ namespace MauiNUnitRunner.Controls.Tests;
 /// </summary>
 public class TestResultStub : ITestResult
 {
+    #region Members for Test
+
+    /// <summary>
+    ///     Gets or sets the test result xml value.
+    /// </summary>
+    public TNode TestResultXml { get; set; }
+
+    #endregion
+
     #region Implementation of ITestResult
 
     /// <inheritdoc />
     public virtual TNode ToXml(bool recursive)
     {
-        throw new NotImplementedException();
+        return TestResultXml;
     }
 
     /// <inheritdoc />
@@ -115,12 +131,21 @@ public class TestResultStub : ITestResult
 /// </summary>
 public class TestStub : ITest
 {
+    #region Members for Test
+
+    /// <summary>
+    ///     Gets or sets the test xml value.
+    /// </summary>
+    public TNode TestXml { get; set; }
+
+    #endregion
+
     #region Implementation of ITest
 
     /// <inheritdoc />
     public virtual TNode ToXml(bool recursive)
     {
-        throw new NotImplementedException();
+        return TestXml;
     }
 
     /// <inheritdoc />
@@ -182,6 +207,116 @@ public class TestStub : ITest
 
     /// <inheritdoc />
     public object[] Arguments { get; set; }
+
+    #endregion
+}
+
+/// <summary>
+///     Stub that implements a <see cref="INUnitTestAssemblyRunner"/>.
+/// </summary>
+public class NUnitTestAssemblyRunnerStub : INUnitTestAssemblyRunner
+{
+    #region Members for Test
+
+    /// <summary>
+    ///     Gets or sets the <see cref="Load"/> action for test.
+    /// </summary>
+    public Action<Assembly, IDictionary<string, object>> OnLoad { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the <see cref="ExploreTests"/> function for test.
+    /// </summary>
+    public Func<ITestFilter, ITest> OnExploreTests { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the <see cref="Run"/> function for test.
+    /// </summary>
+    public Func<ITestListener, ITestFilter, ITestResult> OnRun { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the <see cref="StopRun"/> action for test.
+    /// </summary>
+    public Action<bool> OnStopRun { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the <see cref="WaitForCompletion"/> function for test.
+    /// </summary>
+    public Func<int, bool> OnWaitForCompletion { get; set; }
+
+    #endregion
+
+    #region Implementation of INUnitTestAssemblyRunner
+
+    /// <inheritdoc />
+    public NUnitTestAssemblyRunner TestRunner { get; set; }
+
+    /// <inheritdoc />
+    public bool IsTestRunning { get; set; }
+
+    /// <inheritdoc />
+    public void Load(Assembly assembly, IDictionary<string, object> settings)
+    {
+        OnLoad?.Invoke(assembly, settings);
+    }
+
+    /// <inheritdoc />
+    public ITest ExploreTests(ITestFilter filter)
+    {
+        return OnExploreTests?.Invoke(filter);
+    }
+
+    /// <inheritdoc />
+    public ITestResult Run(ITestListener listener, ITestFilter filter)
+    {
+        IsTestRunning = true;
+        ITestResult result = OnRun?.Invoke(listener, filter);
+        IsTestRunning = false;
+        return result;
+    }
+
+    /// <inheritdoc />
+    public void StopRun(bool force)
+    {
+        OnStopRun?.Invoke(force);
+        IsTestRunning = false;
+    }
+
+    /// <inheritdoc />
+    public bool WaitForCompletion(int timeout)
+    {
+        return OnWaitForCompletion?.Invoke(timeout) ?? false;
+    }
+
+    #endregion
+}
+
+/// <summary>
+///     A Test fixture class to run as part of test runner tests. Not meant to be run as part of the project's unit tests.
+/// </summary>
+[TestFixture, Explicit]
+public class TestFixtureForNUnitRunnerTest
+{
+    #region Members for Test
+
+    /// <summary>
+    ///     Gets or sets the delay in the running test.
+    /// </summary>
+    public static int TestDelay { get; set; }
+
+    #endregion
+
+    #region Tests
+
+    [Test]
+    public void Test()
+    {
+        if (TestDelay > 0)
+        {
+            Thread.Sleep(TestDelay);
+        }
+
+        Assert.That(true, Is.True);
+    }
 
     #endregion
 }

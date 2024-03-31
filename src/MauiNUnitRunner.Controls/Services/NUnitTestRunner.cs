@@ -6,6 +6,7 @@ using System.Xml;
 using System.Xml.Linq;
 using MauiNUnitRunner.Controls.Filter;
 using MauiNUnitRunner.Controls.Models;
+using MauiNUnitRunner.Controls.Resources;
 using NUnit.Framework.Api;
 using NUnit.Framework.Interfaces;
 
@@ -16,14 +17,33 @@ namespace MauiNUnitRunner.Controls.Services;
 /// </summary>
 public class NUnitTestRunner : INUnitTestRunner
 {
+    #region Private Members
+
+    /// <summary>
+    ///     Holds the underlying unit test assembly runner.
+    /// </summary>
+    // ReSharper disable once InconsistentNaming
+    protected readonly INUnitTestAssemblyRunner v_TestRunner;
+
+    #endregion
+
     #region Constructors
 
     /// <summary>
     ///     Initializes a new <see cref="NUnitTestRunner"/> instance.
     /// </summary>
-    public NUnitTestRunner()
+    public NUnitTestRunner() : this(
+        new NUnitTestAssemblyRunnerWrapper(new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder())))
     {
-        TestRunner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
+    }
+
+    /// <summary>
+    ///     Initializes a new <see cref="NUnitTestRunner"/> instance with the given <see cref="INUnitTestAssemblyRunner"/>.
+    /// </summary>
+    /// <param name="runner">The underlying <see cref="INUnitTestAssemblyRunner"/>.</param>
+    protected NUnitTestRunner(INUnitTestAssemblyRunner runner)
+    {
+        v_TestRunner = runner ?? throw ExceptionHelper.ThrowArgumentNullException(nameof(runner));
     }
 
     #endregion
@@ -31,10 +51,10 @@ public class NUnitTestRunner : INUnitTestRunner
     #region Implementation of INUnitTestRunner
 
     /// <inheritdoc />
-    public NUnitTestAssemblyRunner TestRunner { get; }
+    public NUnitTestAssemblyRunner TestRunner => v_TestRunner.TestRunner;
 
     /// <inheritdoc />
-    public bool IsTestRunning => TestRunner.IsTestRunning;
+    public bool IsTestRunning => v_TestRunner.IsTestRunning;
 
     /// <inheritdoc />
     public ITestListener TestListener { get; set; }
@@ -48,14 +68,14 @@ public class NUnitTestRunner : INUnitTestRunner
         }
 
         settings ??= new Dictionary<string, object>();
-        TestRunner.Load(assembly, settings);
+        v_TestRunner.Load(assembly, settings);
     }
 
     /// <inheritdoc />
     public INUnitTest ExploreTests(ITestFilter filter = null)
     {
         filter ??= NUnitFilter.Empty;
-        ITest tests = TestRunner.ExploreTests(filter);
+        ITest tests = v_TestRunner.ExploreTests(filter);
         return new NUnitTest(tests);
     }
 
@@ -63,7 +83,7 @@ public class NUnitTestRunner : INUnitTestRunner
     public async Task<INUnitTestResult> Run(ITestFilter filter = null)
     {
         // Only allow one test run to run at a time
-        if (TestRunner.IsTestRunning)
+        if (v_TestRunner.IsTestRunning)
         {
             return await Task.FromResult((INUnitTestResult)null);
         }
@@ -72,7 +92,7 @@ public class NUnitTestRunner : INUnitTestRunner
         filter ??= NUnitFilter.Empty;
         Task<INUnitTestResult> runTask = Task.Run(() =>
         {
-            ITestResult result = TestRunner.Run(TestListener, filter);
+            ITestResult result = v_TestRunner.Run(TestListener, filter);
             return (INUnitTestResult)(new NUnitTestResult(result));
         });
 
@@ -83,13 +103,13 @@ public class NUnitTestRunner : INUnitTestRunner
     /// <inheritdoc />
     public void StopRun(bool force)
     {
-        TestRunner.StopRun(force);
+        v_TestRunner.StopRun(force);
     }
 
     /// <inheritdoc />
     public bool WaitForCompletion(int timeout)
     {
-        return TestRunner.WaitForCompletion(timeout);
+        return v_TestRunner.WaitForCompletion(timeout);
     }
 
     /// <inheritdoc />
@@ -101,21 +121,27 @@ public class NUnitTestRunner : INUnitTestRunner
             return null;
         }
 
-        // Get result as xml
-        TNode resultXml = result.Result.ToXml(true);
-
         // Convert result string to stream, use an XmlTextWrite and XDocument to apply xml formatting
         MemoryStream resultStream = new MemoryStream();
         try
         {
-            using (XmlTextWriter writer = new XmlTextWriter(resultStream, Encoding.UTF8))
+            // Get result as xml
+            TNode resultXml = result.Result.ToXml(true);
+
+            // Write xml to stream with formatting
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.CloseOutput = false;
+            settings.OmitXmlDeclaration = false;
+            settings.Indent = true;
+            settings.Encoding = Encoding.UTF8;
+            using (XmlWriter writer = XmlWriter.Create(resultStream, settings))
             {
-                writer.Formatting = Formatting.Indented;
                 XDocument doc = XDocument.Parse(resultXml.OuterXml);
                 doc.WriteTo(writer);
                 writer.Flush();
             }
 
+            // Set stream back to beginning
             resultStream.Seek(0, SeekOrigin.Begin);
 
             // Format full test name for initial file, remove any part of a test case string after a '(' and replacing spaces with '-'
@@ -127,7 +153,8 @@ public class NUnitTestRunner : INUnitTestRunner
                 testName = testName.Substring(0, ind);
             }
 
-            testName = testName.Replace(" ", "-");
+            testName = testName.Trim().Replace(" ", "-");
+            testName = string.IsNullOrEmpty(testName) ? "test" : testName;
             fileName = $"{testName}-{test.Id}.xml";
         }
         catch

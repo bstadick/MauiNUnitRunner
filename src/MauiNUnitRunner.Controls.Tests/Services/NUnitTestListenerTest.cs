@@ -812,6 +812,8 @@ public class NUnitTestListenerTest
     /// </summary>
     private class NUnitTestListenerForTest : NUnitTestListener
     {
+        #region Methods for Test
+
         /// <summary>
         ///     Write message to <see cref="NUnitTestListener.WriteOutput" /> event handler.
         /// </summary>
@@ -830,6 +832,8 @@ public class NUnitTestListenerTest
         {
             return GetLoggingThread();
         }
+
+        #endregion
     }
 
     #endregion
