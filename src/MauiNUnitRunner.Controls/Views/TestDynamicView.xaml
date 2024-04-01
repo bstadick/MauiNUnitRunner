@@ -14,7 +14,7 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <Grid BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicView}}}">
+    <Grid BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicView}}}" x:DataType="views:TestDynamicView">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>

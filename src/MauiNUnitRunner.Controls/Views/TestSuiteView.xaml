@@ -15,7 +15,7 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <Grid BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestSuiteView}}}">
+    <Grid BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestSuiteView}}}" x:DataType="views:TestSuiteView">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
