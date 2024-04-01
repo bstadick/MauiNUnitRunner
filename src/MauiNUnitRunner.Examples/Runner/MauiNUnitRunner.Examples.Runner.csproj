@@ -19,6 +19,7 @@
     <SingleProject>true</SingleProject>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <NoWarn>$(NoWarn);MCT001</NoWarn>
 
     <!-- Display name -->
     <ApplicationTitle>MauiNUnitRunner.Example</ApplicationTitle>

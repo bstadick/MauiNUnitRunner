@@ -6,6 +6,8 @@
     <TargetFrameworks Condition="'$(Configuration)' == 'UnitTest'">$(TargetFrameworks);$(NetFrameworkVersion)</TargetFrameworks>
     <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
     <!-- <TargetFrameworks>$(TargetFrameworks);$(NetFrameworkVersion)-tizen</TargetFrameworks> -->
+
+    <OutputType>Library</OutputType>
     <RootNamespace>MauiNUnitRunner.Controls</RootNamespace>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
