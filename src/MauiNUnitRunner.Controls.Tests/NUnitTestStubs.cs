@@ -291,6 +291,21 @@ public class NUnitTestAssemblyRunnerStub : INUnitTestAssemblyRunner
 }
 
 /// <summary>
+///     Implements a stub ListView for use with tests.
+/// </summary>
+public class ListViewStub
+{
+    #region Public Members
+
+    /// <summary>
+    ///     Gets or sets the selected item.
+    /// </summary>
+    public object SelectedItem { get; set; }
+
+    #endregion
+}
+
+/// <summary>
 ///     A Test fixture class to run as part of test runner tests. Not meant to be run as part of the project's unit tests.
 /// </summary>
 [TestFixture, Explicit]
@@ -315,7 +330,9 @@ public class TestFixtureForNUnitRunnerTest
             Thread.Sleep(TestDelay);
         }
 
+#pragma warning disable NUnit2007 // The actual value should not be a constant
         Assert.That(true, Is.True);
+#pragma warning restore NUnit2007 // The actual value should not be a constant
     }
 
     #endregion

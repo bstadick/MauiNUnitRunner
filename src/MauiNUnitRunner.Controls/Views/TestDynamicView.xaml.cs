@@ -2,6 +2,8 @@
 
 using MauiNUnitRunner.Controls.Models;
 
+// Ignore Spelling: Bindable
+
 namespace MauiNUnitRunner.Controls.Views;
 
 /// <summary>
@@ -23,8 +25,8 @@ public partial class TestDynamicView : ContentView
     /// </summary>
     public INUnitTest Test
     {
-        get => (INUnitTest)GetValue(TestProperty);
-        set => SetValue(TestProperty, value);
+        get => (INUnitTest)GetBindableValue(TestProperty, TestProperty.DefaultValue);
+        set => SetBindableValue(TestProperty, value);
     }
 
     /// <summary>
@@ -48,23 +50,34 @@ public partial class TestDynamicView : ContentView
     #region Constructors
 
     /// <summary>
-    ///     Default constructor.
+    ///     Initializes a new <see cref="TestDynamicView" />.
     /// </summary>
-    public TestDynamicView()
+    public TestDynamicView() : this(true)
     {
-        InitializeComponent();
+    }
+
+    /// <summary>
+    ///     Initializes a new <see cref="TestDynamicView"/> with the option to skip initializing the components.
+    /// </summary>
+    /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
+    protected TestDynamicView(bool initializeComponent = true)
+    {
+        if (initializeComponent)
+        {
+            InitializeComponent();
+        }
     }
 
     #endregion
 
-    #region Private Methods
+    #region Protected Methods
 
     /// <summary>
     ///     Event callback when a <see cref="INUnitTest"/> item is selected from the list of tests in the <see cref="TestSuiteView"/>.
     /// </summary>
     /// <param name="sender">The <see cref="ListView"/> that contains the item.</param>
     /// <param name="e">The test selected event arguments.</param>
-    private void TestDynamicView_OnTestItemSelected(object sender, NUnitTestEventArgs e)
+    protected void TestDynamicView_OnTestItemSelected(object sender, NUnitTestEventArgs e)
     {
         TestItemSelected?.Invoke(sender, e);
     }
@@ -74,7 +87,7 @@ public partial class TestDynamicView : ContentView
     /// </summary>
     /// <param name="sender">The <see cref="Button"/> that was clicked.</param>
     /// <param name="e">The test run event arguments.</param>
-    private void TestDynamicView_OnRunTestsClicked(object sender, NUnitTestEventArgs e)
+    protected void TestDynamicView_OnRunTestsClicked(object sender, NUnitTestEventArgs e)
     {
         RunTestsClicked?.Invoke(sender, e);
     }
@@ -84,9 +97,30 @@ public partial class TestDynamicView : ContentView
     /// </summary>
     /// <param name="sender">The <see cref="Button"/> that was clicked.</param>
     /// <param name="e">The export results event arguments.</param>
-    private void TestDynamicView_OnSaveResultsClicked(object sender, EventArgs e)
+    protected void TestDynamicView_OnSaveResultsClicked(object sender, EventArgs e)
     {
-        SaveResultsClicked?.Invoke(sender, new NUnitTestResultEventArgs(Test.Result));
+        SaveResultsClicked?.Invoke(sender, new NUnitTestResultEventArgs(Test?.Result));
+    }
+
+    /// <summary>
+    ///     Calls <see cref="BindableObject.GetValue(BindableProperty)"/>.
+    /// </summary>
+    /// <param name="property">The <see cref="BindableProperty"/> to get.</param>
+    /// <param name="defaultValue">The default value to return if no value is set.</param>
+    /// <returns>The value of the property to get.</returns>
+    protected virtual object GetBindableValue(BindableProperty property, object defaultValue)
+    {
+        return GetValue(property);
+    }
+
+    /// <summary>
+    ///     Calls <see cref="BindableObject.SetValue(BindableProperty, object)"/>.
+    /// </summary>
+    /// <param name="property">The <see cref="BindableProperty"/> to set.</param>
+    /// <param name="value">The value of the property to set.</param>
+    protected virtual void SetBindableValue(BindableProperty property, object value)
+    {
+        SetValue(property, value);
     }
 
     #endregion

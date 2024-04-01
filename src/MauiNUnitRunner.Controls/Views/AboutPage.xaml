@@ -42,7 +42,7 @@
                                 <Span Text="{StaticResource AssemblyName}" FontAttributes="Bold"
                                       FontSize="22" />
                                 <Span Text=" " />
-                                <Span x:Name="VersionText" TextColor="{StaticResource AboutLightTextColor}" />
+                                <Span Text="{Binding AssemblyVersion}" TextColor="{StaticResource AboutLightTextColor}" />
                             </FormattedString.Spans>
                         </FormattedString>
                     </Label.FormattedText>

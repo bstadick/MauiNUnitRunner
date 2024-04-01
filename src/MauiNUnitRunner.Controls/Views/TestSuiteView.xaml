@@ -35,7 +35,7 @@
                   VerticalOptions="Fill"
                   HasUnevenRows="true"
                   CachingStrategy="RecycleElement"
-                  ItemSelected="TestSuiteView_OnItemSelected">
+                  ItemSelected="TestSuiteView_OnTestItemSelected">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell x:DataType="models:INUnitTest">

@@ -30,29 +30,48 @@ public partial class AboutPage : ContentPage
 
     #endregion
 
+    #region Public Members
+
+    /// <summary>
+    ///     Gets the version of the <see cref="AboutPage"/> assembly.
+    /// </summary>
+    public string AssemblyVersion { get; }
+
+    #endregion
+
     #region Constructors
 
     /// <summary>
     ///     Initializes a new <see cref="AboutPage" />.
     /// </summary>
-    internal AboutPage()
+    public AboutPage() : this(true)
     {
-        InitializeComponent();
+    }
 
-        VersionText.Text = GetType().Assembly.GetName().Version?.ToString(3) ?? string.Empty;
+    /// <summary>
+    ///     Initializes a new <see cref="AboutPage"/> with the option to skip initializing the components.
+    /// </summary>
+    /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
+    protected AboutPage(bool initializeComponent = true)
+    {
+        if (initializeComponent)
+        {
+            InitializeComponent();
+        }
+
+        AssemblyVersion = typeof(AboutPage).Assembly.GetName().Version?.ToString(3) ?? string.Empty;
     }
 
     #endregion
 
-    #region Private Methods
+    #region Protected Methods
 
     /// <summary>
     ///     Opens the provided Uri using the default web browser.
     /// </summary>
-    /// <remarks>This method will not be covered by unit tests as it invokes opening an external application.</remarks>
     /// <param name="sender">The <see cref="Button"/> that was clicked.</param>
     /// <param name="e">The button click event arguments.</param>
-    private async void OpenUrlButton_OnClicked(object sender, EventArgs e)
+    protected async void OpenUrlButton_OnClicked(object sender, EventArgs e)
     {
         Button button = sender as Button;
         string uri;
@@ -71,7 +90,16 @@ public partial class AboutPage : ContentPage
                 return;
         }
 
-        await Browser.Default.OpenAsync(new Uri(uri), BrowserLaunchMode.SystemPreferred).ConfigureAwait(false);
+        await GetDefaultBrowser().OpenAsync(new Uri(uri), BrowserLaunchMode.SystemPreferred).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    ///     Gets the default <see cref="IBrowser"/>.
+    /// </summary>
+    /// <returns>The default <see cref="IBrowser"/>.</returns>
+    protected virtual IBrowser GetDefaultBrowser()
+    {
+        return Browser.Default;
     }
 
     #endregion

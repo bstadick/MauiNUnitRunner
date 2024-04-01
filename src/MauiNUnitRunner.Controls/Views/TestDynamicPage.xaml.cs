@@ -7,7 +7,8 @@ using MauiNUnitRunner.Controls.Resources;
 using MauiNUnitRunner.Controls.Services;
 using NUnit.Framework.Api;
 using NUnit.Framework.Interfaces;
-using ExceptionHelper = MauiNUnitRunner.Controls.Resources.ExceptionHelper;
+
+// Ignore Spelling: Bindable
 
 namespace MauiNUnitRunner.Controls.Views;
 
@@ -39,23 +40,23 @@ public partial class TestDynamicPage : ContentPage
     /// </summary>
     public INUnitTest Test
     {
-        get => (INUnitTest)GetValue(TestProperty);
-        set => SetValue(TestProperty, value);
+        get => (INUnitTest)GetBindableValue(TestProperty, TestProperty.DefaultValue);
+        set => SetBindableValue(TestProperty, value);
     }
 
     /// <summary>
     ///     The bindable <see cref="ShowFooterLinks"/> property.
     /// </summary>
     public static readonly BindableProperty ShowFooterLinksProperty =
-        BindableProperty.Create(nameof(ShowFooterLinks), typeof(bool), typeof(TestDynamicPage), defaultValue:true);
+        BindableProperty.Create(nameof(ShowFooterLinks), typeof(bool), typeof(TestDynamicPage), true);
 
     /// <summary>
     ///     Gets or sets if the page footer links should be shown.
     /// </summary>
     public bool ShowFooterLinks
     {
-        get => (bool)GetValue(ShowFooterLinksProperty);
-        set => SetValue(ShowFooterLinksProperty, value);
+        get => (bool)GetBindableValue(ShowFooterLinksProperty, ShowFooterLinksProperty.DefaultValue);
+        set => SetBindableValue(ShowFooterLinksProperty, value);
     }
 
     /// <summary>
@@ -72,35 +73,32 @@ public partial class TestDynamicPage : ContentPage
     /// </summary>
     /// <param name="testRunner">The <see cref="INUnitTestRunner"/> with the loaded tests to run.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="testRunner"/> is null.</exception>
-    public TestDynamicPage(INUnitTestRunner testRunner)
+    public TestDynamicPage(INUnitTestRunner testRunner) : this(testRunner, null)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new <see cref="TestDynamicPage"/> with the given <see cref="INUnitTest"/> and <see cref="NUnitTestAssemblyRunner"/>.
+    /// </summary>
+    /// <param name="testRunner">The NUnit test runner the test was loaded from.</param>
+    /// <param name="test">The test to bind to the page, or null to explore all currently loaded tests.</param>
+    /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="testRunner"/> is null.</exception>
+    protected TestDynamicPage(INUnitTestRunner testRunner, INUnitTest test, bool initializeComponent = true)
     {
         if (testRunner == null)
         {
             throw ExceptionHelper.ThrowArgumentNullException(nameof(testRunner));
         }
 
-        InitializeComponent();
+        if (initializeComponent)
+        {
+            InitializeComponent();
+        }
 
-        // Explore and set tests
         TestRunner = testRunner;
-        Test = TestRunner.ExploreTests(NUnitFilter.Empty);
-        Title = Test.DisplayName;
-    }
-
-    /// <summary>
-    ///     Initializes a new <see cref="TestDynamicPage"/> with the given <see cref="INUnitTest"/> and <see cref="NUnitTestAssemblyRunner"/>.
-    /// </summary>
-    /// <param name="test">The test to bind to the page.</param>
-    /// <param name="runner">The NUnit test runner the test was loaded from.</param>
-    /// <param name="showFooterLinks">If to show the page footer links</param>
-    private TestDynamicPage(INUnitTest test, INUnitTestRunner runner, bool showFooterLinks)
-    {
-        InitializeComponent();
-
-        TestRunner = runner;
-        Test = test;
-        Title = Test.DisplayName;
-        ShowFooterLinks = showFooterLinks;
+        Test = test ?? TestRunner.ExploreTests(NUnitFilter.Empty);
+        Title = Test?.DisplayName ?? string.Empty;
     }
 
     #endregion
@@ -116,13 +114,15 @@ public partial class TestDynamicPage : ContentPage
     {
         // Get test from event arg
         INUnitTest test = e?.Test;
-        if (test == null || test.Test == null)
+        if (test?.Test == null)
         {
             return;
         }
 
         // Navigate to child test page
-        await Navigation.PushAsync(new TestDynamicPage(test, TestRunner, false));
+        TestDynamicPage page = CreateTestDynamicPage(test);
+        page.ShowFooterLinks = false;
+        await NavigationPushAsync(page);
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public partial class TestDynamicPage : ContentPage
     {
         // Get test from event arg
         INUnitTest test = e?.Test;
-        if (test == null || test.Test == null)
+        if (test?.Test == null)
         {
             return;
         }
@@ -170,32 +170,91 @@ public partial class TestDynamicPage : ContentPage
             }
 
             // Open save result dialog
-            await v_FileSaver.SaveAsync(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), fileName,
-                resultStream);
+            await SaveAsync(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), fileName, resultStream);
         }
         catch
         {
             // Alert user if save failed
             // Don't alert on the SaveAsync returned result since it doesn't differentiate between a user Cancel action and an exception
-            await DisplayAlert(ResourceHelper.GetResourceString("SaveResultsButton"),
+            await DisplayAlertMessage(ResourceHelper.GetResourceString("SaveResultsButton"),
                 ResourceHelper.GetResourceString("SaveResultsFailedAlert"),
                 ResourceHelper.GetResourceString("SaveResultsFailedConfirmAlert"));
         }
     }
-
-    #endregion
-
-    #region Private Methods
 
     /// <summary>
     ///     Event callback when the About <see cref="Button"/> is clicked to open the <see cref="AboutPage"/>.
     /// </summary>
     /// <param name="sender">The <see cref="Button"/> that was clicked.</param>
     /// <param name="e">The clicked button event arguments.</param>
-    private async void AboutButton_OnClicked(object sender, EventArgs e)
+    protected async void AboutButton_OnClicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new AboutPage());
+        await NavigationPushAsync(new AboutPage());
+    }
+
+    /// <summary>
+    ///     Calls <see cref="BindableObject.GetValue(BindableProperty)"/>.
+    /// </summary>
+    /// <param name="property">The <see cref="BindableProperty"/> to get.</param>
+    /// <param name="defaultValue">The default value to return if no value is set.</param>
+    /// <returns>The value of the property to get.</returns>
+    protected virtual object GetBindableValue(BindableProperty property, object defaultValue)
+    {
+        return GetValue(property);
+    }
+
+    /// <summary>
+    ///     Calls <see cref="BindableObject.SetValue(BindableProperty, object)"/>.
+    /// </summary>
+    /// <param name="property">The <see cref="BindableProperty"/> to set.</param>
+    /// <param name="value">The value of the property to set.</param>
+    protected virtual void SetBindableValue(BindableProperty property, object value)
+    {
+        SetValue(property, value);
+    }
+
+    /// <summary>
+    ///     Creates a new <see cref="TestDynamicPage"/> instance.
+    /// </summary>
+    /// <param name="test">The <see cref="INUnitTest"/> of the test page.</param>
+    /// <returns>The newly created <see cref="TestDynamicPage"/>.</returns>
+    protected virtual TestDynamicPage CreateTestDynamicPage(INUnitTest test)
+    {
+        return new TestDynamicPage(TestRunner, test);
+    }
+
+    /// <summary>
+    ///     Navigates to the given <see cref="Page"/>.
+    /// </summary>
+    /// <param name="page">The page to navigate to.</param>
+    /// <returns>A <see cref="Task"/> to await.</returns>
+    protected virtual async Task NavigationPushAsync(Page page)
+    {
+        await Navigation.PushAsync(page);
+    }
+
+    /// <summary>
+    ///     Opens a dialog to save the file.
+    /// </summary>
+    /// <param name="folderPath">The starting path of the folder to save to.</param>
+    /// <param name="fileName">The name of the file to save.</param>
+    /// <param name="resultStream">The file stream to save.</param>
+    /// <returns>A <see cref="Task"/> to await.</returns>
+    protected virtual async Task SaveAsync(string folderPath, string fileName, Stream resultStream)
+    {
+        await v_FileSaver.SaveAsync(folderPath, fileName, resultStream);
+    }
+
+    /// <summary>
+    ///     Displays an alert message.
+    /// </summary>
+    /// <param name="title">The title of the message.</param>
+    /// <param name="message">The message to display.</param>
+    /// <param name="cancel">The cancel/confirmation button text.</param>
+    /// <returns>A <see cref="Task"/> to await.</returns>
+    protected virtual async Task DisplayAlertMessage(string title, string message, string cancel)
+    {
+        await DisplayAlert(title, message, cancel);
     }
 
     #endregion

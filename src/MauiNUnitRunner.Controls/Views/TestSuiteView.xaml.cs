@@ -2,6 +2,8 @@
 
 using MauiNUnitRunner.Controls.Models;
 
+// Ignore Spelling: Bindable
+
 namespace MauiNUnitRunner.Controls.Views;
 
 /// <summary>
@@ -23,8 +25,8 @@ public partial class TestSuiteView : ContentView
     /// </summary>
     public INUnitTest Test
     {
-        get => (INUnitTest)GetValue(TestProperty);
-        set => SetValue(TestProperty, value);
+        get => (INUnitTest)GetBindableValue(TestProperty, TestProperty.DefaultValue);
+        set => SetBindableValue(TestProperty, value);
     }
 
     /// <summary>
@@ -50,29 +52,40 @@ public partial class TestSuiteView : ContentView
     /// <summary>
     ///     Default constructor.
     /// </summary>
-    public TestSuiteView()
+    public TestSuiteView() : this(true)
     {
-        InitializeComponent();
+    }
+
+    /// <summary>
+    ///     Initializes a new <see cref="TestSuiteView"/> with the option to skip initializing the components.
+    /// </summary>
+    /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
+    protected TestSuiteView(bool initializeComponent = true)
+    {
+        if (initializeComponent)
+        {
+            InitializeComponent();
+        }
     }
 
     #endregion
 
-    #region Private Methods
+    #region Protected Methods
 
     /// <summary>
     ///     Event callback when a <see cref="INUnitTest"/> item is selected from the test suite list.
     /// </summary>
     /// <param name="sender">The <see cref="ListView"/> that contains the item.</param>
     /// <param name="e">The test selected event arguments.</param>
-    private void TestSuiteView_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
+    protected void TestSuiteView_OnTestItemSelected(object sender, SelectedItemChangedEventArgs e)
     {
         if (e.SelectedItem is INUnitTest test)
         {
             TestItemSelected?.Invoke(sender, new NUnitTestEventArgs(test));
         }
 
-        // Reset selected item to allow for reentry
-        ((ListView)sender).SelectedItem = null;
+        // Reset selected item to allow for re-entry
+        SetSelectedItem(sender, null);
     }
 
     /// <summary>
@@ -80,7 +93,7 @@ public partial class TestSuiteView : ContentView
     /// </summary>
     /// <param name="sender">The <see cref="Button"/> that was clicked.</param>
     /// <param name="e">The test run event arguments.</param>
-    private void TestSuiteView_OnRunTestsClicked(object sender, EventArgs e)
+    protected void TestSuiteView_OnRunTestsClicked(object sender, EventArgs e)
     {
         RunTestsClicked?.Invoke(sender, new NUnitTestEventArgs(Test));
     }
@@ -90,9 +103,43 @@ public partial class TestSuiteView : ContentView
     /// </summary>
     /// <param name="sender">The <see cref="Button"/> that was clicked.</param>
     /// <param name="e">The export results event arguments.</param>
-    private void TestSuiteView_OnSaveResultsClicked(object sender, EventArgs e)
+    protected void TestSuiteView_OnSaveResultsClicked(object sender, EventArgs e)
     {
-        SaveResultsClicked?.Invoke(sender, new NUnitTestResultEventArgs(Test.Result));
+        SaveResultsClicked?.Invoke(sender, new NUnitTestResultEventArgs(Test?.Result));
+    }
+
+    /// <summary>
+    ///     Calls <see cref="BindableObject.GetValue(BindableProperty)"/>.
+    /// </summary>
+    /// <param name="property">The <see cref="BindableProperty"/> to get.</param>
+    /// <param name="defaultValue">The default value to return if no value is set.</param>
+    /// <returns>The value of the property to get.</returns>
+    protected virtual object GetBindableValue(BindableProperty property, object defaultValue)
+    {
+        return GetValue(property);
+    }
+
+    /// <summary>
+    ///     Calls <see cref="BindableObject.SetValue(BindableProperty, object)"/>.
+    /// </summary>
+    /// <param name="property">The <see cref="BindableProperty"/> to set.</param>
+    /// <param name="value">The value of the property to set.</param>
+    protected virtual void SetBindableValue(BindableProperty property, object value)
+    {
+        SetValue(property, value);
+    }
+
+    /// <summary>
+    ///     Sets the selected item of the <see cref="ListView"/>.
+    /// </summary>
+    /// <param name="sender">The <see cref="ListView"/> to set the selected item of.</param>
+    /// <param name="value">The value to set the selected item.</param>
+    protected virtual void SetSelectedItem(object sender, object value)
+    {
+        if (sender is ListView view)
+        {
+            view.SelectedItem = value;
+        }
     }
 
     #endregion
