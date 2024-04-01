@@ -194,7 +194,7 @@ public class NUnitTestRunnerTest
     public void TestExploreTestsWhenNoTestsAddedAndWithFilterThrowsInvalidOperationException([Values] bool isFilterNull)
     {
         NUnitTestRunner runner = new NUnitTestRunner();
-        ITestFilter filter = isFilterNull ? null : NUnitFilter.Where.Class(".*" + nameof(TestFixtureForNUnitRunnerTest), true).Build().Filter;
+        ITestFilter filter = isFilterNull ? null : NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
 
         Assert.Throws(
             Is.TypeOf<InvalidOperationException>().And.Message.EqualTo("Tests must be loaded before exploring them."),
@@ -207,7 +207,7 @@ public class NUnitTestRunnerTest
         Assembly testAssembly = GetType().Assembly;
         NUnitTestRunner runner = new NUnitTestRunner();
         ITestFilter filter =
-            isFilterNull ? null : NUnitFilter.Where.Class(".*" + nameof(TestFixtureForNUnitRunnerTest), true).Build().Filter;
+            isFilterNull ? null : NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
         string expected = new Uri(testAssembly.Location).LocalPath;
 
         runner.AddTestAssembly(testAssembly);
@@ -289,7 +289,7 @@ public class NUnitTestRunnerTest
             runner.TestListener = listener;
 
             ITestFilter filter =
-                isFilterNull ? null : NUnitFilter.Where.Class(".*" + nameof(TestFixtureForNUnitRunnerTest), true).Build().Filter;
+                isFilterNull ? null : NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
             ITestFilter expectedFilter = isFilterNull ? NUnitFilter.Empty : filter;
             AutoResetEvent waitToEndRun = new AutoResetEvent(false);
             AutoResetEvent waitForRunStart = new AutoResetEvent(false);

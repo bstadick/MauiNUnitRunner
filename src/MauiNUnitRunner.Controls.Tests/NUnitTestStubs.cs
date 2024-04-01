@@ -309,7 +309,7 @@ public class ListViewStub
 ///     A Test fixture class to run as part of test runner tests. Not meant to be run as part of the project's unit tests.
 /// </summary>
 [TestFixture, Explicit]
-public class TestFixtureForNUnitRunnerTest
+public class TestFixtureStubForNUnitRunnerTest
 {
     #region Members for Test
 
@@ -323,7 +323,7 @@ public class TestFixtureForNUnitRunnerTest
     #region Tests
 
     [Test]
-    public void Test()
+    public void TestStubForNUnitRunnerTest()
     {
         if (TestDelay > 0)
         {

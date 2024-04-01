@@ -19,7 +19,7 @@ namespace MauiNUnitRunner.Controls.Tests.Services
         [TearDown]
         public void TestTearDown()
         {
-            TestFixtureForNUnitRunnerTest.TestDelay = 0;
+            TestFixtureStubForNUnitRunnerTest.TestDelay = 0;
         }
 
         [OneTimeTearDown]
@@ -113,7 +113,7 @@ namespace MauiNUnitRunner.Controls.Tests.Services
             Assembly testAssembly = GetType().Assembly;
             IDictionary<string, object> settings = new Dictionary<string, object>();
             ITestFilter filter = withFilter
-                ? NUnitFilter.Where.Class(".*" + nameof(TestFixtureForNUnitRunnerTest), true).Build().Filter
+                ? NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter
                 : TestFilter.Empty;
             NUnitTestAssemblyRunner runner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
             string expected = new Uri(testAssembly.Location).LocalPath;
@@ -155,8 +155,8 @@ namespace MauiNUnitRunner.Controls.Tests.Services
         {
             Assembly testAssembly = GetType().Assembly;
             IDictionary<string, object> settings = new Dictionary<string, object>();
-            TestFixtureForNUnitRunnerTest.TestDelay = 100;
-            ITestFilter filter = NUnitFilter.Where.Class(".*" + nameof(TestFixtureForNUnitRunnerTest), true).Build().Filter;
+            TestFixtureStubForNUnitRunnerTest.TestDelay = 100;
+            ITestFilter filter = NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
             NUnitTestAssemblyRunner runner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
             string expected = new Uri(testAssembly.Location).LocalPath;
 
@@ -184,8 +184,8 @@ namespace MauiNUnitRunner.Controls.Tests.Services
         {
             Assembly testAssembly = GetType().Assembly;
             IDictionary<string, object> settings = new Dictionary<string, object>();
-            TestFixtureForNUnitRunnerTest.TestDelay = 200;
-            ITestFilter filter = NUnitFilter.Where.Class(".*" + nameof(TestFixtureForNUnitRunnerTest), true).Build().Filter;
+            TestFixtureStubForNUnitRunnerTest.TestDelay = 200;
+            ITestFilter filter = NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
             NUnitTestAssemblyRunner runner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
             string expected = new Uri(testAssembly.Location).LocalPath;
 
@@ -220,8 +220,8 @@ namespace MauiNUnitRunner.Controls.Tests.Services
         {
             Assembly testAssembly = GetType().Assembly;
             IDictionary<string, object> settings = new Dictionary<string, object>();
-            TestFixtureForNUnitRunnerTest.TestDelay = 100;
-            ITestFilter filter = NUnitFilter.Where.Class(".*" + nameof(TestFixtureForNUnitRunnerTest), true).Build().Filter;
+            TestFixtureStubForNUnitRunnerTest.TestDelay = 100;
+            ITestFilter filter = NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
             NUnitTestAssemblyRunner runner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
             string expected = new Uri(testAssembly.Location).LocalPath;
 

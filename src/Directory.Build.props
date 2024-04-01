@@ -21,6 +21,6 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='UnitTest'">
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;UNITTEST</DefineConstants>
   </PropertyGroup>
 </Project>

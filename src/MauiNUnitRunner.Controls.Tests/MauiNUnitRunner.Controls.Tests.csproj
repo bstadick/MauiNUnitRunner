@@ -4,6 +4,7 @@
     <TargetFramework>$(NetFrameworkVersion)</TargetFramework>
     <RootNamespace>MauiNUnitRunner.Controls.Tests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DefaultItemExcludes>$(DefaultItemExcludes);TestResults\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

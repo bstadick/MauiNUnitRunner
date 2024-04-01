@@ -240,6 +240,10 @@ public partial class TestDynamicPage : ContentPage
     /// <param name="fileName">The name of the file to save.</param>
     /// <param name="resultStream">The file stream to save.</param>
     /// <returns>A <see cref="Task"/> to await.</returns>
+#if UNITTEST
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416: Validate platform compatibility",
+        Justification = "This method is not accessed on other platforms from a unit test context.")]
+#endif
     protected virtual async Task SaveAsync(string folderPath, string fileName, Stream resultStream)
     {
         await v_FileSaver.SaveAsync(folderPath, fileName, resultStream);
