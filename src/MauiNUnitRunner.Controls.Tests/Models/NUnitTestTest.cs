@@ -1,10 +1,10 @@
 // Copyright (c) bstadick and contributors. MIT License - see LICENSE file
 
+using System.ComponentModel;
 using MauiNUnitRunner.Controls.Models;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
-using System.ComponentModel;
 
 // ReSharper disable UseObjectOrCollectionInitializer
 // ReSharper disable ArrangeObjectCreationWhenTypeEvident
@@ -83,7 +83,135 @@ public class NUnitTestTest
 
     #region Tests for Result Property
 
-    // TODO - NUnitTestTest.Result tests
+    [Test]
+    public void TestResultPropertyWhenSettingWithNullResultSetsValueNull()
+    {
+        TestStub testInstance = new TestStub { Id = "1" };
+
+        INUnitTest test = new NUnitTest(testInstance);
+
+        Assert.That(test.Result, Is.Null);
+
+        test.Result = null;
+
+        Assert.That(test.Result, Is.Null);
+    }
+
+    [Test]
+    public void TestResultPropertyWhenSettingWithNullOrEmptyTestIdNullSetsValueToProvidedResult([Values] bool isIdNull, [Values] bool isResultNull)
+    {
+        TestStub testInstance = new TestStub { Id = isIdNull ? null : string.Empty };
+
+        INUnitTest test = new NUnitTest(testInstance);
+        INUnitTestResult result = isResultNull ? null : new NUnitTestResult(new TestResultStub { Test = testInstance });
+
+        Assert.That(test.Result, Is.Null);
+
+        test.Result = result;
+
+        Assert.That(test.Result, Is.SameAs(result));
+    }
+
+    [Test]
+    public void TestResultPropertyWhenSettingWithResultIdMatchingTestIdSetsValueToProvidedResult()
+    {
+        TestStub testInstance = new TestStub { Id = "1" };
+
+        INUnitTest test = new NUnitTest(testInstance);
+        INUnitTestResult result = new NUnitTestResult(new TestResultStub { Test = testInstance });
+
+        Assert.That(test.Result, Is.Null);
+
+        test.Result = result;
+
+        Assert.That(test.Result, Is.SameAs(result));
+    }
+
+    [Test]
+    public void TestResultPropertyWhenSettingWithResultIdMatchingInChildTestIdSetsValueToProvidedResult(
+        [Values("1A", "1B", "1C", "2", "3")] string level)
+    {
+        TestStub testInstance1A = new TestStub { Id = "1A" };
+        TestStub testInstance1B = new TestStub { Id = "1B" };
+        TestStub testInstance1C = new TestStub { Id = "1C" };
+        TestStub testInstance2 = new TestStub { Id = "2", Tests = [testInstance1A, testInstance1B, testInstance1C] };
+        TestStub testInstance3 = new TestStub { Id = "3", Tests = [testInstance2] };
+
+        INUnitTestResult result1A = new NUnitTestResult(new TestResultStub { Test = testInstance1A });
+        INUnitTestResult result1B = new NUnitTestResult(new TestResultStub { Test = testInstance1B });
+        INUnitTestResult result2 = new NUnitTestResult(new TestResultStub { Test = testInstance2, Children = [result1A.Result, result1B.Result] });
+        INUnitTestResult result3 = new NUnitTestResult(new TestResultStub { Test = testInstance3, Children = [result2.Result] });
+
+        INUnitTest test = null;
+        INUnitTestResult expectedResult = null;
+        switch (level)
+        {
+            case "1A":
+                test = new NUnitTest(testInstance1A);
+                expectedResult = result1A;
+                break;
+            case "1B":
+                test = new NUnitTest(testInstance1B);
+                expectedResult = result1B;
+                break;
+            case "1C":
+                test = new NUnitTest(testInstance1C);
+                expectedResult = result3;
+                break;
+            case "2":
+                test = new NUnitTest(testInstance2);
+                expectedResult = result2;
+                break;
+            case "3":
+                test = new NUnitTest(testInstance3);
+                expectedResult = result3;
+                break;
+        }
+
+        Assert.That(test, Is.Not.Null);
+        Assert.That(test.Result, Is.Null);
+
+        test.Result = result3;
+
+        Assert.That(expectedResult, Is.Not.Null);
+        Assert.That(test.Result, Is.EqualTo(expectedResult));
+        Assert.That(test.Result.Children, Is.EqualTo(expectedResult.Children));
+    }
+
+    [Test]
+    public void TestResultPropertyWhenSettingWithResultIdMatchingTestIdAndChildTestButNoChildResultsSetsValueToProvidedResult()
+    {
+        TestStub testChild = new TestStub { Id = "2"};
+        TestStub testInstance = new TestStub { Id = "1", Tests = [testChild] };
+
+        INUnitTest test = new NUnitTest(testInstance);
+        INUnitTestResult result = new NUnitTestResult(new TestResultStub { Test = testInstance });
+
+        Assert.That(test.Result, Is.Null);
+
+        test.Result = result;
+
+        Assert.That(test.Result, Is.SameAs(result));
+        Assert.That(test.Result.Children, Is.Empty);
+    }
+
+    [Test]
+    public void TestResultPropertyWhenSettingWithResultIdMatchingTestIdAndChildResultsButNoChildTestSetsValueToProvidedResult()
+    {
+        TestStub testChild = new TestStub { Id = "2" };
+        TestStub testInstance = new TestStub { Id = "1" };
+
+        INUnitTest test = new NUnitTest(testInstance);
+        INUnitTestResult resultChild = new NUnitTestResult(new TestResultStub { Test = testChild });
+        INUnitTestResult result = new NUnitTestResult(new TestResultStub { Test = testInstance, Children = [resultChild.Result] });
+
+        Assert.That(test.Result, Is.Null);
+
+        test.Result = result;
+
+        Assert.That(test.Result, Is.SameAs(result));
+        Assert.That(test.Result.Children, Is.EqualTo(new List<INUnitTestResult> { resultChild }));
+    }
 
     #endregion
 
