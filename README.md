@@ -16,59 +16,61 @@ Features include:
 - Supports all major platforms supported by .NET MAUI.
 - Extensible design allows for customization of existing or creation of new behaviors and views.
 
+> **Note:** The controls are optimized for landscape orientation on larger devices (e.g. tablets). While the application will function in portrait orientation and on smaller devices, some text may be clipped.
+
 ## Usage
 
 1. Include a reference to the `MauiNUnitRunner.Controls` Nuget package in a .NET MAUI app project for your target platform(s).
 2. Include references to the project(s) with your NUnit tests or the test code itself in the .NET MAUI app project.
 3. On the .NET MAUI app project's `MauiAppBuilder` method, call the `.UseMauiNUnitRunner()` method to initialize the MauiNUnitRunner controls.
 
-```csharp
-using MauiNUnitRunner.Controls;
+    ```csharp
+    using MauiNUnitRunner.Controls;
 
-public static class MauiProgram
-{
-    public static MauiApp CreateMauiApp()
+    public static class MauiProgram
     {
-        MauiAppBuilder builder = MauiApp.CreateBuilder();
-        builder
-            .UseMauiApp<App>()
-            // Initialize using the MauiNUnitRunner
-            .UseMauiNUnitRunner();
+        public static MauiApp CreateMauiApp()
+        {
+            MauiAppBuilder builder = MauiApp.CreateBuilder();
+            builder
+                .UseMauiApp<App>()
+                // Initialize using the MauiNUnitRunner
+                .UseMauiNUnitRunner();
 
-        return builder.Build();
+            return builder.Build();
+        }
     }
-}
-```
+    ```
 
 4. In the .NET MAUI app project's `App.xaml.cs` constructor, create and load an instance of the `MauiNUnitRunner.Controls.TestDynamicPage` **ContentPage** and set as the `App.MainPage`.
 5. The `TestDynamicPage` takes in a list of the assemblies to load the tests from. This should include the current app's assembly if it contains tests to run.
 
-```csharp
-using MauiNUnitRunner.Controls;
+    ```csharp
+    using MauiNUnitRunner.Controls;
 
-public partial class App : Application
-{
-    public App()
+    public partial class App : Application
     {
-        InitializeComponent();
+        public App()
+        {
+            InitializeComponent();
 
-        // Get assemblies with unit tests
-        IList<Assembly> testAssemblies = new List<Assembly>();
-        testAssemblies.Add(GetType().Assembly);
-        testAssemblies.Add(typeof(MyUnitTestClass).Assembly);
+            // Get assemblies with unit tests
+            IList<Assembly> testAssemblies = new List<Assembly>();
+            testAssemblies.Add(GetType().Assembly);
+            testAssemblies.Add(typeof(MyUnitTestClass).Assembly);
 
-        // Specify any test settings
-        Dictionary<string, object> settings = new Dictionary<string, object>();
-        settings.Add("MySetting", "value");
+            // Specify any test settings
+            Dictionary<string, object> settings = new Dictionary<string, object>();
+            settings.Add("MySetting", "value");
 
-        // Create initial test page
-        TestDynamicPage page = new TestDynamicPage(testAssemblies, settings);
+            // Create initial test page
+            TestDynamicPage page = new TestDynamicPage(testAssemblies, settings);
 
-        // Set test page as main page
-        MainPage = new NavigationPage(page);
+            // Set test page as main page
+            MainPage = new NavigationPage(page);
+        }
     }
-}
-```
+    ```
 
 6. Build the .NET MAUI app project in **Debug**. NUnit will not be able to work correctly on some platforms in **Release** builds.
 7. To add more or change tests that are loaded or change test settings, create and set a new `TestDynamicPage` as the `App.MainPage` or directly access the underlying `NUnit.Framework.Api.NUnitTestAssemblyRunner` from the `TestDynamicPage.TestRunner` property.
@@ -105,7 +107,11 @@ The project includes near complete code coverage of the `MauiNUnitRunner.Control
 ## Future Enhancements
 
 - User interface beautification
+- Portrait orientation and small screen optimization
 - Performance improvements
+- Updating overall results when child tests are ran individually.
+  - Current behavior is the same as the older NUnit Lite runner, but is not the desired behavior.
+  - This is limited currently by NUnit returning results for the entire test tree and not updating and recalculating the overall results when a subset of tests are ran. This could be handled in the MAUI test runner, but would be simpler and more efficient if handled within the underlying NUnit classes. NUnit will need to update such that overall parent results are calculated and cached from their child results and updated when a child result changes.
 - Running tests by category
 - Searching and filtering tests
 - Configuring test settings from UI
