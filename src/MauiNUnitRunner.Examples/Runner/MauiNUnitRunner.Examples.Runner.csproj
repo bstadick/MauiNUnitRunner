@@ -1,10 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(NetFrameworkVersion)-android;$(NetFrameworkVersion)-ios;$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>$(NetFrameworkVersion)-ios</TargetFrameworks>
+    <TargetFrameworks Condition="'$(Platform)'!='iPhoneSimulator'">$(TargetFrameworks);$(NetFrameworkVersion)-android;$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) And '$(Platform)'!='iPhoneSimulator'">$(TargetFrameworks);$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>
     <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
     <!-- <TargetFrameworks>$(TargetFrameworks);$(NetFrameworkVersion)-tizen</TargetFrameworks> -->
+    <Platforms>$(Platforms);iPhoneSimulator</Platforms>
 
     <!-- Note for MacCatalyst:
     The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
@@ -12,6 +14,9 @@
     The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
     either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
     <!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-arm64;maccatalyst-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' And '$(Platform)'!='iPhoneSimulator'">ios-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' And '$(Platform)'=='iPhoneSimulator'">iossimulator-arm64;iossimulator-x64</RuntimeIdentifiers>
 
     <OutputType>Exe</OutputType>
     <RootNamespace>MauiNUnitRunner.Examples.Runner</RootNamespace>
@@ -21,6 +26,7 @@
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);MCT001</NoWarn>
     <WindowsPackageType>None</WindowsPackageType>
+    <BuildIpa>True</BuildIpa>
 
     <!-- Display name -->
     <ApplicationTitle>MauiNUnitRunner.Example</ApplicationTitle>
