@@ -4,10 +4,10 @@
   <!-- General Packages -->
   <ItemGroup>
     <!-- Unit test packages -->
-    <PackageReference Update="NUnit" Version="4.1.0" />
+    <PackageReference Update="NUnit" Version="3.14.0" />
     <PackageReference Update="NUnit3TestAdapter" Version="4.5.0" />
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-    <PackageReference Update="NUnit.Analyzers" Version="4.1.0" />
+    <PackageReference Update="NUnit.Analyzers" Version="3.10.0" />
 
     <!-- Maui packages -->
     <PackageReference Update="CommunityToolkit.Maui" Version="8.0.0" />
