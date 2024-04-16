@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "MauiNUnitRunner.sln",
+    "projects": [
+      "MauiNUnitRunner.Controls.Tests\\MauiNUnitRunner.Controls.Tests.csproj",
+      "MauiNUnitRunner.Controls\\MauiNUnitRunner.Controls.csproj"
+    ]
+  }
+}

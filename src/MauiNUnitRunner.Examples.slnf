@@ -1,0 +1,10 @@
+{
+  "solution": {
+    "path": "MauiNUnitRunner.sln",
+    "projects": [
+      "MauiNUnitRunner.Controls\\MauiNUnitRunner.Controls.csproj",
+      "MauiNUnitRunner.Examples\\Runner\\MauiNUnitRunner.Examples.Runner.csproj",
+      "MauiNUnitRunner.Examples\\SubAssemblyTests\\MauiNUnitRunner.Examples.SubAssemblyTests.csproj"
+    ]
+  }
+}
