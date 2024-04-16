@@ -32,6 +32,7 @@
     <ApplicationTitle>MauiNUnitRunner.Example</ApplicationTitle>
 
     <!-- App Identifier -->
+    <!-- Note for MacCatalyst and iOS: Change the ApplicationId to match your Apple development provisioning profile. -->
     <ApplicationId>com.bstadick.mauinunitrunnerexample</ApplicationId>
 
     <!-- Versions -->
