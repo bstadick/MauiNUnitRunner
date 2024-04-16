@@ -24,6 +24,8 @@ jobs:
       run: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }}
     - name: Build examples with dotnet
       run: dotnet build "${{ env.SOLUTION }}" -c Example
+    - name: Build iOS simulator examples with dotnet
+      run: dotnet build "${{ env.SOLUTION }}" -c Example -p:Platform=iPhoneSimulator
     - name: Test with dotnet
       run: dotnet test "${{ env.SOLUTION }}" -c UnitTest --logger trx
     - name: Pack with dotnet
