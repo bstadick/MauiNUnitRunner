@@ -116,7 +116,7 @@ namespace MauiNUnitRunner.Controls.Tests.Services
                 ? NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter
                 : TestFilter.Empty;
             NUnitTestAssemblyRunner runner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
-            string expected = new Uri(testAssembly.Location).LocalPath;
+            string expected = new Uri(testAssembly.Location).LocalPath.Replace("\\", "/");
 
             NUnitTestAssemblyRunnerWrapper wrapper = new NUnitTestAssemblyRunnerWrapper(runner);
 
@@ -158,7 +158,7 @@ namespace MauiNUnitRunner.Controls.Tests.Services
             TestFixtureStubForNUnitRunnerTest.TestDelay = 100;
             ITestFilter filter = NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
             NUnitTestAssemblyRunner runner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
-            string expected = new Uri(testAssembly.Location).LocalPath;
+            string expected = new Uri(testAssembly.Location).LocalPath.Replace("\\", "/");
 
             NUnitTestAssemblyRunnerWrapper wrapper = new NUnitTestAssemblyRunnerWrapper(runner);
 
@@ -187,7 +187,7 @@ namespace MauiNUnitRunner.Controls.Tests.Services
             TestFixtureStubForNUnitRunnerTest.TestDelay = 200;
             ITestFilter filter = NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
             NUnitTestAssemblyRunner runner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
-            string expected = new Uri(testAssembly.Location).LocalPath;
+            string expected = new Uri(testAssembly.Location).LocalPath.Replace("\\", "/");
 
             NUnitTestAssemblyRunnerWrapper wrapper = new NUnitTestAssemblyRunnerWrapper(runner);
 
@@ -223,7 +223,7 @@ namespace MauiNUnitRunner.Controls.Tests.Services
             TestFixtureStubForNUnitRunnerTest.TestDelay = 100;
             ITestFilter filter = NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
             NUnitTestAssemblyRunner runner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
-            string expected = new Uri(testAssembly.Location).LocalPath;
+            string expected = new Uri(testAssembly.Location).LocalPath.Replace("\\", "/");
 
             NUnitTestAssemblyRunnerWrapper wrapper = new NUnitTestAssemblyRunnerWrapper(runner);
 

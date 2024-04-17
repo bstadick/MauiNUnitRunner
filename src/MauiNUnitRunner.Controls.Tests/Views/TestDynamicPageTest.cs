@@ -279,8 +279,8 @@ namespace MauiNUnitRunner.Controls.Tests.Views
 
             ITest testInstance = new TestStub { FullName = "testcase", Id = "123" };
             ITestResult resultInstance = new TestResultStub
-                { Test = testInstance, TestResultXml = TNode.FromXml("<result><test>foo</test></result>") };
-            string expectedXml = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<result>{Environment.NewLine}  <test>foo</test>{Environment.NewLine}</result>";
+                { Test = testInstance, TestResultXml = TNode.FromXml("<test-run id=\"0\"><test-suite id=\"1\"><test-case id=\"2\" /></test-suite></test-run>") };
+            string expectedXml = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<test-run id=\"0\">{Environment.NewLine}  <test-suite id=\"1\">{Environment.NewLine}    <test-case id=\"2\"></test-case>{Environment.NewLine}  </test-suite>{Environment.NewLine}</test-run>";
             INUnitTestResult result = new NUnitTestResult(resultInstance);
             NUnitTestResultEventArgs eventArgs = new NUnitTestResultEventArgs(result);
 
@@ -316,8 +316,8 @@ namespace MauiNUnitRunner.Controls.Tests.Views
 
             ITest testInstance = new TestStub { FullName = "testcase", Id = "123" };
             ITestResult resultInstance = new TestResultStub
-                { Test = testInstance, TestResultXml = TNode.FromXml("<result><test>foo</test></result>") };
-            string expectedXml = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<result>{Environment.NewLine}  <test>foo</test>{Environment.NewLine}</result>";
+                { Test = testInstance, TestResultXml = TNode.FromXml("<test-run id=\"0\"><test-suite id=\"1\"><test-case id=\"2\" /></test-suite></test-run>") };
+            string expectedXml = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<test-run id=\"0\">{Environment.NewLine}  <test-suite id=\"1\">{Environment.NewLine}    <test-case id=\"2\"></test-case>{Environment.NewLine}  </test-suite>{Environment.NewLine}</test-run>";
             INUnitTestResult result = new NUnitTestResult(resultInstance);
             NUnitTestResultEventArgs eventArgs = new NUnitTestResultEventArgs(result);
 

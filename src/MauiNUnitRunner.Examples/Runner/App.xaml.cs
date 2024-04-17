@@ -1,6 +1,5 @@
 // Copyright (c) bstadick and contributors. MIT License - see LICENSE file
 
-using System.Reflection;
 using MauiNUnitRunner.Controls.Services;
 using MauiNUnitRunner.Controls.Views;
 using MauiNUnitRunner.Examples.SubAssemblyTests;
@@ -14,7 +13,7 @@ public partial class App : Application
         InitializeComponent();
 
         // Set app theme
-        UserAppTheme = AppTheme.Dark;
+        UserAppTheme = Current?.RequestedTheme ?? AppTheme.Unspecified;
 
         // Specify any test settings
         Dictionary<string, object> settings = new Dictionary<string, object>();

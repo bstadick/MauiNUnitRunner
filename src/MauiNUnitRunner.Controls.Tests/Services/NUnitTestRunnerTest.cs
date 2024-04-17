@@ -178,7 +178,7 @@ public class NUnitTestRunnerTest
     {
         Assembly testAssembly = GetType().Assembly;
         NUnitTestRunner runner = new NUnitTestRunner();
-        string expected = new Uri(testAssembly.Location).LocalPath;
+        string expected = new Uri(testAssembly.Location).LocalPath.Replace("\\", "/");
 
         runner.AddTestAssembly(testAssembly);
 
@@ -208,7 +208,7 @@ public class NUnitTestRunnerTest
         NUnitTestRunner runner = new NUnitTestRunner();
         ITestFilter filter =
             isFilterNull ? null : NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
-        string expected = new Uri(testAssembly.Location).LocalPath;
+        string expected = new Uri(testAssembly.Location).LocalPath.Replace("\\", "/");
 
         runner.AddTestAssembly(testAssembly);
 
@@ -529,11 +529,11 @@ public class NUnitTestRunnerTest
     {
         TestResultStub resultInstance = new TestResultStub();
         resultInstance.Test = new TestStub { Id = testId, FullName = testName };
-        const string xml = "<result><test>foo</test></result>";
+        const string xml = "<test-run id=\"0\"><test-suite id=\"1\"><test-case id=\"2\" /></test-suite></test-run>";
         resultInstance.TestResultXml = TNode.FromXml(xml);
         INUnitTestResult result = new NUnitTestResult(resultInstance);
         NUnitTestRunner runner = new NUnitTestRunner();
-        string expectedXml = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<result>{Environment.NewLine}  <test>foo</test>{Environment.NewLine}</result>";
+        string expectedXml = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<test-run id=\"0\">{Environment.NewLine}  <test-suite id=\"1\">{Environment.NewLine}    <test-case id=\"2\"></test-case>{Environment.NewLine}  </test-suite>{Environment.NewLine}</test-run>";
 
         using Stream xmlStream = runner.GetTestResultsAsXmlStream(result, out string fileName);
 
