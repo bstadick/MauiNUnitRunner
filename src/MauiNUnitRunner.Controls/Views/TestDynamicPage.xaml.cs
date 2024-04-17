@@ -120,7 +120,7 @@ public partial class TestDynamicPage : ContentPage
         }
 
         // Navigate to child test page
-        TestDynamicPage page = CreateTestDynamicPage(test);
+        TestDynamicPage page = CreateTestDynamicPage(test.SkipSingleTestSuites());
         page.ShowFooterLinks = false;
         await NavigationPushAsync(page);
     }
