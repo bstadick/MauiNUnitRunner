@@ -17,7 +17,7 @@ namespace MauiNUnitRunner.Controls.Tests.Views
         {
             AboutPage page = new AboutPageForTest();
 
-            Assert.That(page.AssemblyVersion, Is.EqualTo("0.1.0"));
+            Assert.That(page.AssemblyVersion, Is.EqualTo("0.2.0"));
         }
 
         #endregion
