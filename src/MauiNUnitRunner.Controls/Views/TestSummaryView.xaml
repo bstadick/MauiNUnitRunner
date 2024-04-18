@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="/Resources/TestControlResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
+        <models:InverseBoolConverter x:Key="InverseBoolConverter"/>
     </ContentView.Resources>
 
     <StackLayout Padding="10" BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestSummaryView}}, Path=Test}" x:DataType="models:INUnitTest">
@@ -21,11 +22,13 @@
                Style="{StaticResource LabelTextStyle}"
                TextColor="{Binding TextColor}" />
         <StackLayout Orientation="Horizontal"
-                     IsVisible="{Binding Source={RelativeSource  AncestorType={x:Type views:TestSummaryView}}, Path= ShowTestButtons, FallbackValue=true}">
+                     IsVisible="{Binding Source={RelativeSource AncestorType={x:Type views:TestSummaryView}}, Path=ShowTestButtons, FallbackValue=true}">
             <Button Text="{StaticResource RunTestsButton}" Style="{StaticResource ButtonStyle}"
-                    Clicked="RunTestsButton_OnClicked" />
+                    Clicked="RunTestsButton_OnClicked"
+                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:TestSummaryView}}, Path=IsTestRunning, FallbackValue=true, Converter={StaticResource InverseBoolConverter}}" />
             <Button Text="{StaticResource SaveResultsButton}" Style="{StaticResource ButtonStyle}"
-                    Clicked="SaveResultsButton_OnClicked" />
+                    Clicked="SaveResultsButton_OnClicked"
+                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:TestSummaryView}}, Path=IsTestRunning, FallbackValue=true, Converter={StaticResource InverseBoolConverter}}" />
         </StackLayout>
 
         <!-- Test information -->

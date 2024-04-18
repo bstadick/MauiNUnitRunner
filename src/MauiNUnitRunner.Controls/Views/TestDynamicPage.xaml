@@ -25,6 +25,7 @@
                                BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicPage}}}"
                                x:DataType="views:TestDynamicPage"
                                Test="{Binding Test}"
+                               IsTestRunning="{Binding IsTestRunning, Mode=TwoWay}"
                                TestItemSelected="TestDynamicPage_OnItemSelected"
                                RunTestsClicked="TestDynamicPage_OnRunTestsClicked"
                                SaveResultsClicked="TestDynamicView_OnSaveResultsClicked"/>

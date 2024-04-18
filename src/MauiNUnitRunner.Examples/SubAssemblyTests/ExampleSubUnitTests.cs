@@ -134,4 +134,12 @@ public class ExampleSubUnitTests
         Assert.That(true);
         Console.Write("This test sometimes throws an exception during setup");
     }
+
+    [Test]
+    public void TestWithDelay()
+    {
+        Thread.Sleep(3000);
+
+        Assert.That(true);
+    }
 }

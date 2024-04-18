@@ -52,6 +52,41 @@ namespace MauiNUnitRunner.Controls.Tests.Views
 
         #endregion
 
+        #region Tests for IsTestRunning Property
+
+        [Test]
+        public void TestIsTestRunningProperty()
+        {
+            TestSummaryView page = new TestSummaryViewForTest();
+
+            Assert.That(TestSummaryView.IsTestRunningProperty.PropertyName, Is.EqualTo("IsTestRunning"));
+            Assert.That(TestSummaryView.IsTestRunningProperty.DeclaringType, Is.EqualTo(typeof(TestSummaryView)));
+            Assert.That(TestSummaryView.IsTestRunningProperty.ReturnType, Is.EqualTo(typeof(bool)));
+            Assert.That(TestSummaryView.IsTestRunningProperty.DefaultBindingMode, Is.EqualTo(BindingMode.TwoWay));
+            Assert.That(TestSummaryView.IsTestRunningProperty.DefaultValue, Is.False);
+            Assert.That(TestSummaryView.IsTestRunningProperty.IsReadOnly, Is.False);
+
+            Assert.That(page.IsTestRunning, Is.False);
+
+            page.IsTestRunning = false;
+
+            Assert.That(page.IsTestRunning, Is.False);
+
+            page.IsTestRunning = true;
+
+            Assert.That(page.IsTestRunning, Is.True);
+
+            page.IsTestRunning = true;
+
+            Assert.That(page.IsTestRunning, Is.True);
+
+            page.IsTestRunning = false;
+
+            Assert.That(page.IsTestRunning, Is.False);
+        }
+
+        #endregion
+
         #region Tests for ShowTestButtons Property
 
         [Test]

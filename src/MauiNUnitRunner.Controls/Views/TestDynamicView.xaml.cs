@@ -18,7 +18,7 @@ public partial class TestDynamicView : ContentView
     ///     The bindable <see cref="Test"/> property.
     /// </summary>
     public static readonly BindableProperty TestProperty =
-        BindableProperty.Create(nameof(Test), typeof(INUnitTest), typeof(TestSuiteView));
+        BindableProperty.Create(nameof(Test), typeof(INUnitTest), typeof(TestDynamicView));
 
     /// <summary>
     ///     Gets or sets the <see cref="INUnitTest"/> to bind to the view.
@@ -27,6 +27,21 @@ public partial class TestDynamicView : ContentView
     {
         get => (INUnitTest)GetBindableValue(TestProperty, TestProperty.DefaultValue);
         set => SetBindableValue(TestProperty, value);
+    }
+
+    /// <summary>
+    ///     The bindable <see cref="IsTestRunning"/> property.
+    /// </summary>
+    public static readonly BindableProperty IsTestRunningProperty =
+        BindableProperty.Create(nameof(IsTestRunning), typeof(bool), typeof(TestDynamicView), false, BindingMode.TwoWay);
+
+    /// <summary>
+    ///     Gets or sets if a test is currently running.
+    /// </summary>
+    public bool IsTestRunning
+    {
+        get => (bool)GetBindableValue(IsTestRunningProperty, IsTestRunningProperty.DefaultValue);
+        set => SetBindableValue(IsTestRunningProperty, value);
     }
 
     /// <summary>

@@ -33,7 +33,7 @@ namespace MauiNUnitRunner.Controls.Tests.Views
             TestDynamicView page = new TestDynamicViewForTest();
 
             Assert.That(TestDynamicView.TestProperty.PropertyName, Is.EqualTo("Test"));
-            Assert.That(TestDynamicView.TestProperty.DeclaringType, Is.EqualTo(typeof(TestSuiteView)));
+            Assert.That(TestDynamicView.TestProperty.DeclaringType, Is.EqualTo(typeof(TestDynamicView)));
             Assert.That(TestDynamicView.TestProperty.ReturnType, Is.EqualTo(typeof(INUnitTest)));
             Assert.That(TestDynamicView.TestProperty.DefaultBindingMode, Is.EqualTo(BindingMode.OneWay));
             Assert.That(TestDynamicView.TestProperty.DefaultValue, Is.Null);
@@ -47,6 +47,41 @@ namespace MauiNUnitRunner.Controls.Tests.Views
             page.Test = test;
 
             Assert.That(page.Test, Is.SameAs(test));
+        }
+
+        #endregion
+
+        #region Tests for IsTestRunning Property
+
+        [Test]
+        public void TestIsTestRunningProperty()
+        {
+            TestDynamicView page = new TestDynamicViewForTest();
+
+            Assert.That(TestDynamicView.IsTestRunningProperty.PropertyName, Is.EqualTo("IsTestRunning"));
+            Assert.That(TestDynamicView.IsTestRunningProperty.DeclaringType, Is.EqualTo(typeof(TestDynamicView)));
+            Assert.That(TestDynamicView.IsTestRunningProperty.ReturnType, Is.EqualTo(typeof(bool)));
+            Assert.That(TestDynamicView.IsTestRunningProperty.DefaultBindingMode, Is.EqualTo(BindingMode.TwoWay));
+            Assert.That(TestDynamicView.IsTestRunningProperty.DefaultValue, Is.False);
+            Assert.That(TestDynamicView.IsTestRunningProperty.IsReadOnly, Is.False);
+
+            Assert.That(page.IsTestRunning, Is.False);
+
+            page.IsTestRunning = false;
+
+            Assert.That(page.IsTestRunning, Is.False);
+
+            page.IsTestRunning = true;
+
+            Assert.That(page.IsTestRunning, Is.True);
+
+            page.IsTestRunning = true;
+
+            Assert.That(page.IsTestRunning, Is.True);
+
+            page.IsTestRunning = false;
+
+            Assert.That(page.IsTestRunning, Is.False);
         }
 
         #endregion
@@ -249,6 +284,11 @@ namespace MauiNUnitRunner.Controls.Tests.Views
             /// <inheritdoc />
             protected override object GetBindableValue(BindableProperty property, object defaultValue)
             {
+                if (!v_BindableProperties.ContainsKey(property))
+                {
+                    return defaultValue;
+                }
+
                 return v_BindableProperties.GetValueOrDefault(property);
             }
 

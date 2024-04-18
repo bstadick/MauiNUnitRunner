@@ -52,6 +52,41 @@ namespace MauiNUnitRunner.Controls.Tests.Views
 
         #endregion
 
+        #region Tests for IsTestRunning Property
+
+        [Test]
+        public void TestIsTestRunningProperty()
+        {
+            TestSuiteView page = new TestSuiteViewForTest();
+
+            Assert.That(TestSuiteView.IsTestRunningProperty.PropertyName, Is.EqualTo("IsTestRunning"));
+            Assert.That(TestSuiteView.IsTestRunningProperty.DeclaringType, Is.EqualTo(typeof(TestSuiteView)));
+            Assert.That(TestSuiteView.IsTestRunningProperty.ReturnType, Is.EqualTo(typeof(bool)));
+            Assert.That(TestSuiteView.IsTestRunningProperty.DefaultBindingMode, Is.EqualTo(BindingMode.TwoWay));
+            Assert.That(TestSuiteView.IsTestRunningProperty.DefaultValue, Is.False);
+            Assert.That(TestSuiteView.IsTestRunningProperty.IsReadOnly, Is.False);
+
+            Assert.That(page.IsTestRunning, Is.False);
+
+            page.IsTestRunning = false;
+
+            Assert.That(page.IsTestRunning, Is.False);
+
+            page.IsTestRunning = true;
+
+            Assert.That(page.IsTestRunning, Is.True);
+
+            page.IsTestRunning = true;
+
+            Assert.That(page.IsTestRunning, Is.True);
+
+            page.IsTestRunning = false;
+
+            Assert.That(page.IsTestRunning, Is.False);
+        }
+
+        #endregion
+
         #region Tests for TestSuiteView_OnTestItemSelected
 
         [Test]
@@ -292,6 +327,11 @@ namespace MauiNUnitRunner.Controls.Tests.Views
             /// <inheritdoc />
             protected override object GetBindableValue(BindableProperty property, object defaultValue)
             {
+                if (!v_BindableProperties.ContainsKey(property))
+                {
+                    return defaultValue;
+                }
+
                 return v_BindableProperties.GetValueOrDefault(property);
             }
 

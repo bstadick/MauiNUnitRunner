@@ -30,6 +30,21 @@ public partial class TestSuiteView : ContentView
     }
 
     /// <summary>
+    ///     The bindable <see cref="IsTestRunning"/> property.
+    /// </summary>
+    public static readonly BindableProperty IsTestRunningProperty =
+        BindableProperty.Create(nameof(IsTestRunning), typeof(bool), typeof(TestSuiteView), false, BindingMode.TwoWay);
+
+    /// <summary>
+    ///     Gets or sets if a test is currently running.
+    /// </summary>
+    public bool IsTestRunning
+    {
+        get => (bool)GetBindableValue(IsTestRunningProperty, IsTestRunningProperty.DefaultValue);
+        set => SetBindableValue(IsTestRunningProperty, value);
+    }
+
+    /// <summary>
     ///     Event raised when a <see cref="INUnitTest"/> item is selected.
     /// </summary>
     public event EventHandler<NUnitTestEventArgs> TestItemSelected;

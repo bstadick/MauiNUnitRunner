@@ -25,6 +25,11 @@ public partial class TestDynamicPage : ContentPage
     /// </summary>
     private readonly IFileSaver v_FileSaver = FileSaver.Default;
 
+    /// <summary>
+    ///     The parent page.
+    /// </summary>
+    private readonly TestDynamicPage v_ParentPage;
+
     #endregion
 
     #region Public Members
@@ -42,6 +47,29 @@ public partial class TestDynamicPage : ContentPage
     {
         get => (INUnitTest)GetBindableValue(TestProperty, TestProperty.DefaultValue);
         set => SetBindableValue(TestProperty, value);
+    }
+
+    /// <summary>
+    ///     The bindable <see cref="IsTestRunning"/> property.
+    /// </summary>
+    public static readonly BindableProperty IsTestRunningProperty =
+        BindableProperty.Create(nameof(IsTestRunning), typeof(bool), typeof(TestDynamicPage), false, BindingMode.TwoWay);
+
+    /// <summary>
+    ///     Gets or sets if a test is currently running.
+    /// </summary>
+    public bool IsTestRunning
+    {
+        get => (bool)GetBindableValue(IsTestRunningProperty, IsTestRunningProperty.DefaultValue);
+        set
+        {
+            SetBindableValue(IsTestRunningProperty, value);
+
+            if (v_ParentPage != null)
+            {
+                v_ParentPage.IsTestRunning = value;
+            }
+        }
     }
 
     /// <summary>
@@ -82,9 +110,10 @@ public partial class TestDynamicPage : ContentPage
     /// </summary>
     /// <param name="testRunner">The NUnit test runner the test was loaded from.</param>
     /// <param name="test">The test to bind to the page, or null to explore all currently loaded tests.</param>
+    /// <param name="parent">The parent <see cref="TestDynamicPage"/> or null if no parent.</param>
     /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="testRunner"/> is null.</exception>
-    protected TestDynamicPage(INUnitTestRunner testRunner, INUnitTest test, bool initializeComponent = true)
+    protected TestDynamicPage(INUnitTestRunner testRunner, INUnitTest test, TestDynamicPage parent = null, bool initializeComponent = true)
     {
         if (testRunner == null)
         {
@@ -99,6 +128,7 @@ public partial class TestDynamicPage : ContentPage
         TestRunner = testRunner;
         Test = test ?? TestRunner.ExploreTests(NUnitFilter.Empty);
         Title = Test?.DisplayName ?? string.Empty;
+        v_ParentPage = parent;
     }
 
     #endregion
@@ -122,6 +152,7 @@ public partial class TestDynamicPage : ContentPage
         // Navigate to child test page
         TestDynamicPage page = CreateTestDynamicPage(test.SkipSingleTestSuites());
         page.ShowFooterLinks = false;
+        page.IsTestRunning = IsTestRunning;
         await NavigationPushAsync(page);
     }
 
@@ -143,7 +174,9 @@ public partial class TestDynamicPage : ContentPage
         ITestFilter filter = NUnitFilter.Where.Id(test.Test.Id).Build().Filter;
 
         // Wait for test to complete
+        IsTestRunning = true;
         INUnitTestResult result = await TestRunner.Run(filter);
+        IsTestRunning = false;
         if (result == null)
         {
             return;
@@ -220,7 +253,7 @@ public partial class TestDynamicPage : ContentPage
     /// <returns>The newly created <see cref="TestDynamicPage"/>.</returns>
     protected virtual TestDynamicPage CreateTestDynamicPage(INUnitTest test)
     {
-        return new TestDynamicPage(TestRunner, test);
+        return new TestDynamicPage(TestRunner, test, this);
     }
 
     /// <summary>
@@ -240,13 +273,11 @@ public partial class TestDynamicPage : ContentPage
     /// <param name="fileName">The name of the file to save.</param>
     /// <param name="resultStream">The file stream to save.</param>
     /// <returns>A <see cref="Task"/> to await.</returns>
-#if UNITTEST
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416: Validate platform compatibility",
-        Justification = "This method is not accessed on other platforms from a unit test context.")]
-#endif
     protected virtual async Task SaveAsync(string folderPath, string fileName, Stream resultStream)
     {
+#pragma warning disable CA1416
         await v_FileSaver.SaveAsync(folderPath, fileName, resultStream);
+#pragma warning restore CA1416
     }
 
     /// <summary>

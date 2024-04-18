@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(NetFrameworkVersion)-ios</TargetFrameworks>
-    <TargetFrameworks Condition="'$(Platform)'!='iPhoneSimulator'">$(TargetFrameworks);$(NetFrameworkVersion)-android;$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) And '$(Platform)'!='iPhoneSimulator'">$(TargetFrameworks);$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);$(NetFrameworkVersion)-android;$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) And '$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>
     <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
     <!-- <TargetFrameworks>$(TargetFrameworks);$(NetFrameworkVersion)-tizen</TargetFrameworks> -->
     <Platforms>$(Platforms);iPhoneSimulator</Platforms>

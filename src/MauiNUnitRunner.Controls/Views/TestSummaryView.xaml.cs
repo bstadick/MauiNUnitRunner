@@ -30,6 +30,21 @@ public partial class TestSummaryView : ContentView
     }
 
     /// <summary>
+    ///     The bindable <see cref="IsTestRunning"/> property.
+    /// </summary>
+    public static readonly BindableProperty IsTestRunningProperty =
+        BindableProperty.Create(nameof(IsTestRunning), typeof(bool), typeof(TestSummaryView), false, BindingMode.TwoWay);
+
+    /// <summary>
+    ///     Gets or sets if a test is currently running.
+    /// </summary>
+    public bool IsTestRunning
+    {
+        get => (bool)GetBindableValue(IsTestRunningProperty, IsTestRunningProperty.DefaultValue);
+        set => SetBindableValue(IsTestRunningProperty, value);
+    }
+
+    /// <summary>
     ///     The bindable <see cref="ShowTestButtons"/> property.
     /// </summary>
     public static readonly BindableProperty ShowTestButtonsProperty =

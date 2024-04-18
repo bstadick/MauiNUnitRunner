@@ -114,6 +114,49 @@ namespace MauiNUnitRunner.Controls.Tests.Views
 
         #endregion
 
+        #region Tests for IsTestRunning Property
+
+        [Test]
+        public void TestIsTestRunningProperty([Values] bool withParentPage)
+        {
+            INUnitTestRunner runner = new NUnitTestRunnerForTest();
+
+            TestDynamicPage parentPage = new TestDynamicPageForTest(runner);
+            TestDynamicPage page = new TestDynamicPageForTest(runner, null, withParentPage ? parentPage : null);
+
+            Assert.That(TestDynamicPage.IsTestRunningProperty.PropertyName, Is.EqualTo("IsTestRunning"));
+            Assert.That(TestDynamicPage.IsTestRunningProperty.DeclaringType, Is.EqualTo(typeof(TestDynamicPage)));
+            Assert.That(TestDynamicPage.IsTestRunningProperty.ReturnType, Is.EqualTo(typeof(bool)));
+            Assert.That(TestDynamicPage.IsTestRunningProperty.DefaultBindingMode, Is.EqualTo(BindingMode.TwoWay));
+            Assert.That(TestDynamicPage.IsTestRunningProperty.DefaultValue, Is.False);
+            Assert.That(TestDynamicPage.IsTestRunningProperty.IsReadOnly, Is.False);
+
+            Assert.That(page.IsTestRunning, Is.False);
+            Assert.That(parentPage.IsTestRunning, Is.False);
+
+            page.IsTestRunning = false;
+
+            Assert.That(page.IsTestRunning, Is.False);
+            Assert.That(parentPage.IsTestRunning, Is.False);
+
+            page.IsTestRunning = true;
+
+            Assert.That(page.IsTestRunning, Is.True);
+            Assert.That(parentPage.IsTestRunning, Is.EqualTo(withParentPage));
+
+            page.IsTestRunning = true;
+
+            Assert.That(page.IsTestRunning, Is.True);
+            Assert.That(parentPage.IsTestRunning, Is.EqualTo(withParentPage));
+
+            page.IsTestRunning = false;
+
+            Assert.That(page.IsTestRunning, Is.False);
+            Assert.That(parentPage.IsTestRunning, Is.False);
+        }
+
+        #endregion
+
         #region Tests for ShowFooterLinks Property
 
         [Test]
@@ -431,8 +474,8 @@ namespace MauiNUnitRunner.Controls.Tests.Views
             /// <summary>
             ///     Initializes a new TestDynamicPageForTest.
             /// </summary>
-            public TestDynamicPageForTest(INUnitTestRunner testRunner, INUnitTest test = null) : base(testRunner, test,
-                false)
+            public TestDynamicPageForTest(INUnitTestRunner testRunner, INUnitTest test = null,
+                TestDynamicPage parentPage = null) : base(testRunner, test, parentPage, false)
             {
             }
 
