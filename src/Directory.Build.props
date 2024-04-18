@@ -2,7 +2,6 @@
   <PropertyGroup>
     <!-- Global settings -->
     <NetFrameworkVersion>net8.0</NetFrameworkVersion>
-    <Configurations>Debug;Release;UnitTest</Configurations>
 
     <!-- Package Creation settings -->
     <Version>0.2.0</Version>

@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(NetFrameworkVersion)-android;$(NetFrameworkVersion)-ios;$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(Configuration)' == 'UnitTest'">$(TargetFrameworks);$(NetFrameworkVersion)</TargetFrameworks>
+    <TargetFrameworks>$(NetFrameworkVersion)</TargetFrameworks>
+    <!-- Can build for each individual target platform if necessary -->
+    <!--<TargetFrameworks>$(TargetFrameworks);$(NetFrameworkVersion)-android;$(NetFrameworkVersion)-ios;$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>-->
     <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
     <!-- <TargetFrameworks>$(TargetFrameworks);$(NetFrameworkVersion)-tizen</TargetFrameworks> -->
 

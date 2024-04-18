@@ -36,11 +36,11 @@ jobs:
     - name: Build with dotnet
       run: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }}
     - name: Build examples with dotnet
-      run: dotnet build "${{ env.SOLUTION }}" -c Example
+      run: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }}
     - name: Build iOS simulator examples with dotnet
-      run: dotnet build "${{ env.SOLUTION }}" -c Example -p:Platform=iPhoneSimulator
+      run: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }} -p:Platform=iPhoneSimulator
     - name: Test with dotnet
-      run: dotnet test "${{ env.SOLUTION }}" -c UnitTest --logger trx
+      run: dotnet test "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }} --logger trx
     - name: Pack with dotnet
       run: dotnet pack "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }}
     - name: Archive production artifacts

@@ -92,17 +92,17 @@ The `MauiNUnitRunner.Controls` namespace exposes the individual **ContentViews**
 
 ## Build
 
-Use the provided `./src/MauiNUnitRunner.sln` solution and Visual Studio 2022 with .NET 8 and the .NET MAUI workloads to build the project.
+Use the provided `./src/MauiNUnitRunner.sln` solution (to build everything) or the `./src/MauiNUnitRunner.Controls/MauiNUnitRunner.Controls.csproj` project directly and Visual Studio 2022 with .NET 8 and the .NET MAUI workloads to build the project.
 
-The MauiNUnitRunner project can be built and referenced using the pre-built Nuget package.
+The MauiNUnitRunner project can be built and referenced in a .NET MAUI app using the pre-built Nuget package.
 
 ## Examples
 
-Example test runner projects can be found in the `./src/MauiNUnitRunner.Examples` project folders. The examples consist of an example test runner app and a separate test sub-assembly to include in the test runner app. The examples can be built from the project's solution using the **Example** configuration.
+Example test runner projects can be found in the `./src/MauiNUnitRunner.Examples` project folders. The examples consist of an example test runner app and a separate test sub-assembly to include in the test runner app. The examples can be built from the project's solution or `./src/MauiNUnitRunner.Examples.slnf` solution filter using the **Debug** or **Release** configuration.
 
 ## Unit Tests
 
-The project includes near complete code coverage of the `MauiNUnitRunner.Controls` namespace. Build and run the unit tests using the **UnitTest** configuration.
+The project includes near complete code coverage of the `MauiNUnitRunner.Controls` namespace found in the `./src/MauiNUnitRunner.Controls.Tests` project folder. Build and run the unit tests using the project's solution or `./src/MauiNUnitRunner.Tests.slnf` solution filter using the **Debug** or **Release** configuration.
 
 ## Future Enhancements
 
