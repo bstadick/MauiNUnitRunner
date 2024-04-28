@@ -25,6 +25,12 @@ public class NUnitTestRunner : INUnitTestRunner
     // ReSharper disable once InconsistentNaming
     protected readonly INUnitTestAssemblyRunner v_TestRunner;
 
+    /// <summary>
+    ///     Holds the underlying test listener.
+    /// </summary>
+    // ReSharper disable once InconsistentNaming
+    protected readonly NUnitCompositeTestListener v_TestListener;
+
     #endregion
 
     #region Constructors
@@ -44,6 +50,7 @@ public class NUnitTestRunner : INUnitTestRunner
     protected NUnitTestRunner(INUnitTestAssemblyRunner runner)
     {
         v_TestRunner = runner ?? throw ExceptionHelper.ThrowArgumentNullException(nameof(runner));
+        v_TestListener = new NUnitCompositeTestListener();
     }
 
     #endregion
@@ -55,9 +62,6 @@ public class NUnitTestRunner : INUnitTestRunner
 
     /// <inheritdoc />
     public bool IsTestRunning => v_TestRunner.IsTestRunning;
-
-    /// <inheritdoc />
-    public ITestListener TestListener { get; set; }
 
     /// <inheritdoc />
     public void AddTestAssembly(Assembly assembly, IDictionary<string, object> settings = null)
@@ -92,7 +96,7 @@ public class NUnitTestRunner : INUnitTestRunner
         filter ??= NUnitFilter.Empty;
         Task<INUnitTestResult> runTask = Task.Run(() =>
         {
-            ITestResult result = v_TestRunner.Run(TestListener, filter);
+            ITestResult result = v_TestRunner.Run(v_TestListener, filter);
             return (INUnitTestResult)(new NUnitTestResult(result));
         });
 
@@ -164,6 +168,18 @@ public class NUnitTestRunner : INUnitTestRunner
         }
 
         return resultStream;
+    }
+
+    /// <inheritdoc />
+    public void AddTestListener(ITestListener listener)
+    {
+        v_TestListener.AddTestListener(listener);
+    }
+
+    /// <inheritdoc />
+    public void RemoveTestListener(ITestListener listener)
+    {
+        v_TestListener.RemoveTestListener(listener);
     }
 
     #endregion

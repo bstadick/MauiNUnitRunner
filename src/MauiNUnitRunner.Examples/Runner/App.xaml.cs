@@ -30,7 +30,7 @@ public partial class App : Application
         // Add an optional test listener to get test output and progress
         //NUnitTestListener listener = new NUnitTestListener();
         //listener.WriteOutput += Console.WriteLine;
-        //runner.TestListener = listener;
+        //runner.AddTestListener(listener);
 
         // Set test page as main page
         MainPage = new NavigationPage(page);

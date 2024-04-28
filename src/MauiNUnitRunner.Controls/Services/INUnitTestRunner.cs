@@ -24,12 +24,6 @@ public interface INUnitTestRunner
     /// </summary>
     bool IsTestRunning { get; }
 
-    /// <summary>
-    ///     Gets or sets the test listener.
-    /// </summary>
-    /// <remarks>Must be set before a test run is initiated.</remarks>
-    ITestListener TestListener { get; set; }
-
     #endregion
 
     #region Public Methods
@@ -61,6 +55,18 @@ public interface INUnitTestRunner
     /// <param name="fileName">Outputs an appropriate name for the test result file.</param>
     /// <returns>The results as a xml stream, or null if results were null.</returns>
     Stream GetTestResultsAsXmlStream(INUnitTestResult result, out string fileName);
+
+    /// <summary>
+    ///     Adds a <see cref="ITestListener"/>.
+    /// </summary>
+    /// <param name="listener">The test listener to add.</param>
+    void AddTestListener(ITestListener listener);
+
+    /// <summary>
+    ///     Removes a <see cref="ITestListener"/>.
+    /// </summary>
+    /// <param name="listener">The test listener to remove.</param>
+    void RemoveTestListener(ITestListener listener);
 
     #endregion
 }

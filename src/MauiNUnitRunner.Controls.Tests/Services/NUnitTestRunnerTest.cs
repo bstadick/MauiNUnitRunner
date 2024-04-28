@@ -21,7 +21,6 @@ public class NUnitTestRunnerTest
 
         Assert.That(runner.TestRunner, Is.Not.Null);
         Assert.That(runner.IsTestRunning, Is.False);
-        Assert.That(runner.TestListener, Is.Null);
     }
 
     [Test]
@@ -64,32 +63,6 @@ public class NUnitTestRunnerTest
         runner.TestRunnerStub.IsTestRunning = false;
 
         Assert.That(runner.IsTestRunning, Is.False);
-    }
-
-    #endregion
-
-    #region Tests for TestListener Property
-
-    [Test]
-    public void TestTestListenerProperty([Values] bool isNull)
-    {
-        NUnitTestRunner runner = new NUnitTestRunner();
-
-        Assert.That(runner.TestListener, Is.Null);
-
-        NUnitTestListener listener = null;
-        try
-        {
-            listener = isNull ? null : new NUnitTestListener();
-
-            runner.TestListener = listener;
-
-            Assert.That(runner.TestListener, Is.SameAs(listener));
-        }
-        finally
-        {
-            listener?.Dispose();
-        }
     }
 
     #endregion
@@ -286,7 +259,8 @@ public class NUnitTestRunnerTest
         {
             NUnitTestRunnerForTest runner = new NUnitTestRunnerForTest();
             listener = withListener ? new NUnitTestListener() : null;
-            runner.TestListener = listener;
+            int listenerCount = withListener ? 1 : 0;
+            runner.AddTestListener(listener);
 
             ITestFilter filter =
                 isFilterNull ? null : NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
@@ -322,8 +296,13 @@ public class NUnitTestRunnerTest
             Assert.That(runner.IsTestRunning, Is.False);
             Assert.That(testRun.Result, Is.Not.Null);
             Assert.That(testRun.Result.Result, Is.SameAs(result));
-            Assert.That(runListener, Is.SameAs(listener));
             Assert.That(runFilter, Is.SameAs(expectedFilter));
+            Assert.That(runListener, Is.Not.Null.And.TypeOf<NUnitCompositeTestListener>());
+            Assert.That((runListener as NUnitCompositeTestListener)?.TestListeners, Has.Count.EqualTo(listenerCount));
+            if (withListener)
+            {
+                Assert.That((runListener as NUnitCompositeTestListener)?.TestListeners, Does.Contain(listener));
+            }
 
             waitForRunStart.Dispose();
             waitToEndRun.Dispose();
@@ -560,6 +539,72 @@ public class NUnitTestRunnerTest
 
     #endregion
 
+    #region Tests for AddTestListener
+
+    [Test]
+    public void TestAddTestListener()
+    {
+        NUnitTestRunnerForTest runner = new NUnitTestRunnerForTest();
+
+        Assert.That(runner.UnderlyingTestListener, Is.Not.Null);
+        Assert.That(runner.UnderlyingTestListener.TestListeners, Is.Empty);
+
+        NUnitTestListener listener = null;
+        try
+        {
+            listener = new NUnitTestListener();
+
+            runner.AddTestListener(listener);
+            runner.AddTestListener(null);
+
+            Assert.That(runner.UnderlyingTestListener.TestListeners, Has.Count.EqualTo(1));
+            Assert.That(runner.UnderlyingTestListener.TestListeners, Does.Contain(listener));
+        }
+        finally
+        {
+            listener?.Dispose();
+        }
+    }
+
+    #endregion
+
+    #region Tests for RemoveTestListener
+
+    [Test]
+    public void TestRemoveTestListener()
+    {
+        NUnitTestRunnerForTest runner = new NUnitTestRunnerForTest();
+
+        Assert.That(runner.UnderlyingTestListener, Is.Not.Null);
+        Assert.That(runner.UnderlyingTestListener.TestListeners, Is.Empty);
+
+        NUnitTestListener listener = null;
+        try
+        {
+            listener = new NUnitTestListener();
+
+            runner.AddTestListener(listener);
+            runner.AddTestListener(null);
+
+            Assert.That(runner.UnderlyingTestListener.TestListeners, Has.Count.EqualTo(1));
+            Assert.That(runner.UnderlyingTestListener.TestListeners, Does.Contain(listener));
+
+            runner.RemoveTestListener(listener);
+
+            Assert.That(runner.UnderlyingTestListener.TestListeners, Is.Empty);
+
+            runner.RemoveTestListener(null);
+
+            Assert.That(runner.UnderlyingTestListener.TestListeners, Is.Empty);
+        }
+        finally
+        {
+            listener?.Dispose();
+        }
+    }
+
+    #endregion
+
     #region Nested Class: NUnitTestRunnerForTest
 
     /// <summary>
@@ -573,6 +618,11 @@ public class NUnitTestRunnerTest
         ///     Gets the underlying test runner stub.
         /// </summary>
         public NUnitTestAssemblyRunnerStub TestRunnerStub => v_TestRunner as NUnitTestAssemblyRunnerStub;
+
+        /// <summary>
+        ///     Gets the underlying test listener.
+        /// </summary>
+        public NUnitCompositeTestListener UnderlyingTestListener => v_TestListener;
 
         #endregion
 
