@@ -21,7 +21,8 @@ public partial class App : Application
 
         // Add assemblies with unit tests to test runner
         NUnitTestRunner runner = new NUnitTestRunner();
-        runner.AddTestAssembly(GetType().Assembly, settings);
+        //runner.AddTestAssembly(GetType().Assembly, settings);
+        // Or
         runner.AddTestAssembly(typeof(ExampleSubUnitTests).Assembly);
 
         // Create initial test page

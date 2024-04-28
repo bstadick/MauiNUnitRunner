@@ -213,6 +213,15 @@ public class NUnitTestTest
         Assert.That(test.Result.Children, Is.EqualTo(new List<INUnitTestResult> { resultChild }));
     }
 
+    [Test]
+    public void TestResultPropertyInvokesPropertyChangedEventWhenPropertyValueChanges()
+    {
+        INUnitTestResult result = new NUnitTestResult(new TestResultStub());
+
+        TestPropertyChangedEventIsInvokedWhenPropertyChanges(result, (state, value) => state.Result = value,
+            "Result", "TextColor");
+    }
+
     #endregion
 
     #region Tests for HasTestResult Property
@@ -520,32 +529,17 @@ public class NUnitTestTest
     [Test]
     public void TestPropertyChangedEventIsInvokedWhenResultPropertyChanges()
     {
-        TestStub testInstance = new TestStub();
+        INUnitTestResult result = new NUnitTestResult(new TestResultStub());
 
-        INUnitTest test = new NUnitTest(testInstance);
-
-        List<Tuple<INUnitTest, PropertyChangedEventArgs>> eventArgs =
-            new List<Tuple<INUnitTest, PropertyChangedEventArgs>>();
-        test.PropertyChanged += (sender, args) =>
-            eventArgs.Add(new Tuple<INUnitTest, PropertyChangedEventArgs>(sender as INUnitTest, args));
-
-        test.Result = new NUnitTestResult(new TestResultStub());
-
-        Assert.That(eventArgs, Has.Count.EqualTo(2));
-        Assert.That(eventArgs[0].Item1, Is.SameAs(test));
-        Assert.That(eventArgs[0].Item2, Is.Not.Null);
-        Assert.That(eventArgs[0].Item2.PropertyName, Is.EqualTo("Result"));
-        Assert.That(eventArgs[1].Item1, Is.SameAs(test));
-        Assert.That(eventArgs[1].Item2, Is.Not.Null);
-        Assert.That(eventArgs[1].Item2.PropertyName, Is.EqualTo("TextColor"));
+        // Use an existing property to test the event is invoked
+        TestPropertyChangedEventIsInvokedWhenPropertyChanges(result, (state, value) => state.Result = value,
+            "Result", "TextColor");
     }
 
     [Test]
     public void TestPropertyChangedEventWhenEventNotSetAndResultPropertyChangedDoesNotThrowException()
     {
-        TestStub testInstance = new TestStub();
-
-        INUnitTest test = new NUnitTest(testInstance);
+        INUnitTest test = new NUnitTest(new TestStub());
 
         Assert.DoesNotThrow(() => { test.Result = new NUnitTestResult(new TestResultStub()); });
     }
@@ -607,6 +601,38 @@ public class NUnitTestTest
         INUnitTest testOne = new NUnitTest(testInputOne);
 
         Assert.That(testOne.GetHashCode(), Is.EqualTo(hashCode));
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    ///     Tests the property changed event for generic properties.
+    /// </summary>
+    /// <typeparam name="T">The type of the property value being changed.</typeparam>
+    /// <param name="value">The value to set, should be different from the default value.</param>
+    /// <param name="changePropertyValue">The action to change the property value.</param>
+    /// <param name="propertyNames">The name of the property changed events that are invoked.</param>
+    private static void TestPropertyChangedEventIsInvokedWhenPropertyChanges<T>(T value,
+        Action<INUnitTest, T> changePropertyValue, params string[] propertyNames)
+    {
+        INUnitTest test = new NUnitTest(new TestStub());
+
+        List<Tuple<INUnitTest, PropertyChangedEventArgs>> eventArgs =
+            new List<Tuple<INUnitTest, PropertyChangedEventArgs>>();
+        test.PropertyChanged += (sender, args) =>
+            eventArgs.Add(new Tuple<INUnitTest, PropertyChangedEventArgs>(sender as INUnitTest, args));
+
+        changePropertyValue.Invoke(test, value);
+
+        Assert.That(eventArgs, Has.Count.EqualTo(propertyNames.Length));
+        for (int i = 0; i < propertyNames.Length; i++)
+        {
+            Assert.That(eventArgs[i].Item1, Is.SameAs(test));
+            Assert.That(eventArgs[i].Item2, Is.Not.Null);
+            Assert.That(eventArgs[i].Item2.PropertyName, Is.EqualTo(propertyNames[i]));
+        }
     }
 
     #endregion

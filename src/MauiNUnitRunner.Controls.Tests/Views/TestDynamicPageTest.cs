@@ -129,6 +129,106 @@ public class TestDynamicPageTest
 
     #endregion
 
+    #region Tests for TestRunException Event
+
+    [Test]
+    public void TestTestRunExceptionEventRaisedWhenTestRunThrowsException()
+    {
+        NUnitTestAssemblyRunnerStub testAssemblyRunner = new NUnitTestAssemblyRunnerStub();
+        NUnitTestRunnerForTest runner = new NUnitTestRunnerForTest(testAssemblyRunner);
+        runner.RunThrowsException = true;
+
+        ITest testInstance = new TestStub { Id = "123", Name = "testcase" };
+        INUnitTest test = new NUnitTest(testInstance);
+
+        TestDynamicPageForTest page = new TestDynamicPageForTest(runner);
+
+        List<Tuple<TestDynamicPage, Exception>> eventArgs = new List<Tuple<TestDynamicPage, Exception>>();
+        page.TestRunException += (sender, args) =>
+            eventArgs.Add(new Tuple<TestDynamicPage, Exception>(sender as TestDynamicPage, args));
+
+        page.InvokeOnRunTestsClicked(page, new NUnitTestEventArgs(test));
+
+        Assert.That(page.TestRunState.IsTestRunning, Is.False);
+        Assert.That(eventArgs, Has.Count.EqualTo(1));
+        Assert.That(eventArgs[0].Item1, Is.SameAs(page));
+        Assert.That(eventArgs[0].Item2, Is.Not.Null.And.TypeOf<InvalidOperationException>());
+        Assert.That(eventArgs[0].Item2.Message, Is.EqualTo("INUnitTestRunner.Run threw an exception."));
+    }
+
+    [Test]
+    public void TestTestRunExceptionEventWhenEventNotSetAndTestRunThrowsExceptionDoesNotThrowException()
+    {
+        NUnitTestAssemblyRunnerStub testAssemblyRunner = new NUnitTestAssemblyRunnerStub();
+        NUnitTestRunnerForTest runner = new NUnitTestRunnerForTest(testAssemblyRunner);
+        runner.RunThrowsException = true;
+
+        ITest testInstance = new TestStub { Id = "123", Name = "testcase" };
+        INUnitTest test = new NUnitTest(testInstance);
+
+        TestDynamicPageForTest page = new TestDynamicPageForTest(runner);
+
+        Assert.DoesNotThrow(() =>
+            page.InvokeOnRunTestsClicked(page, new NUnitTestEventArgs(test)));
+        Assert.That(page.TestRunState.IsTestRunning, Is.False);
+    }
+
+    #endregion
+
+    #region Tests for TestRunner Property
+
+    [Test]
+    public void TestTestRunnerProperty()
+    {
+        INUnitTestRunner runner = new NUnitTestRunnerForTest();
+
+        TestDynamicPage page = new TestDynamicPageForTest(runner);
+
+        Assert.That(page.TestRunner, Is.SameAs(runner));
+    }
+
+    [Test]
+    public void TestTestRunnerPropertyComesFromParentPage()
+    {
+        INUnitTestRunner runner = new NUnitTestRunnerForTest();
+        INUnitTestRunner childRunner = new NUnitTestRunnerForTest();
+
+        TestDynamicPage parentPage = new TestDynamicPageForTest(runner);
+        TestDynamicPage page = new TestDynamicPageForTest(childRunner, null, parentPage);
+
+        Assert.That(parentPage.TestRunner, Is.SameAs(runner));
+        Assert.That(page.TestRunner, Is.SameAs(runner));
+    }
+
+    #endregion
+
+    #region Tests for ProgressTestListener Property
+
+    [Test]
+    public void TestProgressTestListenerProperty()
+    {
+        INUnitTestRunner runner = new NUnitTestRunnerForTest();
+
+        TestDynamicPage page = new TestDynamicPageForTest(runner);
+
+        Assert.That(page.ProgressTestListener, Is.Not.Null);
+    }
+
+    [Test]
+    public void TestProgressTestListenerPropertyComesFromParentPage()
+    {
+        INUnitTestRunner runner = new NUnitTestRunnerForTest();
+
+        TestDynamicPage parentPage = new TestDynamicPageForTest(runner);
+        TestDynamicPage page = new TestDynamicPageForTest(runner, null, parentPage);
+
+        Assert.That(parentPage.ProgressTestListener, Is.Not.Null);
+        Assert.That(page.ProgressTestListener, Is.Not.Null);
+        Assert.That(page.ProgressTestListener, Is.SameAs(parentPage.ProgressTestListener));
+    }
+
+    #endregion
+
     #region Tests for Test Property
 
     [Test]
@@ -217,33 +317,6 @@ public class TestDynamicPageTest
 
     #endregion
 
-    #region Tests for TestRunner Property
-
-    [Test]
-    public void TestTestRunnerProperty()
-    {
-        INUnitTestRunner runner = new NUnitTestRunnerForTest();
-
-        TestDynamicPage page = new TestDynamicPageForTest(runner);
-
-        Assert.That(page.TestRunner, Is.SameAs(runner));
-    }
-
-    [Test]
-    public void TestTestRunnerPropertyComesFromParentPage()
-    {
-        INUnitTestRunner runner = new NUnitTestRunnerForTest();
-        INUnitTestRunner childRunner = new NUnitTestRunnerForTest();
-
-        TestDynamicPage parentPage = new TestDynamicPageForTest(runner);
-        TestDynamicPage page = new TestDynamicPageForTest(childRunner, null, parentPage);
-
-        Assert.That(parentPage.TestRunner, Is.SameAs(runner));
-        Assert.That(page.TestRunner, Is.SameAs(runner));
-    }
-
-    #endregion
-
     #region Tests for TestDynamicPage_OnItemSelected
 
     [Test]
@@ -253,7 +326,10 @@ public class TestDynamicPageTest
 
         TestDynamicPageForTest page = new TestDynamicPageForTest(runner);
 
-        ITest testInstance = new TestStub { Id = "123" };
+        ITest testInstanceChild1 = new TestStub { Id = "2-1" };
+        ITest testInstanceChild2 = new TestStub { Id = "2-2" };
+        ITest testInstance = new TestStub
+            { Id = "1", Tests = new List<ITest> { testInstanceChild1, testInstanceChild2 } };
         INUnitTest test = new NUnitTest(testInstance);
 
         page.InvokeOnTestItemSelected(this, new NUnitTestEventArgs(test));
@@ -263,6 +339,28 @@ public class TestDynamicPageTest
         Assert.That(navigatedPage, Is.Not.Null);
         Assert.That(navigatedPage.TestRunner, Is.SameAs(runner));
         Assert.That(navigatedPage.Test, Is.SameAs(test));
+        Assert.That(navigatedPage.ShowFooterLinks, Is.False);
+    }
+
+    [Test]
+    public void TestOnTestItemSelectedSkipsSingleTestPages()
+    {
+        INUnitTestRunner runner = new NUnitTestRunnerForTest();
+
+        TestDynamicPageForTest page = new TestDynamicPageForTest(runner);
+
+        ITest testInstanceGrandChild = new TestStub { Id = "3" };
+        ITest testInstanceChild = new TestStub { Id = "2", Tests = new List<ITest> { testInstanceGrandChild } };
+        ITest testInstance = new TestStub { Id = "1", Tests = new List<ITest> { testInstanceChild } };
+        INUnitTest test = new NUnitTest(testInstance);
+
+        page.InvokeOnTestItemSelected(this, new NUnitTestEventArgs(test));
+
+        Assert.That(page.NavigationPushAsyncInvoked, Is.True);
+        TestDynamicPage navigatedPage = page.NavigatedPage as TestDynamicPage;
+        Assert.That(navigatedPage, Is.Not.Null);
+        Assert.That(navigatedPage.TestRunner, Is.SameAs(runner));
+        Assert.That(navigatedPage.Test.Test, Is.SameAs(testInstanceGrandChild));
         Assert.That(navigatedPage.ShowFooterLinks, Is.False);
     }
 
@@ -286,14 +384,21 @@ public class TestDynamicPageTest
     #region Tests for TestDynamicPage_OnRunTestsClicked
 
     [Test]
-    public void TestOnRunTestsClicked([Values] bool isResultNull)
+    public void TestOnRunTestsClicked([Values] bool isResultNull, [Values] bool isExploreTestsReturnNull)
     {
         NUnitTestAssemblyRunnerStub testAssemblyRunner = new NUnitTestAssemblyRunnerStub();
         NUnitTestRunnerForTest runner = new NUnitTestRunnerForTest(testAssemblyRunner);
         runner.RunReturnNull = isResultNull;
+        runner.ExploreTestsReturnNull = isExploreTestsReturnNull;
+        int expectedTestRunCount = isExploreTestsReturnNull ? 0 : 2;
 
-        ITest testInstance = new TestStub { Id = "123", Name = "testcase" };
+        ITest testInstanceChild1 = new TestStub { Id = "2-1", Name = "testcase2-1" };
+        ITest testInstanceChild2 = new TestStub { Id = "2-2", Name = "testcase2-2" };
+        ITest testInstance = new TestStub
+            { Id = "1", Name = "testcase1", Tests = new List<ITest> { testInstanceChild1, testInstanceChild2 } };
         INUnitTest test = new NUnitTest(testInstance);
+
+        runner.ExploreTestsReturnValue = test;
 
         ITestResult result = new TestResultStub { Name = "testResult", Test = testInstance};
         INUnitTestResult expectedResult = new NUnitTestResult(result);
@@ -303,22 +408,35 @@ public class TestDynamicPageTest
             test.Result = expectedResult;
         }
 
+        TestDynamicPageForTest page = new TestDynamicPageForTest(runner);
+
         ITestFilter runFilter = null;
         bool runInvoke = false;
+        bool testRunState = false;
         testAssemblyRunner.OnRun = (_, filter) =>
         {
+            testRunState = page.TestRunState.IsTestRunning;
             runInvoke = true;
             runFilter = filter;
             return result;
         };
 
-        TestDynamicPageForTest page = new TestDynamicPageForTest(runner);
+        Assert.That(page.TestRunState.IsTestRunning, Is.False);
+        Assert.That(page.TestRunState.TestRunCount, Is.EqualTo(0));
+        Assert.That(page.TestRunState.TestRunStartedCount, Is.EqualTo(0));
+        Assert.That(page.TestRunState.TestRunFinishedCount, Is.EqualTo(0));
 
         page.InvokeOnRunTestsClicked(this, new NUnitTestEventArgs(test));
 
+        Assert.That(testRunState, Is.True);
+        Assert.That(page.TestRunState.IsTestRunning, Is.False);
+        Assert.That(page.TestRunState.TestRunCount, Is.EqualTo(expectedTestRunCount));
+        Assert.That(page.TestRunState.TestRunStartedCount, Is.EqualTo(0));
+        Assert.That(page.TestRunState.TestRunFinishedCount, Is.EqualTo(0));
+
         Assert.That(runInvoke, Is.True);
         Assert.That(runFilter, Is.Not.Null);
-        Assert.That(runFilter.ToXml(true).OuterXml, Is.EqualTo("<id>123</id>"));
+        Assert.That(runFilter.ToXml(true).OuterXml, Is.EqualTo("<id>1</id>"));
         Assert.That(test.Result, Is.EqualTo(expectedResult));
     }
 
@@ -343,6 +461,31 @@ public class TestDynamicPageTest
         page.InvokeOnRunTestsClicked(this, eventArgs);
 
         Assert.That(runInvoke, Is.False);
+    }
+
+    [Test]
+    public void TestOnRunTestsClickedWhenTestRunThrowsExceptionRaisesTestRunException()
+    {
+        NUnitTestAssemblyRunnerStub testAssemblyRunner = new NUnitTestAssemblyRunnerStub();
+        NUnitTestRunnerForTest runner = new NUnitTestRunnerForTest(testAssemblyRunner);
+        runner.RunThrowsException = true;
+
+        ITest testInstance = new TestStub { Id = "123", Name = "testcase" };
+        INUnitTest test = new NUnitTest(testInstance);
+
+        TestDynamicPageForTest page = new TestDynamicPageForTest(runner);
+
+        List<Tuple<TestDynamicPage, Exception>> eventArgs = new List<Tuple<TestDynamicPage, Exception>>();
+        page.TestRunException += (sender, args) =>
+            eventArgs.Add(new Tuple<TestDynamicPage, Exception>(sender as TestDynamicPage, args));
+
+        page.InvokeOnRunTestsClicked(page, new NUnitTestEventArgs(test));
+
+        Assert.That(page.TestRunState.IsTestRunning, Is.False);
+        Assert.That(eventArgs, Has.Count.EqualTo(1));
+        Assert.That(eventArgs[0].Item1, Is.SameAs(page));
+        Assert.That(eventArgs[0].Item2, Is.Not.Null.And.TypeOf<InvalidOperationException>());
+        Assert.That(eventArgs[0].Item2.Message, Is.EqualTo("INUnitTestRunner.Run threw an exception."));
     }
 
     #endregion
@@ -643,6 +786,9 @@ public class TestDynamicPageTest
         /// </summary>
         private readonly INUnitTestAssemblyRunner v_TestRunner;
 
+        /// <summary>
+        ///     Holds the underlying list of test listeners.
+        /// </summary>
         private readonly HashSet<ITestListener> v_TestListeners = new HashSet<ITestListener>();
 
         /// <summary>
@@ -651,9 +797,19 @@ public class TestDynamicPageTest
         public bool ExploreTestsReturnNull { get; set; }
 
         /// <summary>
+        ///     Gets or sets the value that the ExploreTests call returns.
+        /// </summary>
+        public INUnitTest ExploreTestsReturnValue { get; set; }
+
+        /// <summary>
         ///     Gets or sets if the Run call returns null.
         /// </summary>
         public bool RunReturnNull { get; set; }
+
+        /// <summary>
+        ///     Gets or sets if the Run call throws and exception.
+        /// </summary>
+        public bool RunThrowsException { get; set; }
 
         /// <summary>
         ///     Gets or sets if the GetTestResultsAsXmlStream call returns null.
@@ -699,12 +855,22 @@ public class TestDynamicPageTest
                 return null;
             }
 
+            if (ExploreTestsReturnValue != null)
+            {
+                return ExploreTestsReturnValue;
+            }
+
             return new NUnitTest(test);
         }
 
         /// <inheritdoc />
         public Task<INUnitTestResult> Run(ITestFilter filter = null)
         {
+            if (RunThrowsException)
+            {
+                throw new InvalidOperationException("INUnitTestRunner.Run threw an exception.");
+            }
+
             ITestResult result = v_TestRunner.Run(null, filter);
 
             if (RunReturnNull)

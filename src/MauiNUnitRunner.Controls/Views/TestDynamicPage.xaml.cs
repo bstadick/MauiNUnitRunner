@@ -46,6 +46,11 @@ public partial class TestDynamicPage : ContentPage
     #region Public Members
 
     /// <summary>
+    ///     Event called when the test run throws an exception.
+    /// </summary>
+    public event EventHandler<Exception> TestRunException;
+
+    /// <summary>
     ///     Gets the NUnit test runner.
     /// </summary>
     public INUnitTestRunner TestRunner => v_ParentPage != null ? v_ParentPage.TestRunner : v_TestRunner;
@@ -193,22 +198,41 @@ public partial class TestDynamicPage : ContentPage
             return;
         }
 
-        // Create filter to run the selected test
-        ITestFilter filter = NUnitFilter.Where.Id(test.Test.Id).Build().Filter;
-
-        // Wait for test to complete
+        // Reset test run state
         ProgressTestListener.Reset();
         TestRunState.IsTestRunning = true;
-        TestRunState.TestRunCount = CountTests(TestRunner.ExploreTests(filter), 0);
-        INUnitTestResult result = await TestRunner.Run(filter);
-        TestRunState.IsTestRunning = false;
-        if (result == null)
-        {
-            return;
-        }
 
-        // Set test results
-        e.Test.Result = result;
+        try
+        {
+            // Create filter to run the selected test
+            ITestFilter filter = NUnitFilter.Where.Id(test.Test.Id).Build().Filter;
+
+            // Count number of tests to be run
+            TestRunState.TestRunCount = CountTests(TestRunner.ExploreTests(filter), 0);
+
+            INUnitTestResult result = null;
+            try
+            {
+                // Run and wait for test to complete
+                result = await TestRunner.Run(filter);
+            }
+            catch (Exception ex)
+            {
+                TestRunException?.Invoke(this, ex);
+            }
+
+            if (result == null)
+            {
+                return;
+            }
+
+            // Set test results
+            e.Test.Result = result;
+        }
+        finally
+        {
+            TestRunState.IsTestRunning = false;
+        }
     }
 
     /// <summary>
@@ -329,6 +353,11 @@ public partial class TestDynamicPage : ContentPage
     /// <returns>The number of test cases.</returns>
     private int CountTests(INUnitTest test, int previousCount)
     {
+        if (test == null)
+        {
+            return previousCount;
+        }
+
         // Only count tests that are leaf nodes
         if (!test.HasChildren)
         {

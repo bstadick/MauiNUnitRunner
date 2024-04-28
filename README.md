@@ -106,17 +106,27 @@ The project includes near complete code coverage of the `MauiNUnitRunner.Control
 
 ## Future Enhancements
 
+The following are planned future enhancements in the general order of priority. Contributions towards 
+
 - User interface beautification
-- Portrait orientation and small screen optimization
-- Performance improvements
 - Updating overall results when child tests are ran individually.
   - Current behavior is the same as the older NUnit Lite runner, but is not the desired behavior.
   - This is limited currently by NUnit returning results for the entire test tree and not updating and recalculating the overall results when a subset of tests are ran. This could be handled in the MAUI test runner, but would be simpler and more efficient if handled within the underlying NUnit classes. NUnit will need to update such that overall parent results are calculated and cached from their child results and updated when a child result changes.
+  - Will impact generation of test result report.
+- Live UI updates (console output, results) as tests are progressing.
+  - See ReSharper's Unit Test Sessions window as an example.
+    - Reset results of tests to be ran.
+    - Update individual test results as they are completed.
+    - Update overall test result counts and progress bar color as tests are completed.
+  - Currently limited by above point on updating overall results when child tests are ran.
+- Export results to TRX and other common formats
+- Performance improvements
+- Loading multiple test assemblies
 - Running tests by category
 - Searching and filtering tests
 - Configuring test settings from UI
-- Live UI updates as tests are progressing
 - Remote test management
+- Portrait orientation and small screen optimization
 
 ## Contributing
 

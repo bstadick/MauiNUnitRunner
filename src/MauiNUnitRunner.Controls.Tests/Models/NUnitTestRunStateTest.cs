@@ -70,6 +70,13 @@ public class NUnitTestRunStateTest
         Assert.That(state.IsTestRunning, Is.False);
     }
 
+    [Test]
+    public void TestIsTestRunningPropertyInvokesPropertyChangedEventWhenPropertyValueChanges()
+    {
+        TestPropertyChangedEventIsInvokedWhenPropertyChanges(true, false, (state, value) => state.IsTestRunning = value,
+            "IsTestRunning");
+    }
+
     #endregion
 
     #region Tests for TestRunCount Property
@@ -92,6 +99,13 @@ public class NUnitTestRunStateTest
         state.TestRunCount = 0;
 
         Assert.That(state.TestRunCount, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void TestTestRunCountPropertyInvokesPropertyChangedEventWhenPropertyValueChanges()
+    {
+        TestPropertyChangedEventIsInvokedWhenPropertyChanges(10, 0, (state, value) => state.TestRunCount = value,
+            "TestRunCount", "TestRunProgress");
     }
 
     #endregion
@@ -118,6 +132,13 @@ public class NUnitTestRunStateTest
         Assert.That(state.TestRunStartedCount, Is.EqualTo(0));
     }
 
+    [Test]
+    public void TestTestRunStartedCountPropertyInvokesPropertyChangedEventWhenPropertyValueChanges()
+    {
+        TestPropertyChangedEventIsInvokedWhenPropertyChanges(10, 0, (state, value) => state.TestRunStartedCount = value,
+            "TestRunStartedCount");
+    }
+
     #endregion
 
     #region Tests for TestRunFinishedCount Property
@@ -140,6 +161,13 @@ public class NUnitTestRunStateTest
         state.TestRunFinishedCount = 0;
 
         Assert.That(state.TestRunFinishedCount, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void TestTestRunFinishedCountPropertyInvokesPropertyChangedEventWhenPropertyValueChanges()
+    {
+        TestPropertyChangedEventIsInvokedWhenPropertyChanges(10, 0, (state, value) => state.TestRunFinishedCount = value,
+            "TestRunFinishedCount", "TestRunProgress");
     }
 
     #endregion
@@ -231,33 +259,33 @@ public class NUnitTestRunStateTest
     #region Tests for INotifyPropertyChanged
 
     [Test]
-    public void TestPropertyChangedEventIsInvokedWhenIsTestRunningPropertyChanges()
+    public void TestPropertyChangedEventIsInvokedWhenPropertyChanges()
     {
+        // Use an existing property to test the event is invoked
         TestPropertyChangedEventIsInvokedWhenPropertyChanges(true, false, (state, value) => state.IsTestRunning = value,
             "IsTestRunning");
     }
 
     [Test]
-    public void TestPropertyChangedEventIsInvokedWhenTestRunCountPropertyChanges()
+    public void TestPropertyChangedEventWhenEventNotSetAndPropertyChangedDoesNotThrowException()
     {
-        TestPropertyChangedEventIsInvokedWhenPropertyChanges(10, 0, (state, value) => state.TestRunCount = value,
-            "TestRunCount", "TestRunProgress");
+        INUnitTestRunState state = new NUnitTestRunState(new NUnitTestRunner());
+
+        Assert.DoesNotThrow(() => { state.IsTestRunning = true; });
     }
 
-    [Test]
-    public void TestPropertyChangedEventIsInvokedWhenTestRunStartedCountPropertyChanges()
-    {
-        TestPropertyChangedEventIsInvokedWhenPropertyChanges(10, 0, (state, value) => state.TestRunStartedCount = value,
-            "TestRunStartedCount");
-    }
+    #endregion
 
-    [Test]
-    public void TestPropertyChangedEventIsInvokedWhenTestRunFinishedCountPropertyChanges()
-    {
-        TestPropertyChangedEventIsInvokedWhenPropertyChanges(10, 0, (state, value) => state.TestRunFinishedCount = value,
-            "TestRunFinishedCount", "TestRunProgress");
-    }
+    #region Private Methods
 
+    /// <summary>
+    ///     Tests the property changed event for generic properties.
+    /// </summary>
+    /// <typeparam name="T">The type of the property value being changed.</typeparam>
+    /// <param name="firstValue">The first value to set, should be different from the default value.</param>
+    /// <param name="secondValue">The second value to set.</param>
+    /// <param name="changePropertyValue">The action to change the property value.</param>
+    /// <param name="propertyNames">The name of the property changed events that are invoked.</param>
     private static void TestPropertyChangedEventIsInvokedWhenPropertyChanges<T>(T firstValue, T secondValue,
         Action<INUnitTestRunState, T> changePropertyValue, params string[] propertyNames)
     {
@@ -296,14 +324,6 @@ public class NUnitTestRunStateTest
         changePropertyValue.Invoke(state, secondValue);
 
         Assert.That(eventArgs, Is.Empty);
-    }
-
-    [Test]
-    public void TestPropertyChangedEventWhenEventNotSetAndPropertyChangedDoesNotThrowException()
-    {
-        INUnitTestRunState state = new NUnitTestRunState(new NUnitTestRunner());
-
-        Assert.DoesNotThrow(() => { state.IsTestRunning = true; });
     }
 
     #endregion
