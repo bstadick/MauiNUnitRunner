@@ -30,9 +30,30 @@ public partial class TestDynamicPage : ContentPage
     /// </summary>
     private readonly TestDynamicPage v_ParentPage;
 
+    /// <summary>
+    ///     The NUnit test runner.
+    /// </summary>
+    private readonly INUnitTestRunner v_TestRunner;
+
+    /// <summary>
+    ///     The test progress listener.
+    /// </summary>
+    // ReSharper disable once InconsistentNaming
+    private readonly NUnitProgressTestListener v_ProgressTestListener;
+
     #endregion
 
     #region Public Members
+
+    /// <summary>
+    ///     Gets the NUnit test runner.
+    /// </summary>
+    public INUnitTestRunner TestRunner => v_ParentPage != null ? v_ParentPage.TestRunner : v_TestRunner;
+
+    /// <summary>
+    ///     Gets the test progress listener.
+    /// </summary>
+    public NUnitProgressTestListener ProgressTestListener => v_ParentPage != null ? v_ParentPage.ProgressTestListener : v_ProgressTestListener;
 
     /// <summary>
     ///     The bindable <see cref="Test"/> property.
@@ -41,35 +62,27 @@ public partial class TestDynamicPage : ContentPage
         BindableProperty.Create(nameof(Test), typeof(INUnitTest), typeof(TestDynamicPage));
 
     /// <summary>
-    ///     Gets or sets the <see cref="INUnitTest"/> to bind to the page.
+    ///     Gets the <see cref="INUnitTest"/> to bind to the page.
     /// </summary>
     public INUnitTest Test
     {
         get => (INUnitTest)GetBindableValue(TestProperty, TestProperty.DefaultValue);
-        set => SetBindableValue(TestProperty, value);
+        private set => SetBindableValue(TestProperty, value);
     }
 
     /// <summary>
-    ///     The bindable <see cref="IsTestRunning"/> property.
+    ///     The bindable <see cref="TestRunState"/> property.
     /// </summary>
-    public static readonly BindableProperty IsTestRunningProperty =
-        BindableProperty.Create(nameof(IsTestRunning), typeof(bool), typeof(TestDynamicPage), false, BindingMode.TwoWay);
+    public static readonly BindableProperty TestRunStateProperty =
+        BindableProperty.Create(nameof(TestRunState), typeof(INUnitTestRunState), typeof(TestDynamicPage));
 
     /// <summary>
-    ///     Gets or sets if a test is currently running.
+    ///     Gets the test run state.
     /// </summary>
-    public bool IsTestRunning
+    public INUnitTestRunState TestRunState
     {
-        get => (bool)GetBindableValue(IsTestRunningProperty, IsTestRunningProperty.DefaultValue);
-        set
-        {
-            SetBindableValue(IsTestRunningProperty, value);
-
-            if (v_ParentPage != null)
-            {
-                v_ParentPage.IsTestRunning = value;
-            }
-        }
+        get => (INUnitTestRunState)GetBindableValue(TestRunStateProperty, TestRunStateProperty.DefaultValue);
+        private set => SetBindableValue(TestRunStateProperty, value);
     }
 
     /// <summary>
@@ -79,18 +92,13 @@ public partial class TestDynamicPage : ContentPage
         BindableProperty.Create(nameof(ShowFooterLinks), typeof(bool), typeof(TestDynamicPage), true);
 
     /// <summary>
-    ///     Gets or sets if the page footer links should be shown.
+    ///     Gets if the page footer links should be shown.
     /// </summary>
     public bool ShowFooterLinks
     {
         get => (bool)GetBindableValue(ShowFooterLinksProperty, ShowFooterLinksProperty.DefaultValue);
-        set => SetBindableValue(ShowFooterLinksProperty, value);
+        private set => SetBindableValue(ShowFooterLinksProperty, value);
     }
-
-    /// <summary>
-    ///     Gets the NUnit test runner.
-    /// </summary>
-    public INUnitTestRunner TestRunner { get; }
 
     #endregion
 
@@ -112,10 +120,12 @@ public partial class TestDynamicPage : ContentPage
     /// <param name="test">The test to bind to the page, or null to explore all currently loaded tests.</param>
     /// <param name="parent">The parent <see cref="TestDynamicPage"/> or null if no parent.</param>
     /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="testRunner"/> is null.</exception>
-    protected TestDynamicPage(INUnitTestRunner testRunner, INUnitTest test, TestDynamicPage parent = null, bool initializeComponent = true)
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="testRunner"/> and <paramref name="parent"/> is null.</exception>
+    protected TestDynamicPage(INUnitTestRunner testRunner, INUnitTest test, TestDynamicPage parent = null,
+        bool initializeComponent = true)
     {
-        if (testRunner == null)
+        // Need either parent page or test runner
+        if (parent == null && testRunner == null)
         {
             throw ExceptionHelper.ThrowArgumentNullException(nameof(testRunner));
         }
@@ -125,7 +135,21 @@ public partial class TestDynamicPage : ContentPage
             InitializeComponent();
         }
 
-        TestRunner = testRunner;
+        // Set test runner and state instance only to the root parent page
+        // All child pages will inherit them from the root parent page.
+        v_ParentPage = parent;
+        if (v_ParentPage == null)
+        {
+            v_TestRunner = testRunner;
+            TestRunState = new NUnitTestRunState(v_TestRunner);
+            v_ProgressTestListener = new NUnitProgressTestListener(TestRunState);
+            v_TestRunner.AddTestListener(v_ProgressTestListener);
+        }
+        else
+        {
+            TestRunState = v_ParentPage.TestRunState;
+        }
+
         Test = test ?? TestRunner.ExploreTests(NUnitFilter.Empty);
         Title = Test?.DisplayName ?? string.Empty;
         v_ParentPage = parent;
@@ -152,7 +176,6 @@ public partial class TestDynamicPage : ContentPage
         // Navigate to child test page
         TestDynamicPage page = CreateTestDynamicPage(test.SkipSingleTestSuites());
         page.ShowFooterLinks = false;
-        page.IsTestRunning = IsTestRunning;
         await NavigationPushAsync(page);
     }
 
@@ -174,9 +197,11 @@ public partial class TestDynamicPage : ContentPage
         ITestFilter filter = NUnitFilter.Where.Id(test.Test.Id).Build().Filter;
 
         // Wait for test to complete
-        IsTestRunning = true;
+        ProgressTestListener.Reset();
+        TestRunState.IsTestRunning = true;
+        TestRunState.TestRunCount = CountTests(TestRunner.ExploreTests(filter), 0);
         INUnitTestResult result = await TestRunner.Run(filter);
-        IsTestRunning = false;
+        TestRunState.IsTestRunning = false;
         if (result == null)
         {
             return;
@@ -253,7 +278,7 @@ public partial class TestDynamicPage : ContentPage
     /// <returns>The newly created <see cref="TestDynamicPage"/>.</returns>
     protected virtual TestDynamicPage CreateTestDynamicPage(INUnitTest test)
     {
-        return new TestDynamicPage(TestRunner, test, this);
+        return new TestDynamicPage(null, test, this);
     }
 
     /// <summary>
@@ -290,6 +315,34 @@ public partial class TestDynamicPage : ContentPage
     protected virtual async Task DisplayAlertMessage(string title, string message, string cancel)
     {
         await DisplayAlert(title, message, cancel);
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    ///     Counts the number of test cases for a given test.
+    /// </summary>
+    /// <param name="test">The test to count the number of test cases of</param>
+    /// <param name="previousCount">The previous test count to increment.</param>
+    /// <returns>The number of test cases.</returns>
+    private int CountTests(INUnitTest test, int previousCount)
+    {
+        // Only count tests that are leaf nodes
+        if (!test.HasChildren)
+        {
+            return previousCount + 1;
+        }
+
+        // Iterate through tests recursively
+        foreach (INUnitTest child in test.Children)
+        {
+            previousCount = CountTests(child, previousCount);
+        }
+
+        return previousCount;
+
     }
 
     #endregion

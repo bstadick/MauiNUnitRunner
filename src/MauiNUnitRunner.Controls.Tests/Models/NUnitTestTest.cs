@@ -541,7 +541,7 @@ public class NUnitTestTest
     }
 
     [Test]
-    public void TestPropertyChangedEventWhenEventNotAndResultPropertyChangedDoesNotThrowException()
+    public void TestPropertyChangedEventWhenEventNotSetAndResultPropertyChangedDoesNotThrowException()
     {
         TestStub testInstance = new TestStub();
 

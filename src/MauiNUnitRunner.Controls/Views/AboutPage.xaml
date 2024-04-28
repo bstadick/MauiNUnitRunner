@@ -24,7 +24,7 @@
         <!-- Logo image header -->
         <StackLayout BackgroundColor="{StaticResource AboutAccent}" VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
             <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
-                <ContentView Padding="0,40,0,40" VerticalOptions="FillAndExpand">
+                <ContentView Padding="0,40" VerticalOptions="FillAndExpand">
                     <Image Source="{StaticResource AboutPageLogoImagePath}" VerticalOptions="Center" HeightRequest="200" />
                 </ContentView>
             </StackLayout>
@@ -32,7 +32,7 @@
 
         <!-- About content -->
         <ScrollView Grid.Row="1">
-            <StackLayout Orientation="Vertical" Padding="16,40,16,40" Spacing="10"
+            <StackLayout Orientation="Vertical" Padding="16,40" Spacing="10"
                          BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:AboutPage}}}"
                          x:DataType="views:AboutPage">
                 <!-- About library name and version -->

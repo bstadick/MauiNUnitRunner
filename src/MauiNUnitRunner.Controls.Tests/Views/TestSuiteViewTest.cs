@@ -1,6 +1,7 @@
 // Copyright (c) bstadick and contributors. MIT License - see LICENSE file
 
 using MauiNUnitRunner.Controls.Models;
+using MauiNUnitRunner.Controls.Services;
 using MauiNUnitRunner.Controls.Views;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
@@ -52,37 +53,27 @@ public class TestSuiteViewTest
 
     #endregion
 
-    #region Tests for IsTestRunning Property
+    #region Tests for TestRunState Property
 
     [Test]
-    public void TestIsTestRunningProperty()
+    public void TestTestRunStateProperty()
     {
         TestSuiteView page = new TestSuiteViewForTest();
 
-        Assert.That(TestSuiteView.IsTestRunningProperty.PropertyName, Is.EqualTo("IsTestRunning"));
-        Assert.That(TestSuiteView.IsTestRunningProperty.DeclaringType, Is.EqualTo(typeof(TestSuiteView)));
-        Assert.That(TestSuiteView.IsTestRunningProperty.ReturnType, Is.EqualTo(typeof(bool)));
-        Assert.That(TestSuiteView.IsTestRunningProperty.DefaultBindingMode, Is.EqualTo(BindingMode.TwoWay));
-        Assert.That(TestSuiteView.IsTestRunningProperty.DefaultValue, Is.False);
-        Assert.That(TestSuiteView.IsTestRunningProperty.IsReadOnly, Is.False);
+        Assert.That(TestSuiteView.TestRunStateProperty.PropertyName, Is.EqualTo("TestRunState"));
+        Assert.That(TestSuiteView.TestRunStateProperty.DeclaringType, Is.EqualTo(typeof(TestSuiteView)));
+        Assert.That(TestSuiteView.TestRunStateProperty.ReturnType, Is.EqualTo(typeof(INUnitTestRunState)));
+        Assert.That(TestSuiteView.TestRunStateProperty.DefaultBindingMode, Is.EqualTo(BindingMode.OneWay));
+        Assert.That(TestSuiteView.TestRunStateProperty.DefaultValue, Is.Null);
+        Assert.That(TestSuiteView.TestRunStateProperty.IsReadOnly, Is.False);
 
-        Assert.That(page.IsTestRunning, Is.False);
+        Assert.That(page.TestRunState, Is.Null);
 
-        page.IsTestRunning = false;
+        INUnitTestRunState state = new NUnitTestRunState(new NUnitTestRunner());
 
-        Assert.That(page.IsTestRunning, Is.False);
+        page.TestRunState = state;
 
-        page.IsTestRunning = true;
-
-        Assert.That(page.IsTestRunning, Is.True);
-
-        page.IsTestRunning = true;
-
-        Assert.That(page.IsTestRunning, Is.True);
-
-        page.IsTestRunning = false;
-
-        Assert.That(page.IsTestRunning, Is.False);
+        Assert.That(page.TestRunState, Is.SameAs(state));
     }
 
     #endregion

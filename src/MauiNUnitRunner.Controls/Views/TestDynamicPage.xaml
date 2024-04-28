@@ -22,21 +22,24 @@
 
         <!-- Main test content view -->
         <views:TestDynamicView Grid.Row="0"
-                               BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicPage}}}"
-                               x:DataType="views:TestDynamicPage"
                                Test="{Binding Test}"
-                               IsTestRunning="{Binding IsTestRunning, Mode=TwoWay}"
+                               TestRunState="{Binding TestRunState}"
                                TestItemSelected="TestDynamicPage_OnItemSelected"
                                RunTestsClicked="TestDynamicPage_OnRunTestsClicked"
-                               SaveResultsClicked="TestDynamicView_OnSaveResultsClicked"/>
+                               SaveResultsClicked="TestDynamicView_OnSaveResultsClicked"
+                               BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicPage}}}"
+                               x:DataType="views:TestDynamicPage" />
 
         <!-- Additional links at the bottom of the page -->
         <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="End"
+                     IsVisible="{Binding ShowFooterLinks}"
                      BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicPage}}}"
-                     x:DataType="views:TestDynamicPage"
-                     IsVisible="{Binding ShowFooterLinks}">
-            <Button Text="{StaticResource AboutPageTitle}" Clicked="AboutButton_OnClicked"
-                    BackgroundColor="Transparent" TextColor="Grey" Width="100" />
+                     x:DataType="views:TestDynamicPage">
+            <Button Text="{StaticResource AboutPageTitle}"
+                    Clicked="AboutButton_OnClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="Grey"
+                    Width="100" />
         </StackLayout>
     </Grid>
 </ContentPage>

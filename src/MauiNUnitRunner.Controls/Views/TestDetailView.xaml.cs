@@ -30,18 +30,18 @@ public partial class TestDetailView : ContentView
     }
 
     /// <summary>
-    ///     The bindable <see cref="IsTestRunning"/> property.
+    ///     The bindable <see cref="TestRunState"/> property.
     /// </summary>
-    public static readonly BindableProperty IsTestRunningProperty =
-        BindableProperty.Create(nameof(IsTestRunning), typeof(bool), typeof(TestDetailView), false, BindingMode.TwoWay);
+    public static readonly BindableProperty TestRunStateProperty =
+        BindableProperty.Create(nameof(TestRunState), typeof(INUnitTestRunState), typeof(TestDetailView));
 
     /// <summary>
-    ///     Gets or sets if a test is currently running.
+    ///     Gets or sets the test run state.
     /// </summary>
-    public bool IsTestRunning
+    public INUnitTestRunState TestRunState
     {
-        get => (bool)GetBindableValue(IsTestRunningProperty, IsTestRunningProperty.DefaultValue);
-        set => SetBindableValue(IsTestRunningProperty, value);
+        get => (INUnitTestRunState)GetBindableValue(TestRunStateProperty, TestRunStateProperty.DefaultValue);
+        set => SetBindableValue(TestRunStateProperty, value);
     }
 
     /// <summary>

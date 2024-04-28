@@ -24,21 +24,25 @@
 
         <!-- Display a detailed view of a single leaf node test (no child tests) -->
         <StackLayout Grid.Row="0">
-            <Label BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=Test}"
-                   x:DataType="models:INUnitTest"
-                   Text="{Binding FullDisplayName, FallbackValue='Test name'}"
-                   Style="{StaticResource LabelTextStyle}" />
+            <Label Text="{Binding FullDisplayName, FallbackValue='Test name'}"
+                   Style="{StaticResource LabelTextStyle}"
+                   BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=Test}"
+                   x:DataType="models:INUnitTest" />
             <StackLayout Orientation="Horizontal">
-                <Button Text="{StaticResource RunTestsButton}" Style="{StaticResource ButtonStyle}"
+                <Button Text="{StaticResource RunTestsButton}"
+                        Style="{StaticResource ButtonStyle}"
                         Clicked="RunTestsButton_OnClicked"
-                        IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=IsTestRunning, FallbackValue=true, Converter={StaticResource InverseBoolConverter}}" />
-                <Button Text="{StaticResource SaveResultsButton}" Style="{StaticResource ButtonStyle}"
+                        IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=TestRunState.IsTestRunning, FallbackValue=true, Converter={StaticResource InverseBoolConverter}}" />
+                <Button Text="{StaticResource SaveResultsButton}"
+                        Style="{StaticResource ButtonStyle}"
                         Clicked="SaveResultsButton_OnClicked"
-                        IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=IsTestRunning, FallbackValue=true, Converter={StaticResource InverseBoolConverter}}" />
+                        IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=TestRunState.IsTestRunning, FallbackValue=true, Converter={StaticResource InverseBoolConverter}}" />
             </StackLayout>
         </StackLayout>
 
-        <Grid Grid.Row="1" BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=Test.Result}" x:DataType="models:INUnitTestResult">
+        <Grid Grid.Row="1"
+              BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=Test.Result}"
+              x:DataType="models:INUnitTestResult">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -46,25 +50,32 @@
             </Grid.RowDefinitions>
             <!-- Test result information -->
             <StackLayout Grid.Row="0" Orientation="Horizontal">
-                <Label Text="{StaticResource TestsPageTestId}" Style="{StaticResource LabelSubTextStyle}" />
-                <Label Text="{Binding Id, FallbackValue='-'}" Style="{StaticResource LabelSubTextStyle}"
+                <Label Text="{StaticResource TestsPageTestId}"
+                       Style="{StaticResource LabelSubTextStyle}" />
+                <Label Text="{Binding Id, FallbackValue='-'}"
+                       Style="{StaticResource LabelSubTextStyle}"
                        BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=Test}"
                        x:DataType="models:INUnitTest" />
 
                 <Label Text="{StaticResource TestsPageTestDuration}"
-                       Style="{StaticResource LabelSubTextStyle}" IsVisible="{Binding HasTestResult, FallbackValue=false}" />
-                <Label Text="{Binding DurationString, FallbackValue='-'}" Style="{StaticResource LabelSubTextStyle}"
+                       Style="{StaticResource LabelSubTextStyle}"
+                       IsVisible="{Binding HasTestResult, FallbackValue=false}" />
+                <Label Text="{Binding DurationString, FallbackValue='-'}"
+                       Style="{StaticResource LabelSubTextStyle}"
                        IsVisible="{Binding HasTestResult, FallbackValue=false}" />
 
                 <Label Text="{StaticResource TestsPageTestAssertionCount}"
-                       Style="{StaticResource LabelSubTextStyle}" IsVisible="{Binding HasTestResult, FallbackValue=false}" />
-                <Label Text="{Binding Result.AssertCount, FallbackValue='-'}" Style="{StaticResource LabelSubTextStyle}"
+                       Style="{StaticResource LabelSubTextStyle}"
+                       IsVisible="{Binding HasTestResult, FallbackValue=false}" />
+                <Label Text="{Binding Result.AssertCount, FallbackValue='-'}"
+                       Style="{StaticResource LabelSubTextStyle}"
                        IsVisible="{Binding HasTestResult, FallbackValue=false}" />
             </StackLayout>
 
             <!-- Test result status -->
             <StackLayout Grid.Row="1" Orientation="Horizontal">
-                <Label Text="{StaticResource TestsPageTestResult}" Style="{StaticResource LabelTextStyle}" />
+                <Label Text="{StaticResource TestsPageTestResult}"
+                       Style="{StaticResource LabelTextStyle}" />
                 <Label Text="{Binding ResultStateStatus, FallbackValue={StaticResource TestResultNotExecuted}}"
                        Style="{StaticResource LabelTextStyle}"
                        TextColor="{Binding TextColor, FallbackValue=Grey}" />
@@ -73,23 +84,34 @@
             <!-- Test result details -->
             <ScrollView Grid.Row="2">
                 <StackLayout>
-                    <Label Text="{Binding FailedAssertionsString, FallbackValue='Test message'}" Style="{StaticResource LabelSubTextStyle}"
-                           IsVisible="{Binding HasFailedAssertions, FallbackValue=false}" Padding="10" />
+                    <Label Text="{Binding FailedAssertionsString, FallbackValue='Test message'}"
+                           Style="{StaticResource LabelSubTextStyle}"
+                           IsVisible="{Binding HasFailedAssertions, FallbackValue=false}"
+                           Padding="10" />
 
-                    <Label Text="{StaticResource TestsPageTestOutput}" Style="{StaticResource LabelSubTextStyle}"
+                    <Label Text="{StaticResource TestsPageTestOutput}"
+                           Style="{StaticResource LabelSubTextStyle}"
                            IsVisible="{Binding HasOutput, FallbackValue=false}" />
-                    <Label Text="{Binding Result.Output, FallbackValue='Test message'}" Style="{StaticResource LabelSubTextStyle}"
-                           IsVisible="{Binding HasOutput, FallbackValue=false}" Padding="10" />
+                    <Label Text="{Binding Result.Output, FallbackValue='Test message'}"
+                           Style="{StaticResource LabelSubTextStyle}"
+                           IsVisible="{Binding HasOutput, FallbackValue=false}"
+                           Padding="10" />
 
-                    <Label Text="{StaticResource TestsPageTestException}" Style="{StaticResource LabelSubTextStyle}"
+                    <Label Text="{StaticResource TestsPageTestException}"
+                           Style="{StaticResource LabelSubTextStyle}"
                            IsVisible="{Binding HasMessage, FallbackValue=false}" />
-                    <Label Text="{Binding Result.Message, FallbackValue='Test message'}" Style="{StaticResource LabelSubTextStyle}"
-                           IsVisible="{Binding HasMessage, FallbackValue=false}" Padding="10" />
+                    <Label Text="{Binding Result.Message, FallbackValue='Test message'}"
+                           Style="{StaticResource LabelSubTextStyle}"
+                           IsVisible="{Binding HasMessage, FallbackValue=false}"
+                           Padding="10" />
 
-                    <Label Text="{StaticResource TestsPageTestStackTrace}" Style="{StaticResource LabelSubTextStyle}"
+                    <Label Text="{StaticResource TestsPageTestStackTrace}"
+                           Style="{StaticResource LabelSubTextStyle}"
                            IsVisible="{Binding HasStackTrace, FallbackValue=false}" />
-                    <Label Text="{Binding Result.StackTrace, FallbackValue='Test message'}" Style="{StaticResource LabelSubTextStyle}"
-                           IsVisible="{Binding HasStackTrace, FallbackValue=false}" Padding="10" />
+                    <Label Text="{Binding Result.StackTrace, FallbackValue='Test message'}"
+                           Style="{StaticResource LabelSubTextStyle}"
+                           IsVisible="{Binding HasStackTrace, FallbackValue=false}"
+                           Padding="10" />
                 </StackLayout>
             </ScrollView>
         </Grid>

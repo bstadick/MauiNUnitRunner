@@ -14,7 +14,8 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <Grid BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicView}}}" x:DataType="views:TestDynamicView">
+    <Grid BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicView}}}"
+          x:DataType="views:TestDynamicView">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -22,13 +23,13 @@
         <views:TestDetailView Grid.Row="0"
                               IsVisible="{Binding Source={RelativeSource Self}, Path=Test.HasNoChildren, FallbackValue=true}"
                               Test="{Binding Test}"
-                              IsTestRunning="{Binding IsTestRunning, Mode=TwoWay}"
+                              TestRunState="{Binding TestRunState}"
                               RunTestsClicked="TestDynamicView_OnRunTestsClicked"
                               SaveResultsClicked="TestDynamicView_OnSaveResultsClicked" />
         <views:TestSuiteView Grid.Row="0"
                              IsVisible="{Binding Source={RelativeSource Self}, Path=Test.HasChildren, FallbackValue=false}"
                              Test="{Binding Test}"
-                             IsTestRunning="{Binding IsTestRunning, Mode=TwoWay}"
+                             TestRunState="{Binding TestRunState}"
                              TestItemSelected="TestDynamicView_OnTestItemSelected"
                              RunTestsClicked="TestDynamicView_OnRunTestsClicked"
                              SaveResultsClicked="TestDynamicView_OnSaveResultsClicked" />

@@ -136,10 +136,13 @@ public class ExampleSubUnitTests
     }
 
     [Test]
-    public void TestWithDelay()
+    public void TestWithDelay([Range(0, 4)] int count)
     {
-        Thread.Sleep(3000);
+        const int totalDelay = 5000;
+        const int steps = 5;
 
-        Assert.That(true);
+        Thread.Sleep(totalDelay / steps);
+
+        Assert.That(true, Is.True, "Count: {0}", count);
     }
 }
