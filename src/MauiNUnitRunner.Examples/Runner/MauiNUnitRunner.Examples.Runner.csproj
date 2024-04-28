@@ -27,6 +27,7 @@
     <NoWarn>$(NoWarn);MCT001</NoWarn>
     <WindowsPackageType>None</WindowsPackageType>
     <BuildIpa>True</BuildIpa>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 
     <!-- Display name -->
     <ApplicationTitle>MauiNUnitRunner.Example</ApplicationTitle>
@@ -73,7 +74,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SubAssemblyTests\MauiNUnitRunner.Examples.SubAssemblyTests.csproj" />
     <ProjectReference Include="..\..\MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj" />
   </ItemGroup>
 

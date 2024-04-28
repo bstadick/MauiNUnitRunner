@@ -134,4 +134,15 @@ public class ExampleUnitTests
         Assert.That(true);
         Console.Write("This test sometimes throws an exception during setup");
     }
+
+    [Test]
+    public void TestWithDelay([Range(0, 4)] int count)
+    {
+        const int totalDelay = 5000;
+        const int steps = 5;
+
+        Thread.Sleep(totalDelay / steps);
+
+        Assert.That(true, Is.True, "Count: {0}", count);
+    }
 }

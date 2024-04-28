@@ -15,11 +15,5 @@
     <RepositoryUrl>https://github.com/bstadick/MauiNUnitRunner</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>NUnit;MAUI;Unit Test Runner</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='UnitTest'">
-    <DefineConstants>DEBUG;UNITTEST</DefineConstants>
   </PropertyGroup>
 </Project>
