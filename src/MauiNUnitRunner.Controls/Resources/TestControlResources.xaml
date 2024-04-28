@@ -43,6 +43,10 @@
         <Setter Property="BackgroundColor" Value="#2196F3" />
         <Setter Property="TextColor" Value="White" />
     </Style>
+    <!-- Styles for progress bar -->
+    <Style x:Key="ProgressBarStyle" TargetType="ProgressBar">
+        <Setter Property="ProgressColor" Value="DarkMagenta" />
+    </Style>
 
     <!--The name of the assembly.-->
     <x:String x:Key="AssemblyName">MauiNUnitRunner</x:String>
