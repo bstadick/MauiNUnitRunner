@@ -20,13 +20,20 @@ jobs:
       uses: actions/setup-dotnet@v4.0.0
       with:
         global-json-file: ${{ env.GLOBALJSON }}
+    - name: Restore with dotnet
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 15
+        max_attempts: 3
+        retry_on: error
+        command: dotnet restore "${{ env.SOLUTION }}"
     - name: Build with dotnet
       uses: nick-fields/retry@v3
       with:
         timeout_minutes: 15
         max_attempts: 3
         retry_on: error
-        command: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }}
+        command: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }} --no-restore
     - name: Test with dotnet
       run: dotnet test "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }} --logger trx
     - name: Pack with dotnet
