@@ -5,9 +5,10 @@ on: [push, workflow_dispatch]
 env:
   CONFIGURATION: Release
   GLOBALJSON: .\src\global.json
-  PROJECTPATH: .\src\MauiNUnitRunner.Controls
-  TESTPROJECTPATH: .\src\MauiNUnitRunner.Controls.Tests
+  PROJECTDIRPATH: .\src\MauiNUnitRunner.Controls
+  TESTPROJECTDIRPATH: .\src\MauiNUnitRunner.Controls.Tests
   SOLUTION: .\src\MauiNUnitRunner.sln
+  PROJECT: .\src\MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj
 
 jobs:
   build:
@@ -35,13 +36,13 @@ jobs:
         retry_on: error
         command: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }} --no-restore
     - name: Test with dotnet
-      run: dotnet test "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }} --logger trx
+      run: dotnet test "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }} --no-build --logger trx
     - name: Pack with dotnet
-      run: dotnet pack "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }}
+      run: dotnet pack "${{ env.PROJECT }}" -c ${{ env.CONFIGURATION }} --no-build
     - name: Archive production artifacts
       uses: actions/upload-artifact@v4
       with:
         name: production-artifacts
         path: |
-          ${{ env.PROJECTPATH }}\bin\${{ env.CONFIGURATION }}\*.nupkg
-          ${{ env.TESTPROJECTPATH }}\TestResults\*.trx
+          ${{ env.PROJECTDIRPATH }}\bin\${{ env.CONFIGURATION }}\*.nupkg
+          ${{ env.TESTPROJECTDIRPATH }}\TestResults\*.trx
