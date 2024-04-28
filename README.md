@@ -106,7 +106,7 @@ The project includes near complete code coverage of the `MauiNUnitRunner.Control
 
 ## Future Enhancements
 
-The following are planned future enhancements in the general order of priority. Contributions towards 
+The following are planned future enhancements in the general order of priority. Contributions towards any of these objectives is welcome per the Contributing guidelines in the section below.
 
 - User interface beautification
 - Updating overall results when child tests are ran individually.
