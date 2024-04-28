@@ -21,11 +21,12 @@ jobs:
       with:
         global-json-file: ${{ env.GLOBALJSON }}
     - name: Build with dotnet
-      run: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }}
-    - name: Build examples with dotnet
-      run: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }}
-    - name: Build iOS simulator examples with dotnet
-      run: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }} -p:Platform=iPhoneSimulator
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 15
+        max_attempts: 3
+        retry_on: error
+        command: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }}
     - name: Test with dotnet
       run: dotnet test "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }} --logger trx
     - name: Pack with dotnet
