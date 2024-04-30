@@ -436,7 +436,7 @@ public class NUnitTestResultTest
         const string msg = "This is a test message.";
         IList<AssertionResult> assertions = new List<AssertionResult>
         {
-            new AssertionResult(AssertionStatus.Failed, "message", "trace")
+            new AssertionResult(AssertionStatus.Failed, msg, "trace")
         };
 
         TestResultStub result = new TestResultStub();
@@ -448,6 +448,26 @@ public class NUnitTestResultTest
         Assert.That(test.Result.Message, Is.EqualTo(msg));
         Assert.That(test.HasFailedAssertions, Is.True);
         Assert.That(test.HasMessage, Is.False);
+    }
+
+    [Test]
+    public void TestHasMessagePropertyWithMessageAndFailedAssertionsWithoutMatchingMessageReturnsTrue()
+    {
+        const string msg = "This is a test message.";
+        IList<AssertionResult> assertions = new List<AssertionResult>
+        {
+            new AssertionResult(AssertionStatus.Failed, "message", "trace")
+        };
+
+        TestResultStub result = new TestResultStub();
+        result.Message = msg;
+        result.AssertionResults = assertions;
+        INUnitTestResult test = new NUnitTestResult(result);
+
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.Message, Is.EqualTo(msg));
+        Assert.That(test.HasFailedAssertions, Is.True);
+        Assert.That(test.HasMessage, Is.True);
     }
 
     [Test]
@@ -488,7 +508,7 @@ public class NUnitTestResultTest
         const string msg = "This is a test message.";
         IList<AssertionResult> assertions = new List<AssertionResult>
         {
-            new AssertionResult(AssertionStatus.Failed, "message", "trace")
+            new AssertionResult(AssertionStatus.Failed, "message", msg)
         };
 
         TestResultStub result = new TestResultStub();
@@ -500,6 +520,26 @@ public class NUnitTestResultTest
         Assert.That(test.Result.StackTrace, Is.EqualTo(msg));
         Assert.That(test.HasFailedAssertions, Is.True);
         Assert.That(test.HasStackTrace, Is.False);
+    }
+
+    [Test]
+    public void TestHasStackTracePropertyWithStackTraceAndFailedAssertionsWithoutMatchingStackTraceReturnsTrue()
+    {
+        const string msg = "This is a test message.";
+        IList<AssertionResult> assertions = new List<AssertionResult>
+        {
+            new AssertionResult(AssertionStatus.Failed, "message", "trace")
+        };
+
+        TestResultStub result = new TestResultStub();
+        result.StackTrace = msg;
+        result.AssertionResults = assertions;
+        INUnitTestResult test = new NUnitTestResult(result);
+
+        Assert.That(test.Result, Is.Not.Null);
+        Assert.That(test.Result.StackTrace, Is.EqualTo(msg));
+        Assert.That(test.HasFailedAssertions, Is.True);
+        Assert.That(test.HasStackTrace, Is.True);
     }
 
     [Test]
@@ -562,9 +602,9 @@ public class NUnitTestResultTest
         string missing = missingIsNull ? null : string.Empty;
         bool expected = hasAssertions && status != AssertionStatus.Passed;
         string expectedMsg = expected
-            ? $"Assertion Status:{status}{nl}message 2{nl}StackTrace:{nl}trace 2{nl}" +
-              $"Assertion Status:{status}{nl}StackTrace:{nl}trace 3{nl}" +
-              $"Assertion Status:{status}{nl}message 4"
+            ? $"Assertion Status: {status}{nl}message 2{nl}StackTrace:{nl}trace 2{nl}" +
+              $"Assertion Status: {status}{nl}StackTrace:{nl}trace 3{nl}" +
+              $"Assertion Status: {status}{nl}message 4"
             : string.Empty;
         IList<AssertionResult> assertions = new List<AssertionResult>
         {

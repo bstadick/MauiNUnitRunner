@@ -128,10 +128,10 @@ public class NUnitTestResult : INUnitTestResult
     public bool HasOutput => !string.IsNullOrEmpty(Result?.Output);
 
     /// <inheritdoc />
-    public bool HasMessage => !string.IsNullOrEmpty(Result?.Message) && !HasFailedAssertions;
+    public bool HasMessage => !string.IsNullOrEmpty(Result?.Message) && !FailedAssertionsString.Contains(Result.Message);
 
     /// <inheritdoc />
-    public bool HasStackTrace => !string.IsNullOrEmpty(Result?.StackTrace) && !HasFailedAssertions;
+    public bool HasStackTrace => !string.IsNullOrEmpty(Result?.StackTrace) && !FailedAssertionsString.Contains(Result.StackTrace);
 
     /// <inheritdoc />
     // ReSharper disable once ConditionIsAlwaysTrueOrFalse
@@ -145,14 +145,7 @@ public class NUnitTestResult : INUnitTestResult
     public string FailedAssertionsString => string.Join(Environment.NewLine,
         // ReSharper disable once ConditionIsAlwaysTrueOrFalse
         // ReSharper disable once ConstantConditionalAccessQualifier
-        Result?.AssertionResults?.Where(x => x != null && x.Status != AssertionStatus.Passed).Select(x =>
-            $"{ResourceHelper.GetResourceString("TestsPageAssertionStatus") ?? string.Empty}{x.Status}" + (string.IsNullOrEmpty(x.Message)
-                ? string.Empty
-                : $"{Environment.NewLine}{x.Message}") +
-            (string.IsNullOrEmpty(x.StackTrace)
-                ? string.Empty
-                : $"{Environment.NewLine}{ResourceHelper.GetResourceString("TestsPageTestStackTrace") ?? string.Empty}{Environment.NewLine}{x.StackTrace}")
-        ) ?? new List<string>());
+        Result?.AssertionResults?.Where(x => x != null && x.Status != AssertionStatus.Passed).Select(FormatAssertionResult) ?? new List<string>());
 
     #endregion
 
@@ -183,6 +176,34 @@ public class NUnitTestResult : INUnitTestResult
     public override int GetHashCode()
     {
         return Result?.GetHashCode() ?? 0;
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    ///     Formats and <see cref="AssertionResult"/> to a string.
+    /// </summary>
+    /// <param name="assertion">The <see cref="AssertionResult"/> to format.</param>
+    /// <returns>The formatted assertion result string.</returns>
+    private static string FormatAssertionResult(AssertionResult assertion)
+    {
+        string statusHeader = ResourceHelper.GetResourceString("TestsPageAssertionStatus") ?? string.Empty;
+        string msg = $"{statusHeader} {assertion.Status}";
+
+        if (!string.IsNullOrEmpty(assertion.Message))
+        {
+            msg += $"{Environment.NewLine}{assertion.Message}";
+        }
+
+        if (!string.IsNullOrEmpty(assertion.StackTrace))
+        {
+            string stackTraceHeader = ResourceHelper.GetResourceString("TestsPageTestStackTrace") ?? string.Empty;
+            msg += $"{Environment.NewLine}{stackTraceHeader}{Environment.NewLine}{assertion.StackTrace}";
+        }
+
+        return msg;
     }
 
     #endregion
