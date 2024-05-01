@@ -42,6 +42,13 @@ public interface INUnitTestRunner
     /// <remarks>Returns null if a test is already running.</remarks>
     Task<INUnitTestResult> Run(ITestFilter filter = null);
 
+    /// <inheritdoc cref="NUnitTestAssemblyRunner.Run"/>
+    /// <remarks>
+    ///     Same as <see cref="Run"/> but runs synchronously on the current thread.
+    ///     Returns null if a test is already running.
+    /// </remarks>
+    INUnitTestResult RunOnCurrentThread(ITestFilter filter = null);
+
     /// <inheritdoc cref="NUnitTestAssemblyRunner.StopRun"/>
     void StopRun(bool force);
 

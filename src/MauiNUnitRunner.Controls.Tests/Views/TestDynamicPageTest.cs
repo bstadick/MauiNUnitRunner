@@ -791,6 +791,7 @@ public class TestDynamicPageTest
         /// <summary>
         ///     Holds the underlying list of test listeners.
         /// </summary>
+        // ReSharper disable once CollectionNeverQueried.Local
         private readonly HashSet<ITestListener> v_TestListeners = new HashSet<ITestListener>();
 
         /// <summary>
@@ -881,6 +882,24 @@ public class TestDynamicPageTest
             }
 
             return Task.FromResult((INUnitTestResult)new NUnitTestResult(result));
+        }
+
+        /// <inheritdoc />
+        public INUnitTestResult RunOnCurrentThread(ITestFilter filter = null)
+        {
+            if (RunThrowsException)
+            {
+                throw new InvalidOperationException("INUnitTestRunner.Run threw an exception.");
+            }
+
+            ITestResult result = v_TestRunner.Run(null, filter);
+
+            if (RunReturnNull)
+            {
+                return null;
+            }
+
+            return new NUnitTestResult(result);
         }
 
         /// <inheritdoc />

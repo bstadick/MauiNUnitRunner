@@ -332,6 +332,124 @@ public class NUnitTestRunnerTest
 
     #endregion
 
+    #region Tests for RunOnCurrentThread
+
+    [Test]
+    public void TestRunOnCurrentThreadWhenTestsAreNotRunningRunsTestsAndReturnsTestsResults()
+    {
+        NUnitTestRunnerForTest runner = new NUnitTestRunnerForTest();
+        AutoResetEvent waitToEndRun = new AutoResetEvent(false);
+        AutoResetEvent waitForRunStart = new AutoResetEvent(false);
+        ITestResult result = new TestResultStub();
+        runner.TestRunnerStub.OnRun = (_, _) =>
+        {
+            // ReSharper disable once AccessToDisposedClosure
+            waitForRunStart.Set();
+            // ReSharper disable once AccessToDisposedClosure
+            waitToEndRun.WaitOne();
+            return result;
+        };
+
+        Assert.That(runner.IsTestRunning, Is.False);
+
+        Task<INUnitTestResult> testRun = Task.Run(() => runner.RunOnCurrentThread());
+        waitForRunStart.WaitOne();
+
+        Assert.That(runner.IsTestRunning, Is.True);
+        waitToEndRun.Set();
+
+        testRun.Wait();
+
+        Assert.That(testRun, Is.Not.Null);
+        Assert.That(testRun.IsCompleted, Is.True);
+        Assert.That(runner.IsTestRunning, Is.False);
+        Assert.That(testRun.Result, Is.Not.Null);
+        Assert.That(testRun.Result.Result, Is.SameAs(result));
+
+        waitForRunStart.Dispose();
+        waitToEndRun.Dispose();
+    }
+
+    [Test]
+    public void TestRunOnCurrentThreadWhenTestsAreNotRunningAndWithFilterRunsTestsAndReturnsTestsResults([Values] bool withListener,
+        [Values] bool isFilterNull)
+    {
+        NUnitTestListener listener = null;
+        try
+        {
+            NUnitTestRunnerForTest runner = new NUnitTestRunnerForTest();
+            listener = withListener ? new NUnitTestListener() : null;
+            int listenerCount = withListener ? 1 : 0;
+            runner.AddTestListener(listener);
+
+            ITestFilter filter =
+                isFilterNull ? null : NUnitFilter.Where.Class(".*" + nameof(TestFixtureStubForNUnitRunnerTest), true).Build().Filter;
+            ITestFilter expectedFilter = isFilterNull ? NUnitFilter.Empty : filter;
+            AutoResetEvent waitToEndRun = new AutoResetEvent(false);
+            AutoResetEvent waitForRunStart = new AutoResetEvent(false);
+            ITestResult result = new TestResultStub();
+            ITestListener runListener = null;
+            ITestFilter runFilter = null;
+            runner.TestRunnerStub.OnRun = (l, f) =>
+            {
+                runListener = l;
+                runFilter = f;
+                // ReSharper disable once AccessToDisposedClosure
+                waitForRunStart.Set();
+                // ReSharper disable once AccessToDisposedClosure
+                waitToEndRun.WaitOne();
+                return result;
+            };
+
+            Assert.That(runner.IsTestRunning, Is.False);
+
+            Task< INUnitTestResult> testRun = Task.Run(() => runner.RunOnCurrentThread(filter));
+            waitForRunStart.WaitOne();
+
+            Assert.That(runner.IsTestRunning, Is.True);
+            waitToEndRun.Set();
+
+            testRun.Wait();
+
+            Assert.That(testRun, Is.Not.Null);
+            Assert.That(testRun.IsCompleted, Is.True);
+            Assert.That(runner.IsTestRunning, Is.False);
+            Assert.That(testRun.Result, Is.Not.Null);
+            Assert.That(testRun.Result.Result, Is.SameAs(result));
+            Assert.That(runFilter, Is.SameAs(expectedFilter));
+            Assert.That(runListener, Is.Not.Null.And.TypeOf<NUnitCompositeTestListener>());
+            Assert.That((runListener as NUnitCompositeTestListener)?.TestListeners, Has.Count.EqualTo(listenerCount));
+            if (withListener)
+            {
+                Assert.That((runListener as NUnitCompositeTestListener)?.TestListeners, Does.Contain(listener));
+            }
+
+            waitForRunStart.Dispose();
+            waitToEndRun.Dispose();
+
+        }
+        finally
+        {
+            listener?.Dispose();
+        }
+    }
+
+    [Test]
+    public void TestRunOnCurrentThreadWhenTestsAreAlreadyRunningDoesNotRunTestsAndReturnsNullResult()
+    {
+        NUnitTestRunnerForTest runner = new NUnitTestRunnerForTest();
+        runner.TestRunnerStub.IsTestRunning = true;
+
+        Assert.That(runner.IsTestRunning, Is.True);
+
+        INUnitTestResult testRun = runner.RunOnCurrentThread();
+
+        Assert.That(runner.IsTestRunning, Is.True);
+        Assert.That(testRun, Is.Null);
+    }
+
+    #endregion
+
     #region Tests for StopRun
 
     [Test]

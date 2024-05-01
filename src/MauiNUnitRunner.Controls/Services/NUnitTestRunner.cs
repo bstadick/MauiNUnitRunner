@@ -105,6 +105,21 @@ public class NUnitTestRunner : INUnitTestRunner
     }
 
     /// <inheritdoc />
+    public INUnitTestResult RunOnCurrentThread(ITestFilter filter = null)
+    {
+        // Only allow one test run to run at a time
+        if (v_TestRunner.IsTestRunning)
+        {
+            return null;
+        }
+
+        // Run tests
+        filter ??= NUnitFilter.Empty;
+        ITestResult result = v_TestRunner.Run(v_TestListener, filter);
+        return new NUnitTestResult(result);
+    }
+
+    /// <inheritdoc />
     public void StopRun(bool force)
     {
         v_TestRunner.StopRun(force);
