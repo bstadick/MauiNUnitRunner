@@ -499,27 +499,106 @@ public class NUnitTestTest
     #region Tests for SkipSingleTestSuites
 
     [Test]
-    public void TestSkipSingleTestSuites([Values] bool hasChildren, [Values] bool hasMultipleChildren, [Values] bool isChildrenNull)
+    public void TestSkipSingleTestSuitesWithNoChildrenDoesNotSkip([Values] bool childListNull)
     {
-        TestStub childTest = new TestStub { Id = "child" };
-        TestStub grandchildTest = new TestStub { Id = "grandchild" };
-        childTest.Tests = [grandchildTest];
-        IList<ITest> children = hasChildren
-            ? (hasMultipleChildren ? [childTest, childTest] : (isChildrenNull ? [null] : [childTest]))
-            : Array.Empty<ITest>();
         TestStub testInstance = new TestStub() { Id = "parent" };
-        testInstance.Tests = children;
+        testInstance.Tests = childListNull ? null : Array.Empty<ITest>();
 
         INUnitTest test = new NUnitTest(testInstance);
-
-        INUnitTest expected =
-            !hasChildren || hasMultipleChildren || isChildrenNull ? test : new NUnitTest(grandchildTest);
 
         INUnitTest skippedTest = test.SkipSingleTestSuites();
 
         Assert.That(skippedTest, Is.Not.Null);
         Assert.That(skippedTest.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(skippedTest.Id, Is.EqualTo(expected.Id));
+        Assert.That(skippedTest.Id, Is.EqualTo("parent"));
+    }
+
+    [Test]
+    public void TestSkipSingleTestSuitesWithMultipleChildrenDoesNotSkip()
+    {
+        TestStub childTest = new TestStub { Id = "child" };
+        TestStub testInstance = new TestStub() { Id = "parent" };
+        testInstance.Tests = [childTest, childTest];
+
+        INUnitTest test = new NUnitTest(testInstance);
+
+        INUnitTest skippedTest = test.SkipSingleTestSuites();
+
+        Assert.That(skippedTest, Is.Not.Null);
+        Assert.That(skippedTest.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(skippedTest.Id, Is.EqualTo("parent"));
+    }
+
+    [Test]
+    public void TestSkipSingleTestSuitesWithSingleNullChildDoesNotSkip()
+    {
+        TestStub testInstance = new TestStub() { Id = "parent" };
+        testInstance.Tests = [null];
+
+        INUnitTest test = new NUnitTest(testInstance);
+
+        INUnitTest skippedTest = test.SkipSingleTestSuites();
+
+        Assert.That(skippedTest, Is.Not.Null);
+        Assert.That(skippedTest.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(skippedTest.Id, Is.EqualTo("parent"));
+    }
+
+    [Test]
+    public void TestSkipSingleTestSuitesWithSingleNonSuiteChildDoesNotSkip()
+    {
+        TestStub childTest = new TestStub { Id = "child" };
+        childTest.IsSuite = false;
+        TestStub testInstance = new TestStub() { Id = "parent" };
+        testInstance.Tests = [childTest];
+
+        INUnitTest test = new NUnitTest(testInstance);
+
+        INUnitTest skippedTest = test.SkipSingleTestSuites();
+
+        Assert.That(skippedTest, Is.Not.Null);
+        Assert.That(skippedTest.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(skippedTest.Id, Is.EqualTo("parent"));
+    }
+
+    [Test]
+    public void TestSkipSingleTestSuitesWithSingleSuiteAndMultipleCasesChildDoesNotSkip()
+    {
+        TestStub childTest = new TestStub { Id = "child" };
+        childTest.IsSuite = true;
+        childTest.Method = new MethodWrapper(typeof(NUnitTestTest), "TestMethod");
+        TestStub testInstance = new TestStub() { Id = "parent" };
+        testInstance.Tests = [childTest];
+
+        INUnitTest test = new NUnitTest(testInstance);
+
+        INUnitTest skippedTest = test.SkipSingleTestSuites();
+
+        Assert.That(skippedTest, Is.Not.Null);
+        Assert.That(skippedTest.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(skippedTest.Id, Is.EqualTo("parent"));
+    }
+
+    [Test]
+    public void TestSkipSingleTestSuitesWithSingleSuiteChildDoesSkip([Values] bool hasChildSuite)
+    {
+        TestStub childTest = new TestStub { Id = "child" };
+        TestStub grandchildTest = new TestStub { Id = "grandchild" };
+        grandchildTest.IsSuite = true;
+        childTest.Tests = hasChildSuite ? [grandchildTest] : Array.Empty<ITest>();
+        childTest.IsSuite = true;
+        TestStub testInstance = new TestStub() { Id = "parent" };
+        testInstance.Tests = [childTest];
+
+        INUnitTest test = new NUnitTest(testInstance);
+
+        string expectedTest = hasChildSuite ? grandchildTest.Id : childTest.Id;
+
+        INUnitTest skippedTest = test.SkipSingleTestSuites();
+
+        Assert.That(skippedTest, Is.Not.Null);
+        Assert.That(skippedTest.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(skippedTest.Id, Is.EqualTo(expectedTest));
     }
 
     #endregion

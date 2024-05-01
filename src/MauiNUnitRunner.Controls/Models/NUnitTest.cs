@@ -160,8 +160,11 @@ public class NUnitTest : INUnitTest
         // Skip past tests that only have one child test as displaying them isn't very useful
         while (test.HasChildren && test.Children.Count == 1)
         {
+            // Unless the child test is itself not a test suite or has test method info (as with test with multiple cases)
+            // This is to provide a more consistent navigation experience when having a mix of test suites with single and multiple children
+            // Navigating into a test suite that contains only a single test case/method does not skip straight into the test case itself
             INUnitTest nextTest = test.Children.FirstOrDefault();
-            if (nextTest?.Test == null)
+            if (nextTest?.Test == null || !nextTest.Test.IsSuite || nextTest.Test.Method != null)
             {
                 break;
             }

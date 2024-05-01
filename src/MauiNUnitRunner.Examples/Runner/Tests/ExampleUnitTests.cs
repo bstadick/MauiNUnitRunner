@@ -14,15 +14,15 @@ namespace MauiNUnitRunner.Examples.Runner.Tests;
 public class ExampleUnitTests
 {
     /// <summary>
-    ///     Holds a toggled value, start as false so that the first test run will toggle it true.
+    ///     Gets a toggled value, start as false so that the first test run will toggle it true.
     /// </summary>
-    private static bool v_Toggle;
+    public static bool Toggle { get; private set; }
 
     [OneTimeSetUp]
     public void TestFixtureSetUp()
     {
         // Toggle the value between true and false
-        v_Toggle = !v_Toggle;
+        Toggle = !Toggle;
 
         Console.Write("This is a console message in the test fixture");
     }
@@ -33,7 +33,7 @@ public class ExampleUnitTests
         // Throw an exception during setup only for the specified test
         if (TestContext.CurrentContext.Test.Name.Equals("TestThrowsExceptionDuringSetup"))
         {
-            if (!v_Toggle)
+            if (!Toggle)
             {
                 throw new InvalidOperationException("This test setup threw an exception");
             }
@@ -57,7 +57,7 @@ public class ExampleUnitTests
     [Test]
     public void TestTogglePassFail()
     {
-        Assert.That(v_Toggle, "Toggles between pass and fail");
+        Assert.That(Toggle, "Toggles between pass and fail");
     }
 
     [Test]
@@ -80,7 +80,7 @@ public class ExampleUnitTests
     [Test]
     public void TestInconclusive()
     {
-        if (!v_Toggle)
+        if (!Toggle)
         {
             Assume.That(false, "This test is inconclusive");
         }
@@ -94,7 +94,7 @@ public class ExampleUnitTests
     [Test]
     public void TestWarning()
     {
-        if (!v_Toggle)
+        if (!Toggle)
         {
             Assert.Warn("This test raised a warning");
         }
@@ -108,7 +108,7 @@ public class ExampleUnitTests
     [Test]
     public void TestThrowsException()
     {
-        if (!v_Toggle)
+        if (!Toggle)
         {
             throw new InvalidOperationException("This test threw an exception");
         }
@@ -144,5 +144,33 @@ public class ExampleUnitTests
         Thread.Sleep(totalDelay / steps);
 
         Assert.That(true, Is.True, "Count: {0}", count);
+    }
+}
+
+/// <summary>
+///     A suite of an example test case with a single test case.
+/// </summary>
+/// <remarks>This test suite should not be skipped over when navigated to.</remarks>
+[TestFixture]
+public class ExampleUnitTestsWithOneTestCase
+{
+    [Test]
+    public void TestWithSingleTest()
+    {
+        Assert.That(true);
+    }
+}
+
+/// <summary>
+///     A suite of example test cases with a single test with multiple test cases.
+/// </summary>
+/// <remarks>This test suite should not be skipped over when navigated to.</remarks>
+[TestFixture]
+public class ExampleUnitTestsWithOneTestAndMultipleCases
+{
+    [Test]
+    public void TestWithSingleTestButMultipleCases([Range(0, 4)] int count)
+    {
+        Assert.That(true, "Count: {0}", count);
     }
 }

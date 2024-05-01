@@ -343,16 +343,18 @@ public class TestDynamicPageTest
     }
 
     [Test]
-    public void TestOnTestItemSelectedSkipsSingleTestPages()
+    public void TestOnTestItemSelectedSkipsSingleTestPages([Values] bool hasChildSuite)
     {
         INUnitTestRunner runner = new NUnitTestRunnerForTest();
 
         TestDynamicPageForTest page = new TestDynamicPageForTest(runner);
 
-        ITest testInstanceGrandChild = new TestStub { Id = "3" };
-        ITest testInstanceChild = new TestStub { Id = "2", Tests = new List<ITest> { testInstanceGrandChild } };
-        ITest testInstance = new TestStub { Id = "1", Tests = new List<ITest> { testInstanceChild } };
+        ITest testInstanceGrandChild = new TestStub { Id = "3", IsSuite = hasChildSuite };
+        ITest testInstanceChild = new TestStub { Id = "2", Tests = new List<ITest> { testInstanceGrandChild }, IsSuite = true };
+        ITest testInstance = new TestStub { Id = "1", Tests = new List<ITest> { testInstanceChild }, IsSuite = true };
         INUnitTest test = new NUnitTest(testInstance);
+
+        ITest expectedTest = hasChildSuite ? testInstanceGrandChild : testInstanceChild;
 
         page.InvokeOnTestItemSelected(this, new NUnitTestEventArgs(test));
 
@@ -360,7 +362,7 @@ public class TestDynamicPageTest
         TestDynamicPage navigatedPage = page.NavigatedPage as TestDynamicPage;
         Assert.That(navigatedPage, Is.Not.Null);
         Assert.That(navigatedPage.TestRunner, Is.SameAs(runner));
-        Assert.That(navigatedPage.Test.Test, Is.SameAs(testInstanceGrandChild));
+        Assert.That(navigatedPage.Test.Test, Is.SameAs(expectedTest));
         Assert.That(navigatedPage.ShowFooterLinks, Is.False);
     }
 
