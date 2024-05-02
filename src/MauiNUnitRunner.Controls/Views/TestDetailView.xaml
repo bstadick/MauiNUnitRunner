@@ -85,7 +85,7 @@
             <ScrollView Grid.Row="2">
                 <StackLayout>
                     <Label Text="{Binding FailedAssertionsString, FallbackValue='Test message'}"
-                           Style="{StaticResource LabelSubTextStyle}"
+                           Style="{StaticResource LabelMultiLineTextStyle}"
                            IsVisible="{Binding HasFailedAssertions, FallbackValue=false}"
                            Padding="10" />
 
@@ -93,7 +93,7 @@
                            Style="{StaticResource LabelSubTextStyle}"
                            IsVisible="{Binding HasOutput, FallbackValue=false}" />
                     <Label Text="{Binding Result.Output, FallbackValue='Test message'}"
-                           Style="{StaticResource LabelSubTextStyle}"
+                           Style="{StaticResource LabelMultiLineTextStyle}"
                            IsVisible="{Binding HasOutput, FallbackValue=false}"
                            Padding="10" />
 
@@ -101,7 +101,7 @@
                            Style="{StaticResource LabelSubTextStyle}"
                            IsVisible="{Binding HasMessage, FallbackValue=false}" />
                     <Label Text="{Binding Result.Message, FallbackValue='Test message'}"
-                           Style="{StaticResource LabelSubTextStyle}"
+                           Style="{StaticResource LabelMultiLineTextStyle}"
                            IsVisible="{Binding HasMessage, FallbackValue=false}"
                            Padding="10" />
 
@@ -109,7 +109,7 @@
                            Style="{StaticResource LabelSubTextStyle}"
                            IsVisible="{Binding HasStackTrace, FallbackValue=false}" />
                     <Label Text="{Binding Result.StackTrace, FallbackValue='Test message'}"
-                           Style="{StaticResource LabelSubTextStyle}"
+                           Style="{StaticResource LabelMultiLineTextStyle}"
                            IsVisible="{Binding HasStackTrace, FallbackValue=false}"
                            Padding="10" />
                 </StackLayout>
