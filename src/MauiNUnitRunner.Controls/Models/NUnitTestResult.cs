@@ -11,6 +11,15 @@ namespace MauiNUnitRunner.Controls.Models;
 /// </summary>
 public class NUnitTestResult : INUnitTestResult
 {
+    #region Private Members
+
+    /// <summary>
+    ///     Holds a cached version of the failed assertion string.
+    /// </summary>
+    private string v_FailedAssertionString = string.Empty;
+
+    #endregion
+
     #region Constructors
 
     /// <summary>
@@ -142,10 +151,46 @@ public class NUnitTestResult : INUnitTestResult
     /// <remarks>
     ///     A failed assertion string is in the format of: "Status + \n + optional Message + \n + optional StackTrace".
     /// </remarks>
-    public string FailedAssertionsString => string.Join(Environment.NewLine,
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-        // ReSharper disable once ConstantConditionalAccessQualifier
-        Result?.AssertionResults?.Where(x => x != null && x.Status != AssertionStatus.Passed).Select(FormatAssertionResult) ?? new List<string>());
+    public string FailedAssertionsString
+    {
+        get
+        {
+            // Set cached value if failed assertions present and value not already set
+            if (Result != null && string.IsNullOrEmpty(v_FailedAssertionString) && HasFailedAssertions)
+            {
+                // Create string from failed assertions
+                v_FailedAssertionString = string.Join(Environment.NewLine,
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    // ReSharper disable once ConstantConditionalAccessQualifier
+                    // ReSharper disable once ConstantNullCoalescingCondition
+                    Result.AssertionResults?.Where(x => x != null && x.Status != AssertionStatus.Passed).Select(x =>
+                        FormatAssertionResult(x.Status.ToString(), x.Message, x.StackTrace)) ?? new List<string>());
+
+                // ReSharper disable once ConstantConditionalAccessQualifier
+                // ReSharper disable once ConstantNullCoalescingCondition
+                if (!(Result.Test?.IsSuite ?? true))
+                {
+                    // Fallback to creating string from xml results in cases where a test case's xml result is more detailed than the assertion list
+                    TNode resultNode = Result.ToXml(true);
+                    TNode messageNode = resultNode.SelectSingleNode("failure/message");
+                    TNode stackTraceNode = resultNode.SelectSingleNode("failure/stack-trace");
+                    string errorString = AssertionStatus.Error.ToString();
+                    string resultState =
+                        Result.ResultState.Status == TestStatus.Failed && Result.ResultState.Label == errorString
+                            ? errorString
+                            : ResultStateStatus;
+                    string fromXml = FormatAssertionResult(resultState, messageNode?.Value, stackTraceNode?.Value);
+                    if (fromXml.Length > v_FailedAssertionString.Length)
+                    {
+                        v_FailedAssertionString = fromXml;
+                    }
+                }
+            }
+
+            // Return cached value
+            return v_FailedAssertionString;
+        }
+    }
 
     #endregion
 
@@ -183,24 +228,26 @@ public class NUnitTestResult : INUnitTestResult
     #region Private Methods
 
     /// <summary>
-    ///     Formats and <see cref="AssertionResult"/> to a string.
+    ///     Formats an <see cref="AssertionResult"/> to a string.
     /// </summary>
-    /// <param name="assertion">The <see cref="AssertionResult"/> to format.</param>
+    /// <param name="status">The <see cref="AssertionResult"/> status.</param>
+    /// <param name="message">The <see cref="AssertionResult"/> message.</param>
+    /// <param name="stackTrace">The <see cref="AssertionResult"/> stackTrace.</param>
     /// <returns>The formatted assertion result string.</returns>
-    private static string FormatAssertionResult(AssertionResult assertion)
+    private static string FormatAssertionResult(string status, string message, string stackTrace)
     {
         string statusHeader = ResourceHelper.GetResourceString("TestsPageAssertionStatus") ?? string.Empty;
-        string msg = $"{statusHeader} {assertion.Status}";
+        string msg = $"{statusHeader} {status}";
 
-        if (!string.IsNullOrEmpty(assertion.Message))
+        if (!string.IsNullOrEmpty(message))
         {
-            msg += $"{Environment.NewLine}{assertion.Message}";
+            msg += $"{Environment.NewLine}{message}";
         }
 
-        if (!string.IsNullOrEmpty(assertion.StackTrace))
+        if (!string.IsNullOrEmpty(stackTrace))
         {
             string stackTraceHeader = ResourceHelper.GetResourceString("TestsPageTestStackTrace") ?? string.Empty;
-            msg += $"{Environment.NewLine}{stackTraceHeader}{Environment.NewLine}{assertion.StackTrace}";
+            msg += $"{Environment.NewLine}{stackTraceHeader}{Environment.NewLine}{stackTrace}";
         }
 
         return msg;
