@@ -408,7 +408,7 @@ public class NUnitTestTest
     public void TestDisplayNamePropertyWithDllExtensionReturnsAssemblyDisplayName()
     {
         const string expected = "test-123 Assembly";
-        TestStub testInstance = new TestStub { Name = "path\\to\\dll\\test-123.dll" };
+        TestStub testInstance = new TestStub { Name = Path.Combine("path", "to", "dll", "test-123.dll") };
 
         INUnitTest test = new NUnitTest(testInstance);
 
@@ -434,7 +434,7 @@ public class NUnitTestTest
     public void TestFullDisplayNamePropertyWithDllExtensionReturnsAssemblyDisplayName()
     {
         const string expected = "test-123 Assembly";
-        TestStub testInstance = new TestStub { FullName = "path\\to\\dll\\test-123.dll" };
+        TestStub testInstance = new TestStub { FullName = Path.Combine("path", "to", "dll", "test-123.dll") };
 
         INUnitTest test = new NUnitTest(testInstance);
 
@@ -482,8 +482,8 @@ public class NUnitTestTest
         IMethodInfo methodInfo = new MethodWrapper(typeof(NUnitTestTest), nameof(TestConditionalDisplayNameProperty));
         TestStub testInstance = new TestStub
         {
-            Name = "path\\to\\dll\\test-123.dll",
-            FullName = "path\\to\\dll\\test-123-full.dll",
+            Name = Path.Combine("path", "to", "dll", "test-123.dll"),
+            FullName = Path.Combine("path", "to", "dll", "test-123-full.dll"),
             IsSuite = isSuite,
             ClassName = isClassNull ? null : "class-name",
             Method = isMethodNull ? null : methodInfo
