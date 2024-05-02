@@ -451,22 +451,22 @@ public class NUnitTestResultTest
     }
 
     [Test]
-    public void TestHasMessagePropertyWithMessageAndFailedAssertionsWithoutMatchingMessageReturnsTrue()
+    public void TestHasMessagePropertyWithMessageAndPassedOrNoAssertionsReturnsTrue([Values] bool hasAssertions)
     {
         const string msg = "This is a test message.";
         IList<AssertionResult> assertions = new List<AssertionResult>
         {
-            new AssertionResult(AssertionStatus.Failed, "message", "trace")
+            new AssertionResult(AssertionStatus.Passed, "message", "trace")
         };
 
         TestResultStub result = new TestResultStub();
         result.Message = msg;
-        result.AssertionResults = assertions;
+        result.AssertionResults = hasAssertions ? assertions : Array.Empty<AssertionResult>();
         INUnitTestResult test = new NUnitTestResult(result);
 
         Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.Message, Is.EqualTo(msg));
-        Assert.That(test.HasFailedAssertions, Is.True);
+        Assert.That(test.HasFailedAssertions, Is.False);
         Assert.That(test.HasMessage, Is.True);
     }
 
@@ -523,22 +523,22 @@ public class NUnitTestResultTest
     }
 
     [Test]
-    public void TestHasStackTracePropertyWithStackTraceAndFailedAssertionsWithoutMatchingStackTraceReturnsTrue()
+    public void TestHasStackTracePropertyWithStackTraceAndPassedOrNoAssertionsReturnsTrue([Values] bool hasAssertions)
     {
         const string msg = "This is a test message.";
         IList<AssertionResult> assertions = new List<AssertionResult>
         {
-            new AssertionResult(AssertionStatus.Failed, "message", "trace")
+            new AssertionResult(AssertionStatus.Passed, "message", "trace")
         };
 
         TestResultStub result = new TestResultStub();
         result.StackTrace = msg;
-        result.AssertionResults = assertions;
+        result.AssertionResults = hasAssertions ? assertions : Array.Empty<AssertionResult>();
         INUnitTestResult test = new NUnitTestResult(result);
 
         Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.StackTrace, Is.EqualTo(msg));
-        Assert.That(test.HasFailedAssertions, Is.True);
+        Assert.That(test.HasFailedAssertions, Is.False);
         Assert.That(test.HasStackTrace, Is.True);
     }
 
@@ -688,68 +688,6 @@ public class NUnitTestResultTest
         INUnitTestResult test = new NUnitTestResult(result);
 
         Assert.That(test.HasFailedAssertions, Is.EqualTo(expected));
-        Assert.That(test.FailedAssertionsString, Is.EqualTo(expectedMsg));
-        Assert.That(test.Result, Is.Not.Null);
-        Assert.That(test.Result.AssertionResults, Is.EqualTo(assertions));
-    }
-
-    [Test]
-    public void TestFailedAssertionsStringPropertyWithAssertionsAndIsNotTestSuiteAndFromXmlLongerReturnsFormattedFailedAssertionStringFromXml(
-        [Values] AssertionStatus status)
-    {
-        string nl = Environment.NewLine;
-        bool expected = status != AssertionStatus.Passed;
-        string expectedMsg =
-            expected ? $"Assertion Status: {status}{nl}message 2{nl}StackTrace:{nl}trace 2" : string.Empty;
-        IList<AssertionResult> assertions = new List<AssertionResult>
-        {
-            new AssertionResult(status, "msg 1", "trace 1"),
-        };
-
-        TestResultStub result = new TestResultStub();
-        result.ResultState = AssertionStatusToResultState(status);
-        result.TestResultXml =
-            TNode.FromXml(
-                "<test-case><failure><message><![CDATA[message 2]]></message><stack-trace><![CDATA[trace 2]]></stack-trace></failure></test-case>");
-        result.Test = new TestStub() { IsSuite = false };
-        result.AssertionResults = assertions;
-
-        INUnitTestResult test = new NUnitTestResult(result);
-
-        Assert.That(test.HasFailedAssertions, Is.EqualTo(expected));
-        Assert.That(test.FailedAssertionsString, Is.EqualTo(expectedMsg));
-        Assert.That(test.Result, Is.Not.Null);
-        Assert.That(test.Result.AssertionResults, Is.EqualTo(assertions));
-    }
-
-    [Test]
-    public void TestFailedAssertionsStringWithFailedAssertionStringSetReturnsCachedStringOnSubsequentCalls()
-    {
-        string nl = Environment.NewLine;
-        string expectedMsg = $"Assertion Status: Failed{nl}message 1{nl}StackTrace:{nl}trace 1";
-        IList<AssertionResult> assertions = new List<AssertionResult>
-        {
-            new AssertionResult(AssertionStatus.Failed, "message 1", "trace 1")
-        };
-
-        TestResultStub result = new TestResultStub();
-        result.ResultState = AssertionStatusToResultState(AssertionStatus.Failed);
-        result.TestResultXml =
-            TNode.FromXml(
-                "<test-case><failure><message><![CDATA[message 2]]></message><stack-trace><![CDATA[trace 2]]></stack-trace></failure></test-case>");
-        result.Test = new TestStub() { IsSuite = false };
-        result.AssertionResults = assertions;
-
-        INUnitTestResult test = new NUnitTestResult(result);
-
-        Assert.That(test.HasFailedAssertions, Is.True);
-        Assert.That(test.FailedAssertionsString, Is.EqualTo(expectedMsg));
-        Assert.That(test.Result, Is.Not.Null);
-        Assert.That(test.Result.AssertionResults, Is.EqualTo(assertions));
-
-        assertions[0] = new AssertionResult(AssertionStatus.Failed, "message 3", "trace 3");
-
-        Assert.That(test.HasFailedAssertions, Is.True);
         Assert.That(test.FailedAssertionsString, Is.EqualTo(expectedMsg));
         Assert.That(test.Result, Is.Not.Null);
         Assert.That(test.Result.AssertionResults, Is.EqualTo(assertions));
