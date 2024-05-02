@@ -137,10 +137,10 @@ public class NUnitTestResult : INUnitTestResult
     public bool HasOutput => !string.IsNullOrEmpty(Result?.Output);
 
     /// <inheritdoc />
-    public bool HasMessage => !string.IsNullOrEmpty(Result?.Message) && !FailedAssertionsString.Contains(Result.Message);
+    public bool HasMessage => !string.IsNullOrEmpty(Result?.Message) && !HasFailedAssertions;
 
     /// <inheritdoc />
-    public bool HasStackTrace => !string.IsNullOrEmpty(Result?.StackTrace) && !FailedAssertionsString.Contains(Result.StackTrace);
+    public bool HasStackTrace => !string.IsNullOrEmpty(Result?.StackTrace) && !HasFailedAssertions;
 
     /// <inheritdoc />
     // ReSharper disable once ConditionIsAlwaysTrueOrFalse
@@ -151,46 +151,11 @@ public class NUnitTestResult : INUnitTestResult
     /// <remarks>
     ///     A failed assertion string is in the format of: "Status + \n + optional Message + \n + optional StackTrace".
     /// </remarks>
-    public string FailedAssertionsString
-    {
-        get
-        {
-            // Set cached value if failed assertions present and value not already set
-            if (Result != null && string.IsNullOrEmpty(v_FailedAssertionString) && HasFailedAssertions)
-            {
-                // Create string from failed assertions
-                v_FailedAssertionString = string.Join(Environment.NewLine,
-                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                    // ReSharper disable once ConstantConditionalAccessQualifier
-                    // ReSharper disable once ConstantNullCoalescingCondition
-                    Result.AssertionResults?.Where(x => x != null && x.Status != AssertionStatus.Passed).Select(x =>
-                        FormatAssertionResult(x.Status.ToString(), x.Message, x.StackTrace)) ?? new List<string>());
-
-                // ReSharper disable once ConstantConditionalAccessQualifier
-                // ReSharper disable once ConstantNullCoalescingCondition
-                if (!(Result.Test?.IsSuite ?? true))
-                {
-                    // Fallback to creating string from xml results in cases where a test case's xml result is more detailed than the assertion list
-                    TNode resultNode = Result.ToXml(true);
-                    TNode messageNode = resultNode.SelectSingleNode("failure/message");
-                    TNode stackTraceNode = resultNode.SelectSingleNode("failure/stack-trace");
-                    string errorString = AssertionStatus.Error.ToString();
-                    string resultState =
-                        Result.ResultState.Status == TestStatus.Failed && Result.ResultState.Label == errorString
-                            ? errorString
-                            : ResultStateStatus;
-                    string fromXml = FormatAssertionResult(resultState, messageNode?.Value, stackTraceNode?.Value);
-                    if (fromXml.Length > v_FailedAssertionString.Length)
-                    {
-                        v_FailedAssertionString = fromXml;
-                    }
-                }
-            }
-
-            // Return cached value
-            return v_FailedAssertionString;
-        }
-    }
+    public string FailedAssertionsString => string.Join(Environment.NewLine,
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+        // ReSharper disable once ConstantConditionalAccessQualifier
+        Result?.AssertionResults?.Where(x => x != null && x.Status != AssertionStatus.Passed).Select(x =>
+            FormatAssertionResult(x.Status.ToString(), x.Message, x.StackTrace)) ?? new List<string>());
 
     #endregion
 
