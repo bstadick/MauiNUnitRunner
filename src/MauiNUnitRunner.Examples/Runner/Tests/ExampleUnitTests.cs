@@ -145,6 +145,15 @@ public class ExampleUnitTests
 
         Assert.That(true, Is.True, "Count: {0}", count);
     }
+
+    [Test]
+    public void
+        TestWithAVeryVeryVeryVeryLongNameSinceWeWantToTestThatItProperlyScrollsAndAvoidsTestNameClippingInTheUserInterface(
+            [Values] bool param1, [Range(0, 4)] int param2)
+    {
+        Assert.That(param1, Is.True.Or.False);
+        Assert.That(param2, Is.GreaterThanOrEqualTo(0));
+    }
 }
 
 /// <summary>
