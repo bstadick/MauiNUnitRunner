@@ -47,6 +47,11 @@
         <Setter Property="Margin" Value="{StaticResource ButtonStyleMargin}" />
         <Setter Property="BackgroundColor" Value="#2196F3" />
         <Setter Property="TextColor" Value="White" />
+        <Setter Property="IsEnabled" Value="true" />
+    </Style>
+    <Style x:Key="ButtonDisabledStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+        <Setter Property="BackgroundColor" Value="Gray" />
+        <Setter Property="IsEnabled" Value="false" />
     </Style>
     <!-- Styles for progress bar -->
     <Style x:Key="ProgressBarStyle" TargetType="ProgressBar">

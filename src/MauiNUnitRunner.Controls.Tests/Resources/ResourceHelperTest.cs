@@ -184,6 +184,88 @@ public class ResourceHelperTest
 
     #endregion
 
+    #region Tests for GetResourceStyle
+
+    [Test]
+    public void TestGetResourceStyleWhenCurrentApplicationOrResourcesNullReturnsNull([Values] bool isApplicationNull)
+    {
+        if (isApplicationNull)
+        {
+            ResourceHelper.UseOverriddenCurrentApplication = true;
+            ResourceHelper.UseOverriddenResourceDictionary = false;
+            ResourceHelper.CurrentApplication = null;
+
+            Assert.That(ResourceHelper.CurrentApplication, Is.Null);
+            Assert.That(ResourceHelper.ResourceDictionary, Is.Null);
+        }
+        else
+        {
+            ResourceHelper.UseOverriddenCurrentApplication = false;
+            ResourceHelper.UseOverriddenResourceDictionary = true;
+            ResourceHelper.ResourceDictionary = null;
+
+            Assert.That(ResourceHelper.CurrentApplication, Is.Not.Null);
+            Assert.That(ResourceHelper.ResourceDictionary, Is.Null);
+        }
+
+        Style resource = ResourceHelper.GetResourceStyle(c_StyleForTestKey);
+
+        Assert.That(v_TestResourceDictionary, Does.ContainKey(c_StyleForTestKey));
+        Assert.That(v_TestResourceDictionary[c_StyleForTestKey], Is.EqualTo(v_StyleForTestValue));
+
+        Assert.That(resource, Is.Null);
+    }
+
+    [Test]
+    public void TestGetResourceStyleWhenCurrentApplicationAndResourcesNotNullAndKeyPresentReturnsValue()
+    {
+        Style resource = ResourceHelper.GetResourceStyle(c_StyleForTestKey);
+
+        Assert.That(ResourceHelper.ResourceDictionary, Is.Not.Null);
+        Assert.That(ResourceHelper.ResourceDictionary, Does.ContainKey(c_StyleForTestKey));
+        Assert.That(ResourceHelper.ResourceDictionary[c_StyleForTestKey], Is.EqualTo(v_StyleForTestValue));
+
+        Assert.That(resource, Is.EqualTo(v_StyleForTestValue));
+    }
+
+    [Test]
+    public void TestGetResourceStyleWhenCurrentApplicationAndResourcesNotNullAndKeyNotPresentReturnsNull()
+    {
+        const string key = "NotA" + c_StyleForTestKey;
+        Style resource = ResourceHelper.GetResourceStyle(key);
+
+        Assert.That(ResourceHelper.ResourceDictionary, Is.Not.Null);
+        Assert.That(ResourceHelper.ResourceDictionary, Does.Not.ContainKey(key));
+
+        Assert.That(resource, Is.Null);
+    }
+
+    [Test]
+    public void TestGetResourceStyleWhenCurrentApplicationAndResourcesNotNullAndValueNullReturnsNull()
+    {
+        Style resource = ResourceHelper.GetResourceStyle(c_NullForTestKey);
+
+        Assert.That(ResourceHelper.ResourceDictionary, Is.Not.Null);
+        Assert.That(ResourceHelper.ResourceDictionary, Does.ContainKey(c_NullForTestKey));
+        Assert.That(ResourceHelper.ResourceDictionary[c_NullForTestKey], Is.Null);
+
+        Assert.That(resource, Is.Null);
+    }
+
+    [Test]
+    public void TestGetResourceStyleWhenCurrentApplicationAndResourcesNotNullAndValueNotStyleReturnsNull()
+    {
+        Style resource = ResourceHelper.GetResourceStyle(c_StringForTestKey);
+
+        Assert.That(ResourceHelper.ResourceDictionary, Is.Not.Null);
+        Assert.That(ResourceHelper.ResourceDictionary, Does.ContainKey(c_StringForTestKey));
+        Assert.That(ResourceHelper.ResourceDictionary[c_StringForTestKey], Is.EqualTo(c_StringForTestValue));
+
+        Assert.That(resource, Is.Null);
+    }
+
+    #endregion
+
     #region Tests for GetResourceTextColor
 
     [Test]

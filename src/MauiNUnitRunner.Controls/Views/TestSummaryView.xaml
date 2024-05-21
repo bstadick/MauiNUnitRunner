@@ -14,6 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
         <models:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        <models:ButtonDisabledStyleConverter x:Key="ButtonDisabledStyleConverter"/>
     </ContentView.Resources>
 
     <StackLayout Padding="10">
@@ -27,13 +28,11 @@
                      BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestSummaryView}}}"
                      x:DataType="views:TestSummaryView">
             <Button Text="{StaticResource RunTestsButton}"
-                    Style="{StaticResource ButtonStyle}"
-                    Clicked="RunTestsButton_OnClicked"
-                    IsEnabled="{Binding TestRunState.IsTestRunning, FallbackValue=true, Converter={StaticResource InverseBoolConverter}}" />
+                    Style="{Binding Path=TestRunState.IsTestRunning, FallbackValue={StaticResource ButtonStyle}, Converter={StaticResource ButtonDisabledStyleConverter}}"
+                    Clicked="RunTestsButton_OnClicked" />
             <Button Text="{StaticResource SaveResultsButton}"
-                    Style="{StaticResource ButtonStyle}"
-                    Clicked="SaveResultsButton_OnClicked"
-                    IsEnabled="{Binding TestRunState.IsTestRunning, FallbackValue=true, Converter={StaticResource InverseBoolConverter}}" />
+                    Style="{Binding Path=TestRunState.IsTestRunning, FallbackValue={StaticResource ButtonStyle}, Converter={StaticResource ButtonDisabledStyleConverter}}"
+                    Clicked="SaveResultsButton_OnClicked" />
         </StackLayout>
 
         <!-- Test information -->

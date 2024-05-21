@@ -14,6 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
         <models:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        <models:ButtonDisabledStyleConverter x:Key="ButtonDisabledStyleConverter"/>
     </ContentView.Resources>
 
     <Grid Padding="10">
@@ -30,13 +31,11 @@
                    x:DataType="models:INUnitTest" />
             <StackLayout Orientation="Horizontal">
                 <Button Text="{StaticResource RunTestsButton}"
-                        Style="{StaticResource ButtonStyle}"
-                        Clicked="RunTestsButton_OnClicked"
-                        IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=TestRunState.IsTestRunning, FallbackValue=true, Converter={StaticResource InverseBoolConverter}}" />
+                        Style="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=TestRunState.IsTestRunning, FallbackValue={StaticResource ButtonStyle}, Converter={StaticResource ButtonDisabledStyleConverter}}"
+                        Clicked="RunTestsButton_OnClicked" />
                 <Button Text="{StaticResource SaveResultsButton}"
-                        Style="{StaticResource ButtonStyle}"
-                        Clicked="SaveResultsButton_OnClicked"
-                        IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=TestRunState.IsTestRunning, FallbackValue=true, Converter={StaticResource InverseBoolConverter}}" />
+                        Style="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, Path=TestRunState.IsTestRunning, FallbackValue={StaticResource ButtonStyle}, Converter={StaticResource ButtonDisabledStyleConverter}}"
+                        Clicked="SaveResultsButton_OnClicked" />
             </StackLayout>
         </StackLayout>
 

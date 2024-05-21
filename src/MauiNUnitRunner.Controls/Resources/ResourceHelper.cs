@@ -73,6 +73,21 @@ internal static class ResourceHelper
     }
 
     /// <summary>
+    ///     Gets the resource style for the given key, or null if not found or not a style.
+    /// </summary>
+    /// <param name="key">The resource style key to get</param>
+    /// <returns>The resource style for the given key, or null if not found or not a style.</returns>
+    public static Style GetResourceStyle(string key)
+    {
+        if (ResourceDictionary != null && ResourceDictionary.TryGetValue(key, out object valueStyle))
+        {
+            return valueStyle as Style;
+        }
+
+        return null;
+    }
+
+    /// <summary>
     ///     Gets the resource text color for the given key, or null if not found or not a color.
     /// </summary>
     /// <param name="key">The resource text color key to get</param>
