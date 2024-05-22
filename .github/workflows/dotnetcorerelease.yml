@@ -6,11 +6,13 @@ on:
       - 'README.md'
       - '*.DotSettings'
       - '.editorconfig'
+    tags-ignore:
+      - '*'
   workflow_dispatch:
   release:
     types: [published]
     branches:
-      - main
+      - 'main'
 
 env:
   CONFIGURATION: Release
