@@ -17,7 +17,9 @@ public class AboutPageTest
     {
         AboutPage page = new AboutPageForTest();
 
-        Assert.That(page.AssemblyVersion, Is.EqualTo("0.2.0"));
+        Version expectedVersion = typeof(AboutPage).Assembly.GetName().Version;
+        Assert.That(expectedVersion, Is.Not.Null);
+        Assert.That(page.AssemblyVersion, Is.EqualTo(expectedVersion.ToString(3)));
     }
 
     #endregion
