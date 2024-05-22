@@ -124,6 +124,7 @@ The following are planned future enhancements in the general order of priority. 
 - Export results to TRX and other common formats
 - Performance improvements
 - Loading multiple test assemblies
+- Canceling active test run
 - Running tests by category
 - Searching and filtering tests
 - Configuring test settings from UI
