@@ -1,6 +1,6 @@
 # MauiNUnitRunner
 
-[![.NET Build/Publish](https://github.com/bstadick/MauiNUnitRunner/actions/workflows/dotnetcorerelease.yml/badge.svg?branch=main&event=release)](https://github.com/bstadick/MauiNUnitRunner/actions/workflows/dotnetcorerelease.yml)
+[![.NET Build/Publish](https://github.com/bstadick/MauiNUnitRunner/actions/workflows/dotnetcorerelease.yml/badge.svg?event=release)](https://github.com/bstadick/MauiNUnitRunner/actions/workflows/dotnetcorerelease.yml)
 
 NUnit test runner for .NET MAUI based projects.
 
