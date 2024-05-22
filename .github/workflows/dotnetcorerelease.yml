@@ -6,6 +6,8 @@ on:
       - 'README.md'
       - '*.DotSettings'
       - '.editorconfig'
+    branches:
+      - '*'
     tags-ignore:
       - '*'
   workflow_dispatch:
