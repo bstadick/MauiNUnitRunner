@@ -1,5 +1,7 @@
 # MauiNUnitRunner
 
+[![.NET Build/Publish](https://github.com/bstadick/MauiNUnitRunner/actions/workflows/dotnetcorerelease.yml/badge.svg?branch=main&event=release)](https://github.com/bstadick/MauiNUnitRunner/actions/workflows/dotnetcorerelease.yml)
+
 NUnit test runner for .NET MAUI based projects.
 
 This project looks to revive the [NUnit](https://github.com/nunit/nunit.xamarin) and [Xamarin NUnitLite](https://github.com/xamarin) unit test runner projects and combine the granular interface provided by the Xamarin runner with the full functionality provided by the NUnit framework and built for .NET MAUI.
