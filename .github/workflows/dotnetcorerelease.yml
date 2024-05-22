@@ -1,8 +1,12 @@
-name: .NET Release
+name: .NET Build/Publish
 
 on:
+  push:
+  workflow_dispatch:
   release:
     types: [published]
+    branches:
+      - main
 
 env:
   CONFIGURATION: Release
@@ -27,13 +31,6 @@ jobs:
       uses: actions/setup-dotnet@v4.0.0
       with:
         global-json-file: ${{ env.GLOBALJSON }}
-        source-url: https://nuget.pkg.github.com/bstadick/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Setup Nuget.exe
-      uses: nuget/setup-nuget@v2.0.0
-      with:
-        nuget-api-key: ${{ secrets.GITHUB_TOKEN }}
     - name: Restore with dotnet
       uses: nick-fields/retry@v3
       with:
@@ -60,4 +57,8 @@ jobs:
           ${{ env.PROJECTDIRPATH }}\bin\${{ env.CONFIGURATION }}\*.nupkg
           ${{ env.TESTPROJECTDIRPATH }}\TestResults\*.trx
     - name: Deploy to GPR with dotnet
-      run: dotnet nuget push "${{ env.PROJECTDIRPATH }}\bin\${{ env.CONFIGURATION }}\*.nupkg" -s https://nuget.pkg.github.com/bstadick/index.json -k ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+      if: github.event_name == 'release'
+      run: dotnet nuget push "${{ env.PROJECTDIRPATH }}\bin\${{ env.CONFIGURATION }}\*.nupkg" --source https://nuget.pkg.github.com/bstadick/index.json --api-key "${{ secrets.GITHUB_TOKEN }}" --skip-duplicate
+    - name: Deploy to nuget.org with dotnet
+      if: github.event_name == 'release'
+      run: dotnet nuget push "${{ env.PROJECTDIRPATH }}\bin\${{ env.CONFIGURATION }}\*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "${{ secrets.NUGET_APIKEY }}" --skip-duplicate
