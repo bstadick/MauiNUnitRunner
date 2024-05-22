@@ -8,6 +8,7 @@
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <PackageVersion>$(Version)-pre1</PackageVersion>
+    <PackagePrefix>BStaSoft</PackagePrefix>
     <Title>MauiNUnitRunner</Title>
     <Authors>bstadick</Authors>
     <Description>NUnit test runner for .NET MAUI based projects.</Description>
