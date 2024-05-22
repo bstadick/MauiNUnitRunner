@@ -2,6 +2,10 @@ name: .NET Build/Publish
 
 on:
   push:
+    paths-ignore:
+      - 'README.md'
+      - '*.DotSettings'
+      - '.editorconfig'
   workflow_dispatch:
   release:
     types: [published]
