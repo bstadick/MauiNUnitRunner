@@ -7,7 +7,7 @@
     <Version>1.0.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
-    <PackageVersion>$(Version)-beta1</PackageVersion>
+    <PackageVersion>$(Version)-pre1</PackageVersion>
     <Title>MauiNUnitRunner</Title>
     <Authors>bstadick</Authors>
     <Description>NUnit test runner for .NET MAUI based projects.</Description>
