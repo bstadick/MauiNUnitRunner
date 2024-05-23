@@ -18,4 +18,82 @@
     <!-- Build packages -->
     <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.1.1" />
   </ItemGroup>
+
+  <!-- Task to remove lines from a file starting with a matching line and removing everything up to a matching end line. -->
+  <!-- SourceFile = Specifies the markdown file to modify. -->
+  <!-- DestinationFile = [Optional] Specifies the markdown file to save to. Saves to SourceFile if not provided. -->
+  <!-- StartLine = The line to start removal at (inclusive). Must be an exact match or regex. -->
+  <!-- EndLine = [Optional] The line to end removal at (exclusive) or null to remove rest of file. Must be an exact match or regex. -->
+  <!-- SingleLine = [Optional] If to remove just a single line. -->
+  <UsingTask
+    TaskName="RemoveMarkdownSection"
+    TaskFactory="RoslynCodeTaskFactory"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
+    <ParameterGroup>
+      <SourceFile ParameterType="System.String" Required="true" />
+      <DestinationFile ParameterType="System.String" />
+      <StartLine ParameterType="System.String" Required="true" />
+      <EndLine ParameterType="System.String" />
+      <SingleLine ParameterType="System.Boolean" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System"/>
+      <Using Namespace="System.Collections.Generic"/>
+      <Using Namespace="System.IO"/>
+      <Using Namespace="System.Text.RegularExpressions"/>
+      <Code Type="Fragment" Language="cs">
+      <![CDATA[
+        if (string.IsNullOrEmpty(StartLine)) {
+          return false;
+        }
+
+        // Set destination to source if not provided
+        string destinationFile = DestinationFile;
+        if (string.IsNullOrEmpty(DestinationFile)) {
+          destinationFile = SourceFile;
+        }
+
+        // Set the start and end regex
+        Regex startRegex = new Regex(StartLine, RegexOptions.Compiled);
+        Regex endRegex = null;
+        if (!string.IsNullOrEmpty(EndLine)) {
+          endRegex = new Regex(EndLine, RegexOptions.Compiled);
+        }
+
+        // Iterate each line to find lines to remove
+        bool startLineFound = false;
+        List<string> outputLines = new List<string>();
+        foreach(string line in File.ReadAllLines(SourceFile)) {
+          // Reset start line found if removing a single line
+          if (startLineFound && SingleLine) {
+            startLineFound = false;
+          }
+
+          // Set start line true if start regex match
+          // Else reset if start line already found and end regex found
+          if (!startLineFound && startRegex.IsMatch(line)) {
+            startLineFound = true;
+
+            // A null end regex and not a single line removal indicates to remove rest of file
+            if (endRegex == null && !SingleLine) {
+              break;
+            }
+          }
+          else if (startLineFound && endRegex != null && endRegex.IsMatch(line)) {
+            startLineFound = false;
+          }
+
+          // Save line to be output to file if start line has not been found or at and past the end line
+          if (!startLineFound) {
+            outputLines.Add(line);
+          }
+        }
+
+        // Combine output and save to file
+        string output = string.Join("\n", outputLines);
+        File.WriteAllText(destinationFile, output + "\n");
+      ]]>
+      </Code>
+    </Task>
+  </UsingTask>
 </Project>

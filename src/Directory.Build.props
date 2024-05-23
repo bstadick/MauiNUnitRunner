@@ -16,6 +16,6 @@
     <PackageProjectUrl>https://github.com/bstadick/MauiNUnitRunner</PackageProjectUrl>
     <RepositoryUrl>https://github.com/bstadick/MauiNUnitRunner</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>NUnit;MAUI;Unit Test Runner</PackageTags>
+    <PackageTags>nunit;maui;ios;android;windows;test;testing;tdd;runner</PackageTags>
   </PropertyGroup>
 </Project>

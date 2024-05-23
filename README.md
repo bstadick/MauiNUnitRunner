@@ -22,7 +22,7 @@ Features include:
 
 ## Usage
 
-1. Include a reference to the `MauiNUnitRunner.Controls` Nuget package in a .NET MAUI app project for your target platform(s).
+1. Include a reference to the `BStaSoft.MauiNUnitRunner.Controls` Nuget package in a .NET MAUI app project for your target platform(s).
 2. Include references to the project(s) with your NUnit tests or the test code itself in the .NET MAUI app project.
 3. On the .NET MAUI app project's `MauiAppBuilder` method, call the `.UseMauiNUnitRunner()` method to initialize the MauiNUnitRunner controls.
 
@@ -45,7 +45,7 @@ Features include:
     ```
 
 4. In the .NET MAUI app project's `App.xaml.cs` constructor, create and load an instance of the `MauiNUnitRunner.Controls.TestDynamicPage` **ContentPage** and set as the `App.MainPage`.
-5. The `TestDynamicPage` takes in a list of the assemblies to load the tests from. This should include the current app's assembly if it contains tests to run.
+5. The `TestDynamicPage` takes in an `INUnitTestRunner` to which test assemblies and test settings are added. This should include the current app's assembly if it contains tests to run.
 
     ```csharp
     using MauiNUnitRunner.Controls;
@@ -56,17 +56,19 @@ Features include:
         {
             InitializeComponent();
 
-            // Get assemblies with unit tests
-            IList<Assembly> testAssemblies = new List<Assembly>();
-            testAssemblies.Add(GetType().Assembly);
-            testAssemblies.Add(typeof(MyUnitTestClass).Assembly);
+            // It is recommended to set the app theme
+            UserAppTheme = Current?.RequestedTheme ?? AppTheme.Unspecified;
 
             // Specify any test settings
             Dictionary<string, object> settings = new Dictionary<string, object>();
             settings.Add("MySetting", "value");
 
+            // Add assemblies with unit tests to test runner
+            NUnitTestRunner runner = new NUnitTestRunner();
+            runner.AddTestAssembly(GetType().Assembly, settings);
+
             // Create initial test page
-            TestDynamicPage page = new TestDynamicPage(testAssemblies, settings);
+            TestDynamicPage page = new TestDynamicPage(runner);
 
             // Set test page as main page
             MainPage = new NavigationPage(page);
@@ -74,18 +76,18 @@ Features include:
     }
     ```
 
-6. Build the .NET MAUI app project in **Debug**. NUnit will not be able to work correctly on some platforms in **Release** builds.
-7. To add more or change tests that are loaded or change test settings, create and set a new `TestDynamicPage` as the `App.MainPage` or directly access the underlying `NUnit.Framework.Api.NUnitTestAssemblyRunner` from the `TestDynamicPage.TestRunner` property.
+6. It is recommended to build the .NET MAUI app project in **Debug**. NUnit will not be able to work correctly on some platforms in **Release** builds.
+7. To add more or change tests that are loaded or change test settings, create and set a new `TestDynamicPage` as the `App.MainPage` or directly access the underlying `INUnitTestRunner` from the `TestDynamicPage.TestRunner` property.
 
 ### Test Listener
 
-Add an `NUnit.Framework.Interfaces.ITestListener` such as the `MauiNUnitRunner.Controls.NUnitTestListener` to the `TestDynamicPage.TestRunner` property to output tests messages and results as tests are ran.
+Add an `NUnit.Framework.Interfaces.ITestListener` such as the `MauiNUnitRunner.Controls.NUnitTestListener` using the `INUnitTestRunner.AddTestListener` method to output tests messages and results as tests are ran. Multiple and custom test listeners can be added.
 
 ```csharp
 // Add an optional test listener to get test output and progress
 NUnitTestListener listener = new NUnitTestListener();
 listener.WriteOutput += Console.WriteLine;
-page.TestListener = listener;
+runner.AddTestListener(listener);
 ```
 
 ### Extensibility

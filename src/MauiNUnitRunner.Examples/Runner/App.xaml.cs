@@ -11,7 +11,7 @@ public partial class App : Application
     {
         InitializeComponent();
 
-        // Set app theme
+        // It is recommended to set the app theme
         UserAppTheme = Current?.RequestedTheme ?? AppTheme.Unspecified;
 
         // Specify any test settings
@@ -20,7 +20,7 @@ public partial class App : Application
 
         // Add assemblies with unit tests to test runner
         NUnitTestRunner runner = new NUnitTestRunner();
-        runner.AddTestAssembly(GetType().Assembly);
+        runner.AddTestAssembly(GetType().Assembly, settings);
 
         // Create initial test page
         TestDynamicPage page = new TestDynamicPage(runner);

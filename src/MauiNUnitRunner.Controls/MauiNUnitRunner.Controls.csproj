@@ -82,9 +82,9 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <!-- Do not pack the original as the modified README below will be packed. -->
     <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
+      <Pack>False</Pack>
     </None>
   </ItemGroup>
 
@@ -92,4 +92,16 @@
     <MauiImage Include="Resources\Images\nunit_maui_logo.png" />
   </ItemGroup>
 
+  <!-- Update README to remove sections and lines not necessary for nuget (e.g. build, test, contributing). -->
+  <Target Name="PreparePackageReadme" BeforeTargets="Build">
+    <Message Text="$(IntermediateOutputPath)\README.md" Importance="high" />
+    <RemoveMarkdownSection SourceFile="..\..\README.md" DestinationFile="$(IntermediateOutputPath)\README.md" StartLine="## Build" EndLine="## License" />
+    <RemoveMarkdownSection SourceFile="$(IntermediateOutputPath)\README.md" DestinationFile="$(IntermediateOutputPath)\README.md" StartLine="\[!\[\.NET Build\/Publish\].*" EndLine="NUnit test runner for \.NET MAUI based projects\." />
+    <ItemGroup>
+      <None Include="$(IntermediateOutputPath)\README.md">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
+  </Target>
 </Project>
