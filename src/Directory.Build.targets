@@ -23,10 +23,10 @@
   <!-- SourceFile = Specifies the markdown file to modify. -->
   <!-- DestinationFile = [Optional] Specifies the markdown file to save to. Saves to SourceFile if not provided. -->
   <!-- StartLine = The line to start removal at (inclusive). Must be an exact match or regex. -->
-  <!-- EndLine = [Optional] The line to end removal at (exclusive) or null to remove rest of file. Must be an exact match or regex. -->
-  <!-- SingleLine = [Optional] If to remove just a single line. -->
+  <!-- EndLine = [Optional] The line to end removal at (exclusive) or null to remove the rest of the file. Must be an exact match or regex. -->
+  <!-- LineCount = [Optional] The number of lines to remove. A value of 0 will remove just the start line and a negative value will remove the rest of the file. -->
   <UsingTask
-    TaskName="RemoveMarkdownSection"
+    TaskName="RemoveMatchingLines"
     TaskFactory="RoslynCodeTaskFactory"
     AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
     <ParameterGroup>
@@ -34,7 +34,7 @@
       <DestinationFile ParameterType="System.String" />
       <StartLine ParameterType="System.String" Required="true" />
       <EndLine ParameterType="System.String" />
-      <SingleLine ParameterType="System.Boolean" />
+      <LineCount ParameterType="System.Int32" />
     </ParameterGroup>
     <Task>
       <Using Namespace="System"/>
@@ -53,33 +53,39 @@
           destinationFile = SourceFile;
         }
 
-        // Set the start and end regex
+        // Set the start and end regex or line count
+        int lineCount = -1;
         Regex startRegex = new Regex(StartLine, RegexOptions.Compiled);
         Regex endRegex = null;
         if (!string.IsNullOrEmpty(EndLine)) {
           endRegex = new Regex(EndLine, RegexOptions.Compiled);
+        }
+        else if (LineCount >= 0) {
+          lineCount = LineCount;
         }
 
         // Iterate each line to find lines to remove
         bool startLineFound = false;
         List<string> outputLines = new List<string>();
         foreach(string line in File.ReadAllLines(SourceFile)) {
-          // Reset start line found if removing a single line
-          if (startLineFound && SingleLine) {
-            startLineFound = false;
-          }
-
           // Set start line true if start regex match
           // Else reset if start line already found and end regex found
+          // Or start line already found and line count decremented to zero
           if (!startLineFound && startRegex.IsMatch(line)) {
             startLineFound = true;
 
-            // A null end regex and not a single line removal indicates to remove rest of file
-            if (endRegex == null && !SingleLine) {
+            // A null end regex and line count not set indicates to remove rest of file
+            if (endRegex == null && lineCount < 0) {
               break;
             }
           }
           else if (startLineFound && endRegex != null && endRegex.IsMatch(line)) {
+            startLineFound = false;
+          }
+          else if (startLineFound && lineCount > 0) {
+            lineCount--;
+          }
+          else if (startLineFound && lineCount == 0) {
             startLineFound = false;
           }
 
