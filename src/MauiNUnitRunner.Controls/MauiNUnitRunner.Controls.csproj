@@ -95,7 +95,7 @@
   <!-- Update README to remove sections and lines not necessary for nuget (e.g. build, test, contributing). -->
   <Target Name="PreparePackageReadme" BeforeTargets="Build" Condition="'$(TargetFramework)'==''">
     <RemoveMatchingLines SourceFile="..\..\README.md" DestinationFile="$(IntermediateOutputPath)README.md" StartLine="##\s+Build" EndLine="##\s+License" />
-    <RemoveMatchingLines SourceFile="$(IntermediateOutputPath)README.md" DestinationFile="$(IntermediateOutputPath)README.md" StartLine="\[!\[\.NET Build\/Publish\].*" LineCount="1" />
+    <RemoveMatchingLines SourceFile="$(IntermediateOutputPath)README.md" DestinationFile="$(IntermediateOutputPath)README.md" StartLine="\[!\[\.NET Build\/Publish\].*" LineCount="2" />
     <ItemGroup>
       <None Include="$(IntermediateOutputPath)\README.md">
         <Pack>True</Pack>

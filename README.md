@@ -1,6 +1,7 @@
 # MauiNUnitRunner
 
 [![.NET Build/Publish](https://github.com/bstadick/MauiNUnitRunner/actions/workflows/dotnetcorerelease.yml/badge.svg?event=release)](https://github.com/bstadick/MauiNUnitRunner/actions/workflows/dotnetcorerelease.yml)
+[![NuGet Version](https://img.shields.io/nuget/v/BStaSoft.MauiNUnitRunner.Controls)](https://www.nuget.org/packages/BStaSoft.MauiNUnitRunner.Controls)
 
 NUnit test runner for .NET MAUI based projects.
 
