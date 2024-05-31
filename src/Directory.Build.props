@@ -7,7 +7,7 @@
     <Version>1.0.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
-    <PackageVersion>$(Version)-pre1</PackageVersion>
+    <PackageVersion>$(Version)</PackageVersion>
     <PackagePrefix>BStaSoft</PackagePrefix>
     <Title>MauiNUnitRunner</Title>
     <Authors>bstadick</Authors>
