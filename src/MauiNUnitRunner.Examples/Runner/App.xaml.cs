@@ -2,6 +2,7 @@
 
 using MauiNUnitRunner.Controls.Services;
 using MauiNUnitRunner.Controls.Views;
+using Microsoft.Maui;
 
 namespace MauiNUnitRunner.Examples.Runner;
 
@@ -10,7 +11,10 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
+    }
 
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
         // It is recommended to set the app theme
         UserAppTheme = Current?.RequestedTheme ?? AppTheme.Unspecified;
 
@@ -30,14 +34,8 @@ public partial class App : Application
         //listener.WriteOutput += Console.WriteLine;
         //runner.AddTestListener(listener);
 
-        // Set test page as main page
-        MainPage = new NavigationPage(page);
-    }
-
-    /// <inheritdoc cref="CreateWindow"/>
-    protected override Window CreateWindow(IActivationState? activationState)
-    {
-        Window window = base.CreateWindow(activationState);
+        // Return window with test page as main page
+        Window window = new Window(new NavigationPage(page));
 
         // Set app's starting width and height
         window.Width = 1600;
