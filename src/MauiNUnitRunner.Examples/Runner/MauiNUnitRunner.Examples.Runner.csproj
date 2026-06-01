@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(NetFrameworkVersion)-ios</TargetFrameworks>
-    <TargetFrameworks Condition="'$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="'$(Platform)' != 'iPhoneSimulator' And '$(SkipAndroidBuild)'!='true'">$(TargetFrameworks);$(NetFrameworkVersion)-android</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) And '$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net$(NetFrameworkVersion)-ios</TargetFrameworks>
+    <TargetFrameworks Condition="'$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);net$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="'$(Platform)' != 'iPhoneSimulator' And '$(SkipAndroidBuild)'!='true'">$(TargetFrameworks);net$(NetFrameworkVersion)-android</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) And '$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);net$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>
     <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-    <!-- <TargetFrameworks>$(TargetFrameworks);$(NetFrameworkVersion)-tizen</TargetFrameworks> -->
+    <!-- <TargetFrameworks>$(TargetFrameworks);net$(NetFrameworkVersion)-tizen</TargetFrameworks> -->
     <Platforms>$(Platforms);iPhoneSimulator</Platforms>
 
     <!-- Note for MacCatalyst:
