@@ -1,7 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
     <!-- Global settings -->
-    <NetFrameworkVersion>net8.0</NetFrameworkVersion>
+    <NetFrameworkVersion>8.0</NetFrameworkVersion>
     <SupportedOSPlatformVersioniOS>14.0</SupportedOSPlatformVersioniOS>
     <SupportedOSPlatformVersionMacCatalyst>14.2</SupportedOSPlatformVersionMacCatalyst>
     <SupportedOSPlatformVersionAndroid>26.0</SupportedOSPlatformVersionAndroid>
