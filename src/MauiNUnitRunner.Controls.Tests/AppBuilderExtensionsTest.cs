@@ -1,6 +1,6 @@
 // Copyright (c) bstadick and contributors. MIT License - see LICENSE file
 
-using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui;
 using NUnit.Framework;
 
 namespace MauiNUnitRunner.Controls.Tests;
