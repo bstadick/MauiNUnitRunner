@@ -43,6 +43,9 @@ jobs:
       run: dotnet workload config --update-mode workload-set
     - name: Restore workload with dotnet
       run: dotnet workload restore "${{ env.SOLUTION }}"
+    - name: Get info with dotnet
+      if: always()
+      run: dotnet --info
     - name: Restore with dotnet
       uses: nick-fields/retry@v3
       with:
