@@ -18,11 +18,11 @@ on:
 
 env:
   CONFIGURATION: Release
-  GLOBALJSON: .\src\global.json
-  PROJECTDIRPATH: .\src\MauiNUnitRunner.Controls
-  TESTPROJECTDIRPATH: .\src\MauiNUnitRunner.Controls.Tests
-  SOLUTION: .\src\MauiNUnitRunner.sln
-  PROJECT: .\src\MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj
+  GLOBALJSON: .\global.json
+  PROJECTDIRPATH: .\MauiNUnitRunner.Controls
+  TESTPROJECTDIRPATH: .\MauiNUnitRunner.Controls.Tests
+  SOLUTION: .\MauiNUnitRunner.sln
+  PROJECT: .\MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj
 
 permissions:
   contents: read
@@ -31,6 +31,9 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: .\src
 
     steps:
     - name: Checkout
