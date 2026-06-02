@@ -22,7 +22,7 @@ defaults:
 
 env:
   CONFIGURATION: Release
-  GLOBALJSON: .\global.json
+  GLOBALJSON: .\src\global.json
   PROJECTDIRPATH: .\MauiNUnitRunner.Controls
   TESTPROJECTDIRPATH: .\MauiNUnitRunner.Controls.Tests
   SOLUTION: .\MauiNUnitRunner.sln
