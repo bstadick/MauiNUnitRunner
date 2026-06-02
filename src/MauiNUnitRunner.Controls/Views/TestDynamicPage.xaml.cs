@@ -338,7 +338,11 @@ public partial class TestDynamicPage : ContentPage
     /// <returns>A <see cref="Task"/> to await.</returns>
     protected virtual async Task DisplayAlertMessage(string title, string message, string cancel)
     {
+#if NET10_0_OR_GREATER
+        await DisplayAlertAsync(title, message, cancel);
+#else
         await DisplayAlert(title, message, cancel);
+#endif
     }
 
     #endregion
