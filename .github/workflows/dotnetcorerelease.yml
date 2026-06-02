@@ -16,17 +16,13 @@ on:
     branches:
       - 'main'
 
-defaults:
-  run:
-    working-directory: .\src
-
 env:
   CONFIGURATION: Release
   GLOBALJSON: .\src\global.json
-  PROJECTDIRPATH: .\MauiNUnitRunner.Controls
-  TESTPROJECTDIRPATH: .\MauiNUnitRunner.Controls.Tests
-  SOLUTION: .\MauiNUnitRunner.sln
-  PROJECT: .\MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj
+  PROJECTDIRPATH: .\src\MauiNUnitRunner.Controls
+  TESTPROJECTDIRPATH: .\src\MauiNUnitRunner.Controls.Tests
+  SOLUTION: .\src\MauiNUnitRunner.sln
+  PROJECT: .\src\MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj
 
 permissions:
   contents: read
@@ -47,9 +43,11 @@ jobs:
       run: dotnet workload config --update-mode workload-set
     - name: Restore workload with dotnet
       run: dotnet workload restore "${{ env.SOLUTION }}"
+      working-directory: .\src
     - name: Get info with dotnet
       if: always()
       run: dotnet --info
+      working-directory: .\src
     - name: Restore with dotnet
       uses: nick-fields/retry@v3
       with:
