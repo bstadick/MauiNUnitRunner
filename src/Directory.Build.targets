@@ -5,18 +5,18 @@
   <ItemGroup>
     <!-- Unit test packages -->
     <PackageReference Update="NUnit" Version="3.14.0" />
-    <PackageReference Update="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Update="NUnit3TestAdapter" Version="6.2.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.6.0" />
     <PackageReference Update="NUnit.Analyzers" Version="3.10.0" />
 
     <!-- Maui packages -->
-    <PackageReference Update="CommunityToolkit.Maui" Version="8.0.0" />
+    <PackageReference Update="CommunityToolkit.Maui" Version="14.1.1" />
     <PackageReference Update="Microsoft.Maui.Controls" Version="$(NetFrameworkVersion).*" />
     <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="$(NetFrameworkVersion).*" />
     <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(NetFrameworkVersion).*" />
 
     <!-- Build packages -->
-    <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.1.1" />
+    <PackageReference Update="DotNet.ReproducibleBuilds" Version="2.0.2" />
   </ItemGroup>
 
   <!-- Task to remove lines from a file starting with a matching line and removing everything up to a matching end line. -->
