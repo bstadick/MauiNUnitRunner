@@ -16,6 +16,10 @@ on:
     branches:
       - 'main'
 
+defaults:
+  run:
+    working-directory: .\src
+
 env:
   CONFIGURATION: Release
   GLOBALJSON: .\global.json
@@ -31,9 +35,6 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: .\src
 
     steps:
     - name: Checkout
