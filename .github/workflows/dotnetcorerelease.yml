@@ -42,7 +42,7 @@ jobs:
     - name: Set workload-set with dotnet
       run: dotnet workload config --update-mode workload-set
     - name: Restore workload with dotnet
-      run: dotnet workload restore "${{ env.SOLUTION }}"
+      run: dotnet workload restore "..\${{ env.SOLUTION }}"
       working-directory: .\src
     - name: Get info with dotnet
       if: always()
