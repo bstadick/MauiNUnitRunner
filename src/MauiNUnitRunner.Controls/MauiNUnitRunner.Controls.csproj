@@ -6,8 +6,6 @@
     <!--<TargetFrameworks>$(TargetFrameworks);net$(NetFrameworkVersion)-ios;net$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition="'$(SkipAndroidBuild)'!='true'">$(TargetFrameworks);net$(NetFrameworkVersion)-android</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>-->
-    <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-    <!-- <TargetFrameworks>$(TargetFrameworks);net$(NetFrameworkVersion)-tizen</TargetFrameworks> -->
 
     <OutputType>Library</OutputType>
     <RootNamespace>MauiNUnitRunner.Controls</RootNamespace>
@@ -33,7 +31,6 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">$(SupportedOSPlatformVersionAndroid)</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">$(SupportedOSPlatformVersionWindows)</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">$(SupportedOSPlatformVersionWindows)</TargetPlatformMinVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">$(SupportedOSPlatformVersionTizen)</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>

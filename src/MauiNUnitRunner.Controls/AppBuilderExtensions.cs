@@ -18,7 +18,7 @@ public static class AppBuilderExtensions
     [SupportedOSPlatform("windows10.0.17763")]
     [SupportedOSPlatform("ios15.0")]
     [SupportedOSPlatform("maccatalyst15.0")]
-    [SupportedOSPlatform("android26.0")]
+    [SupportedOSPlatform("android21.0")]
     public static MauiAppBuilder UseMauiNUnitRunner(this MauiAppBuilder builder)
     {
         // Initialize the MAUI Community Toolkit to use for the FileSaver component
