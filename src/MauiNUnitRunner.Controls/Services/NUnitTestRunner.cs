@@ -164,7 +164,7 @@ public class NUnitTestRunner : INUnitTestRunner
             resultStream.Seek(0, SeekOrigin.Begin);
 
             // Format full test name for initial file, remove any part of a test case string after a '(' and replacing spaces with '-'
-            INUnitTest test = new NUnitTest(result.Result.Test);
+            NUnitTest test = new NUnitTest(result.Result.Test);
             string testName = test.FullDisplayName;
             int ind = testName.IndexOf('(', StringComparison.Ordinal);
             if (ind > 0)

@@ -11,15 +11,6 @@ namespace MauiNUnitRunner.Controls.Models;
 /// </summary>
 public class NUnitTestResult : INUnitTestResult
 {
-    #region Private Members
-
-    /// <summary>
-    ///     Holds a cached version of the failed assertion string.
-    /// </summary>
-    private string v_FailedAssertionString = string.Empty;
-
-    #endregion
-
     #region Constructors
 
     /// <summary>

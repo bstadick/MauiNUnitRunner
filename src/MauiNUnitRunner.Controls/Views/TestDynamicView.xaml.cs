@@ -75,7 +75,7 @@ public partial class TestDynamicView : ContentView
     ///     Initializes a new <see cref="TestDynamicView"/> with the option to skip initializing the components.
     /// </summary>
     /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
-    protected TestDynamicView(bool initializeComponent = true)
+    protected TestDynamicView(bool initializeComponent)
     {
         if (initializeComponent)
         {

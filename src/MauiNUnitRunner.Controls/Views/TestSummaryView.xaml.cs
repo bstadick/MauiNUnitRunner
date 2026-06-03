@@ -85,7 +85,7 @@ public partial class TestSummaryView : ContentView
     ///     Initializes a new <see cref="TestSummaryView"/> with the option to skip initializing the components.
     /// </summary>
     /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
-    protected TestSummaryView(bool initializeComponent = true)
+    protected TestSummaryView(bool initializeComponent)
     {
         if (initializeComponent)
         {

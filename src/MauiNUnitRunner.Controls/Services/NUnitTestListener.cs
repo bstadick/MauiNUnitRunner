@@ -92,7 +92,7 @@ public class NUnitTestListener : ITestListener, IDisposable
         while (v_Listen)
         {
             // Skip if nothing to write or nothing to write to
-            if (v_LogQueue.Count <= 0 || WriteOutput == null || !v_LogQueue.TryDequeue(out string message) || string.IsNullOrEmpty(message))
+            if (v_LogQueue.IsEmpty || WriteOutput == null || !v_LogQueue.TryDequeue(out string message) || string.IsNullOrEmpty(message))
             {
                 continue;
             }

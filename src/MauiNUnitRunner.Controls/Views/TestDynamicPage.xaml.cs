@@ -271,7 +271,14 @@ public partial class TestDynamicPage : ContentPage
     /// <param name="e">The clicked button event arguments.</param>
     protected async void AboutButton_OnClicked(object sender, EventArgs e)
     {
-        await NavigationPushAsync(new AboutPage());
+        try
+        {
+            await NavigationPushAsync(new AboutPage());
+        }
+        catch
+        {
+            // Ignore exceptions here as navigation to the About page is not significant
+        }
     }
 
     /// <summary>
@@ -355,7 +362,7 @@ public partial class TestDynamicPage : ContentPage
     /// <param name="test">The test to count the number of test cases of</param>
     /// <param name="previousCount">The previous test count to increment.</param>
     /// <returns>The number of test cases.</returns>
-    private int CountTests(INUnitTest test, int previousCount)
+    private static int CountTests(INUnitTest test, int previousCount)
     {
         if (test == null)
         {

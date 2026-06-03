@@ -75,7 +75,7 @@ public partial class TestSuiteView : ContentView
     ///     Initializes a new <see cref="TestSuiteView"/> with the option to skip initializing the components.
     /// </summary>
     /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
-    protected TestSuiteView(bool initializeComponent = true)
+    protected TestSuiteView(bool initializeComponent)
     {
         if (initializeComponent)
         {

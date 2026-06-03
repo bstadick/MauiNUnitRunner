@@ -34,6 +34,7 @@ csharp_style_implicit_object_creation_when_type_is_apparent = false
 csharp_style_pattern_matching_over_as_with_null_check = false
 csharp_style_pattern_matching_over_is_with_cast_check = false
 csharp_style_prefer_primary_constructors = false
+csharp_style_prefer_range_operator = false
 csharp_style_prefer_switch_expression = false
 csharp_style_prefer_utf8_string_literals = true:suggestion
 csharp_style_var_elsewhere = false

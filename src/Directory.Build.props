@@ -2,7 +2,7 @@
   <PropertyGroup>
     <!-- Global settings -->
     <NetFrameworkVersion>10.0</NetFrameworkVersion>
-    <SupportedOSPlatformVersioniOS>14.0</SupportedOSPlatformVersioniOS>
+    <SupportedOSPlatformVersioniOS>15.0</SupportedOSPlatformVersioniOS>
     <SupportedOSPlatformVersionMacCatalyst>15.0</SupportedOSPlatformVersionMacCatalyst>
     <SupportedOSPlatformVersionAndroid>26.0</SupportedOSPlatformVersionAndroid>
     <SupportedOSPlatformVersionWindows>10.0.17763.0</SupportedOSPlatformVersionWindows>
