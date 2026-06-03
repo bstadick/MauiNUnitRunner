@@ -30,6 +30,10 @@
     <BuildIpa>True</BuildIpa>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 
+    <!-- Do not treat as a test project by Visual Studio -->
+    <IsTestProject>false</IsTestProject>
+    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
+
     <!-- Display name -->
     <ApplicationTitle>MauiNUnitRunner.Example</ApplicationTitle>
 
@@ -79,6 +83,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Do not treat as a test project by Visual Studio -->
+    <ProjectCapability Remove="TestContainer" />
   </ItemGroup>
 
 </Project>

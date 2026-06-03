@@ -17,6 +17,10 @@
     <Nullable>disable</Nullable>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 
+    <!-- Do not treat as a test project by Visual Studio -->
+    <IsTestProject>false</IsTestProject>
+    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
+
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <EnablePackageValidation>true</EnablePackageValidation>
@@ -91,6 +95,11 @@
 
   <ItemGroup>
     <MauiImage Include="Resources\Images\nunit_maui_logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Do not treat as a test project by Visual Studio -->
+    <ProjectCapability Remove="TestContainer" />
   </ItemGroup>
 
   <!-- Update README to remove sections and lines not necessary for nuget (e.g. build, test, contributing). -->

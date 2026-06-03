@@ -11,6 +11,7 @@ namespace MauiNUnitRunner.Examples.Runner.Tests;
 ///     Tests will toggle between passing and failing (besides the ignored test), with the first test run passing.
 /// </remarks>
 [TestFixture]
+[Category("Example")]
 public class ExampleUnitTests
 {
     /// <summary>
