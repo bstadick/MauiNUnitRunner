@@ -56,7 +56,11 @@ Features include:
         public App()
         {
             InitializeComponent();
+        }
 
+        /// <inheritdoc cref="CreateWindow" />
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
             // It is recommended to set the app theme
             UserAppTheme = Current?.RequestedTheme ?? AppTheme.Unspecified;
 
@@ -72,7 +76,7 @@ Features include:
             TestDynamicPage page = new TestDynamicPage(runner);
 
             // Set test page as main page
-            MainPage = new NavigationPage(page);
+            return new Window(new NavigationPage(page));
         }
     }
     ```
@@ -97,7 +101,7 @@ The `MauiNUnitRunner.Controls` namespace exposes the individual **ContentViews**
 
 ## Build
 
-Use the provided `./src/MauiNUnitRunner.sln` solution (to build everything) or the `./src/MauiNUnitRunner.Controls/MauiNUnitRunner.Controls.csproj` project directly and Visual Studio 2022 with .NET 8 and the .NET MAUI workloads to build the project.
+Use the provided `./src/MauiNUnitRunner.sln` solution (to build everything) or the `./src/MauiNUnitRunner.Controls/MauiNUnitRunner.Controls.csproj` project directly and Visual Studio 2026 with .NET 10 and the .NET MAUI workloads to build the project.
 
 The MauiNUnitRunner project can be built and referenced in a .NET MAUI app using the pre-built Nuget package.
 

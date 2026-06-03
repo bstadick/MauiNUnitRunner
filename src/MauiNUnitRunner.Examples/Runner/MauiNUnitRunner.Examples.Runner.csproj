@@ -21,6 +21,7 @@
     <RootNamespace>MauiNUnitRunner.Examples.Runner</RootNamespace>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
+    <IsPublishable>false</IsPublishable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);MCT001</NoWarn>

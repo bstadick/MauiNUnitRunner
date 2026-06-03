@@ -13,6 +13,7 @@ public partial class App : Application
         InitializeComponent();
     }
 
+    /// <inheritdoc cref="CreateWindow" />
     protected override Window CreateWindow(IActivationState? activationState)
     {
         // It is recommended to set the app theme
