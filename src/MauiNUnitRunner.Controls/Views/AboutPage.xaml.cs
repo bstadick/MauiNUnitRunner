@@ -54,6 +54,11 @@ public partial class AboutPage : ContentPage
     }
 
     /// <summary>
+    ///     Gets the <see cref="ImageSource"/> of the header image.
+    /// </summary>
+    public ImageSource HeaderImage { get; }
+
+    /// <summary>
     ///     Initializes a new <see cref="AboutPage"/> with the option to skip initializing the components.
     /// </summary>
     /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
@@ -61,13 +66,12 @@ public partial class AboutPage : ContentPage
     {
         // Assign before initializing so binding has value without needing to be notified
         AssemblyVersion = typeof(AboutPage).Assembly.GetName().Version?.ToString(3) ?? string.Empty;
+        HeaderImage = ImageSource.FromResource(c_AboutPageImagePath, typeof(AboutPage).Assembly);
 
         if (initializeComponent)
         {
             InitializeComponent();
         }
-
-        AboutPageLogoImage.Source = ImageSource.FromResource(c_AboutPageImagePath, typeof(AboutPage).Assembly);
     }
 
     #endregion
