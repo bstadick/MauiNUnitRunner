@@ -13,20 +13,18 @@
                 <ResourceDictionary Source="/Resources/TestControlResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-        <models:InverseBoolConverter x:Key="InverseBoolConverter"/>
         <models:ButtonDisabledStyleConverter x:Key="ButtonDisabledStyleConverter"/>
     </ContentView.Resources>
 
-    <StackLayout Padding="10">
+    <!-- ReSharper disable once Xaml.XamlXamarinFormsDataTypeAndBindingContextTypeMismatchedHighlighting -->
+    <StackLayout Padding="10"
+                 BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestSummaryView}}, x:DataType={x:Type views:TestSummaryView}}"
+                 x:DataType="views:TestSummaryView">
         <!-- Display a summary view of a test -->
-        <Label Text="{Binding ConditionalDisplayName, FallbackValue='-'}"
+        <Label Text="{Binding Test.ConditionalDisplayName, FallbackValue='-'}"
                Style="{StaticResource LabelTextStyle}"
-               TextColor="{Binding TextColor}"
-               BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestSummaryView}}, Path=Test}"
-               x:DataType="models:INUnitTest" />
-        <StackLayout Orientation="Horizontal" IsVisible="{Binding ShowTestButtons, FallbackValue=true}"
-                     BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestSummaryView}}}"
-                     x:DataType="views:TestSummaryView">
+               TextColor="{Binding Test.TextColor}" />
+        <StackLayout Orientation="Horizontal" IsVisible="{Binding ShowTestButtons, FallbackValue=true}">
             <Button Text="{StaticResource RunTestsButton}"
                     Style="{Binding Path=TestRunState.IsTestRunning, FallbackValue={StaticResource ButtonStyle}, Converter={StaticResource ButtonDisabledStyleConverter}}"
                     Clicked="RunTestsButton_OnClicked" />
@@ -36,65 +34,61 @@
         </StackLayout>
 
         <!-- Test information -->
-        <StackLayout Orientation="Horizontal" Padding="10"
-                     BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestSummaryView}}, Path=Test}"
-                     x:DataType="models:INUnitTest">
+        <StackLayout Orientation="Horizontal" Padding="10">
             <Label Text="{StaticResource TestsPageTestId}"
                                        Style="{StaticResource LabelSubTextStyle}" />
-            <Label Text="{Binding Id, FallbackValue='-'}"
+            <Label Text="{Binding Test.Id, FallbackValue='-'}"
                                        Style="{StaticResource LabelSubTextStyle}" />
 
             <!-- Child test count, does not apply to leaf node tests (no child tests) -->
             <Label Text="{StaticResource TestsPageTestCount}"
                                        Style="{StaticResource LabelSubTextStyle}"
-                                       IsVisible="{Binding HasChildren, FallbackValue=false}" />
-            <Label Text="{Binding Test.TestCaseCount, FallbackValue='-'}"
+                                       IsVisible="{Binding Test.HasChildren, FallbackValue=false}" />
+            <Label Text="{Binding Test.Test.TestCaseCount, FallbackValue='-'}"
                                        Style="{StaticResource LabelSubTextStyle}"
-                                       IsVisible="{Binding HasChildren, FallbackValue=false}" />
+                                       IsVisible="{Binding Test.HasChildren, FallbackValue=false}" />
 
             <!-- Test results -->
-            <StackLayout Orientation="Horizontal" IsVisible="{Binding HasTestResult, FallbackValue=false}"
-                         BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestSummaryView}}, Path=Test.Result}"
-                         x:DataType="models:INUnitTestResult">
+            <StackLayout Orientation="Horizontal" IsVisible="{Binding Test.Result.HasTestResult, FallbackValue=false}">
                 <Label Text="{StaticResource TestsPageTestDuration}"
                        Style="{StaticResource LabelSubTextStyle}" />
-                <Label Text="{Binding DurationString, FallbackValue='-'}"
+                <Label Text="{Binding Test.Result.DurationString, FallbackValue='-'}"
                        Style="{StaticResource LabelSubTextStyle}" />
 
                 <!-- Child test results, does not apply to leaf node tests (no child tests) -->
-                <StackLayout Orientation="Horizontal" IsVisible="{Binding HasChildren, FallbackValue=false}">
+                <StackLayout Orientation="Horizontal" IsVisible="{Binding Test.Result.HasChildren, FallbackValue=false}">
                     <Label Text="{StaticResource TestsPageTestPassCount}"
                            Style="{StaticResource LabelGreenStyle}" />
-                    <Label Text="{Binding Result.PassCount, FallbackValue='-'}"
+                    <Label Text="{Binding Test.Result.Result.PassCount, FallbackValue='-'}"
                            Style="{StaticResource LabelGreenStyle}" />
 
                     <Label Text="{StaticResource TestsPageTestFailCount}"
                            Style="{StaticResource LabelRedStyle}"
-                           IsVisible="{Binding HasFailed, FallbackValue=false}" />
-                    <Label Text="{Binding Result.FailCount, FallbackValue='-'}"
+                           IsVisible="{Binding Test.Result.HasFailed, FallbackValue=false}" />
+                    <Label Text="{Binding Test.Result.Result.FailCount, FallbackValue='-'}"
                            Style="{StaticResource LabelRedStyle}"
-                           IsVisible="{Binding HasFailed, FallbackValue=false}" />
+                           IsVisible="{Binding Test.Result.HasFailed, FallbackValue=false}" />
 
                     <Label Text="{StaticResource TestsPageTestInconclusiveCount}"
                            Style="{StaticResource LabelPurpleStyle}"
-                           IsVisible="{Binding HasInconclusive, FallbackValue=false}" />
-                    <Label Text="{Binding Result.InconclusiveCount, FallbackValue='-'}"
+                           IsVisible="{Binding Test.Result.HasInconclusive, FallbackValue=false}" />
+                    <Label Text="{Binding Test.Result.Result.InconclusiveCount, FallbackValue='-'}"
                            Style="{StaticResource LabelPurpleStyle}"
-                           IsVisible="{Binding HasInconclusive, FallbackValue=false}" />
+                           IsVisible="{Binding Test.Result.HasInconclusive, FallbackValue=false}" />
 
                     <Label Text="{StaticResource TestsPageTestWarningCount}"
                            Style="{StaticResource LabelOrangeStyle}"
-                           IsVisible="{Binding HasWarning}" />
-                    <Label Text="{Binding Result.WarningCount, FallbackValue='-'}"
+                           IsVisible="{Binding Test.Result.HasWarning, FallbackValue=false}" />
+                    <Label Text="{Binding Test.Result.Result.WarningCount, FallbackValue='-'}"
                            Style="{StaticResource LabelOrangeStyle}"
-                           IsVisible="{Binding HasWarning, FallbackValue=false}" />
+                           IsVisible="{Binding Test.Result.HasWarning, FallbackValue=false}" />
 
                     <Label Text="{StaticResource TestsPageTestIgnoreCount}"
                            Style="{StaticResource LabelBlueStyle}"
-                           IsVisible="{Binding HasSkip, FallbackValue=false}" />
-                    <Label Text="{Binding Result.SkipCount, FallbackValue='-'}"
+                           IsVisible="{Binding Test.Result.HasSkip, FallbackValue=false}" />
+                    <Label Text="{Binding Test.Result.Result.SkipCount, FallbackValue='-'}"
                            Style="{StaticResource LabelBlueStyle}"
-                           IsVisible="{Binding HasSkip, FallbackValue=false}" />
+                           IsVisible="{Binding Test.Result.HasSkip, FallbackValue=false}" />
                 </StackLayout>
             </StackLayout>
         </StackLayout>
