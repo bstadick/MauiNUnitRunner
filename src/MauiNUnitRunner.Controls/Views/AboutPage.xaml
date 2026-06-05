@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) bstadick and contributors. MIT License - see LICENSE file -->
 
+<!-- ReSharper disable once Xaml.XamlXamarinFormsDataTypeAndBindingContextTypeMismatchedHighlighting -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:MauiNUnitRunner.Controls.Views"
              x:Class="MauiNUnitRunner.Controls.Views.AboutPage"
-             Title="{StaticResource AboutPageTitle}">
+             Title="{StaticResource AboutPageTitle}"
+             BindingContext="{Binding Source={RelativeSource Self}, x:DataType={x:Type views:AboutPage}}"
+             x:DataType="views:AboutPage">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -17,24 +20,18 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
 
         <!-- Logo image header -->
-        <StackLayout BackgroundColor="{StaticResource AboutAccent}" VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
-            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
-                <ContentView Padding="0,40" VerticalOptions="FillAndExpand">
-                    <Image Source="{StaticResource AboutPageLogoImagePath}" VerticalOptions="Center" HeightRequest="200" />
-                </ContentView>
-            </StackLayout>
-        </StackLayout>
+        <Grid Grid.Row="0" BackgroundColor="{StaticResource AboutAccent}" HorizontalOptions="Fill">
+            <Image Source="{StaticResource AboutPageLogoImagePath}" Grid.Row="0" Aspect="AspectFit" HorizontalOptions="Fill" VerticalOptions="Center" Margin="20,0" />
+        </Grid>
 
         <!-- About content -->
         <ScrollView Grid.Row="1">
-            <StackLayout Orientation="Vertical" Padding="16,40" Spacing="10"
-                         BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:AboutPage}}}"
-                         x:DataType="views:AboutPage">
+            <StackLayout Orientation="Vertical" Padding="16,40" Spacing="10">
                 <!-- About library name and version -->
                 <Label FontSize="22">
                     <Label.FormattedText>
