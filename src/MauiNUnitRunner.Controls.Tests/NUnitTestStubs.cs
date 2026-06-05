@@ -291,9 +291,9 @@ public class NUnitTestAssemblyRunnerStub : INUnitTestAssemblyRunner
 }
 
 /// <summary>
-///     Implements a stub ListView for use with tests.
+///     Implements a stub CollectionView for use with tests.
 /// </summary>
-public class ListViewStub
+public class CollectionViewStub
 {
     #region Public Members
 
