@@ -15,7 +15,8 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <Grid BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestSuiteView}}}"
+    <!-- ReSharper disable once Xaml.XamlXamarinFormsDataTypeAndBindingContextTypeMismatchedHighlighting -->
+    <Grid BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestSuiteView}}, x:DataType={x:Type views:TestSuiteView}}"
           x:DataType="views:TestSuiteView">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -48,24 +49,22 @@
             <Border StrokeThickness="2" Margin="5" />
         </StackLayout>
 
-        <!-- Display the list of child tests -->
-        <ListView Grid.Row="1" Margin="0, 5"
-                  ItemsSource="{Binding Test.Children}"
-                  VerticalOptions="Fill"
-                  HasUnevenRows="true"
-                  CachingStrategy="RecycleElement"
-                  ItemSelected="TestSuiteView_OnTestItemSelected">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell x:DataType="models:INUnitTest">
-                        <views:TestSummaryView Test="{Binding Source={RelativeSource AncestorType={x:Type models:INUnitTest}}}"
-                                               TestRunState="{Binding Source={RelativeSource AncestorType={x:Type views:TestSuiteView}}, Path=TestRunState}"
-                                               ShowTestButtons="false"
-                                               RunTestsClicked="TestSuiteView_OnRunTestsClicked"
-                                               SaveResultsClicked="TestSuiteView_OnSaveResultsClicked" />
-                    </ViewCell>
+        <!-- Display the collection of child tests -->
+        <CollectionView Grid.Row="1" Margin="0, 5"
+                        ItemsSource="{Binding Test.Children}"
+                        VerticalOptions="Fill"
+                        SelectionMode="Single"
+                        SelectionChanged="TestSuiteView_OnTestItemSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:INUnitTest">
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <views:TestSummaryView Test="{Binding .}"
+                                           TestRunState="{Binding Source={RelativeSource AncestorType={x:Type views:TestSuiteView}}, Path=TestRunState, x:DataType={x:Type views:TestSuiteView}}"
+                                           ShowTestButtons="false"
+                                           RunTestsClicked="TestSuiteView_OnRunTestsClicked"
+                                           SaveResultsClicked="TestSuiteView_OnSaveResultsClicked" />
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </Grid>
 </ContentView>
