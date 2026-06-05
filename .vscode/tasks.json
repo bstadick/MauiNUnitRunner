@@ -1,0 +1,59 @@
+{
+  // VS Code task configuration for building and testing the solution
+  // See: https://code.visualstudio.com/docs/debugtest/tasks
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dotnet build",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/src/MauiNUnitRunner.sln",
+        "--configuration",
+        "${input:configuration}"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "dotnet test",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "${workspaceFolder}/src/MauiNUnitRunner.Tests.slnf",
+        "--configuration",
+        "${input:configuration}"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": ["$msCompile"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "configuration",
+      "type": "pickString",
+      "description": "Select build configuration",
+      "options": [
+        "Debug",
+        "Release"
+      ],
+      "default": "Debug"
+    }
+  ]
+}
