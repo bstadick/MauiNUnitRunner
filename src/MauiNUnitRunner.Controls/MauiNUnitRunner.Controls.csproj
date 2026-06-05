@@ -46,12 +46,12 @@
 
   <ItemGroup>
     <!-- About page logo -->
-    <MauiImage Include="Resources\Images\nunit_maui_logo.png" />
+    <EmbeddedResource Include="Resources\Images\nunit_maui_logo.png" />
 
     <!-- Do not treat as a test project by Visual Studio -->
     <ProjectCapability Remove="TestContainer" />
 
-    <!-- Additional pacakge content-->
+    <!-- Additional package content-->
     <None Include="build\*.targets">
       <Pack>True</Pack>
       <PackagePath>build</PackagePath>
