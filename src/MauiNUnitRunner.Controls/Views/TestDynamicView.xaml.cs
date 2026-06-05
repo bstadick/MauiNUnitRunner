@@ -88,9 +88,9 @@ public partial class TestDynamicView : ContentView
     #region Protected Methods
 
     /// <summary>
-    ///     Event callback when a <see cref="INUnitTest"/> item is selected from the list of tests in the <see cref="TestSuiteView"/>.
+    ///     Event callback when a <see cref="INUnitTest"/> item is selected from the collection of tests in the <see cref="TestSuiteView"/>.
     /// </summary>
-    /// <param name="sender">The <see cref="ListView"/> that contains the item.</param>
+    /// <param name="sender">The <see cref="CollectionView"/> that contains the item.</param>
     /// <param name="e">The test selected event arguments.</param>
     protected void TestDynamicView_OnTestItemSelected(object sender, NUnitTestEventArgs e)
     {
