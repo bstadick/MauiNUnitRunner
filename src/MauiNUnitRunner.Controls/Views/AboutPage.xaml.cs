@@ -28,6 +28,11 @@ public partial class AboutPage : ContentPage
     /// </summary>
     private const string c_ProjectUri = "https://github.com/bstadick/MauiNUnitRunner";
 
+    /// <summary>
+    ///     Path to the about page header image.
+    /// </summary>
+    private const string c_AboutPageImagePath = "MauiNUnitRunner.Controls.Resources.Images.nunit_maui_logo.png";
+
     #endregion
 
     #region Public Members
@@ -61,6 +66,8 @@ public partial class AboutPage : ContentPage
         {
             InitializeComponent();
         }
+
+        AboutPageLogoImage.Source = ImageSource.FromResource(c_AboutPageImagePath, typeof(AboutPage).Assembly);
     }
 
     #endregion
