@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net$(NetFrameworkVersion)</TargetFrameworks>
@@ -14,6 +14,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 
     <!-- Do not treat as a test project by Visual Studio -->
     <IsTestProject>false</IsTestProject>
@@ -46,36 +47,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\TestControlResources.xaml.cs">
-      <DependentUpon>TestControlResources.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\AboutPage.xaml.cs">
-      <DependentUpon>AboutPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TestDynamicPage.xaml.cs">
-      <DependentUpon>TestDynamicPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TestDynamicView.xaml.cs">
-      <DependentUpon>TestDynamicView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TestSuiteView.xaml.cs">
-      <DependentUpon>TestSuiteView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TestSummaryView.xaml.cs">
-      <DependentUpon>TestSummaryView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TestDetailView.xaml.cs">
-      <DependentUpon>TestDetailView.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <!-- About page logo -->
+    <MauiImage Include="Resources\Images\nunit_maui_logo.png" />
 
-  <ItemGroup>
-    <MauiXaml Update="Resources\TestControlResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-  </ItemGroup>
+    <!-- Do not treat as a test project by Visual Studio -->
+    <ProjectCapability Remove="TestContainer" />
 
-  <ItemGroup>
+    <!-- Additional pacakge content-->
     <None Include="build\*.targets">
       <Pack>True</Pack>
       <PackagePath>build</PackagePath>
@@ -84,19 +62,10 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <!-- Do not pack the original as the modified README below will be packed. -->
+    <!-- Do not pack the original as the modified README created in the below PreparePackageReadme target will be packed. -->
     <None Include="..\..\README.md">
       <Pack>False</Pack>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <MauiImage Include="Resources\Images\nunit_maui_logo.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Do not treat as a test project by Visual Studio -->
-    <ProjectCapability Remove="TestContainer" />
   </ItemGroup>
 
   <!-- Update README to remove sections and lines not necessary for nuget (e.g. build, test, contributing). -->
