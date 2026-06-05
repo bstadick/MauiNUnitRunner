@@ -3,6 +3,7 @@
 using MauiNUnitRunner.Controls.Services;
 using MauiNUnitRunner.Controls.Views;
 using Microsoft.Maui;
+using System.Runtime.Versioning;
 
 namespace MauiNUnitRunner.Examples.Runner;
 
@@ -14,6 +15,10 @@ public partial class App : Application
     }
 
     /// <inheritdoc cref="CreateWindow" />
+    [SupportedOSPlatform("windows10.0.17763")]
+    [SupportedOSPlatform("ios15.0")]
+    [SupportedOSPlatform("maccatalyst15.0")]
+    [SupportedOSPlatform("android21.0")]
     protected override Window CreateWindow(IActivationState? activationState)
     {
         // It is recommended to set the app theme
@@ -38,9 +43,12 @@ public partial class App : Application
         // Return window with test page as main page
         Window window = new Window(new NavigationPage(page));
 
-        // Set app's starting width and height
-        window.Width = 1600;
-        window.Height = 900;
+        // Set app's starting width and height for desktop based devices
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Desktop)
+        {
+            window.Width = 1600;
+            window.Height = 900;
+        }
 
         return window;
     }
