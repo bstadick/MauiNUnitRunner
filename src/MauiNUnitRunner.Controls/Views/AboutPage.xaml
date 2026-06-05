@@ -20,13 +20,13 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
 
         <!-- Logo image header -->
-        <Grid Grid.Row="0" BackgroundColor="{StaticResource AboutAccent}" HorizontalOptions="Fill">
-            <Image Source="{StaticResource AboutPageLogoImagePath}" Grid.Row="0" Aspect="AspectFit" HorizontalOptions="Fill" VerticalOptions="Center" Margin="20,0" />
+        <Grid Grid.Row="0" BackgroundColor="{StaticResource AboutAccent}" HorizontalOptions="Fill" MaximumHeightRequest="200">
+            <Image x:Name="AboutPageLogoImage" Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Center" MaximumHeightRequest="200" MaximumWidthRequest="600" />
         </Grid>
 
         <!-- About content -->
