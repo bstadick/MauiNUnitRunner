@@ -165,9 +165,9 @@ public partial class TestDynamicPage : ContentPage
     #region Protected Methods
 
     /// <summary>
-    ///     Event callback when a <see cref="INUnitTest"/> item is selected from the list of tests in the <see cref="TestSuiteView"/>.
+    ///     Event callback when a <see cref="INUnitTest"/> item is selected from the collection of tests in the <see cref="TestSuiteView"/>.
     /// </summary>
-    /// <param name="sender">The <see cref="ListView"/> that contains the item.</param>
+    /// <param name="sender">The <see cref="CollectionView"/> that contains the item.</param>
     /// <param name="e">The test selected event arguments.</param>
     protected virtual async void TestDynamicPage_OnItemSelected(object sender, NUnitTestEventArgs e)
     {
