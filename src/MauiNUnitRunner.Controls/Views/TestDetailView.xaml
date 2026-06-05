@@ -1,115 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) bstadick and contributors. MIT License - see LICENSE file -->
 
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<!-- ReSharper disable once Xaml.XamlXamarinFormsDataTypeAndBindingContextTypeMismatchedHighlighting -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:MauiNUnitRunner.Controls.Views"
-             xmlns:models="clr-namespace:MauiNUnitRunner.Controls.Models"
-             x:Class="MauiNUnitRunner.Controls.Views.TestDetailView">
+             x:Class="MauiNUnitRunner.Controls.Views.TestDynamicPage"
+             BindingContext="{Binding Source={RelativeSource Self}, x:DataType={x:Type views:TestDynamicPage}}"
+             x:DataType="views:TestDynamicPage">
 
-    <ContentView.Resources>
+    <ContentPage.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/TestControlResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-        <models:InverseBoolConverter x:Key="InverseBoolConverter"/>
-        <models:ButtonDisabledStyleConverter x:Key="ButtonDisabledStyleConverter"/>
-    </ContentView.Resources>
+    </ContentPage.Resources>
 
-    <!-- ReSharper disable once Xaml.XamlXamarinFormsDataTypeAndBindingContextTypeMismatchedHighlighting -->
-    <Grid Padding="10"
-          BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDetailView}}, x:DataType={x:Type views:TestDetailView}}"
-          x:DataType="views:TestDetailView">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Display a detailed view of a single leaf node test (no child tests) -->
-        <StackLayout Grid.Row="0">
-            <Label Text="{Binding Test.FullDisplayName, FallbackValue='Test name'}"
-                   Style="{StaticResource LabelTextStyle}" />
-            <StackLayout Orientation="Horizontal">
-                <Button Text="{StaticResource RunTestsButton}"
-                        Style="{Binding TestRunState.IsTestRunning, FallbackValue={StaticResource ButtonStyle}, Converter={StaticResource ButtonDisabledStyleConverter}}"
-                        Clicked="RunTestsButton_OnClicked" />
-                <Button Text="{StaticResource SaveResultsButton}"
-                        Style="{Binding TestRunState.IsTestRunning, FallbackValue={StaticResource ButtonStyle}, Converter={StaticResource ButtonDisabledStyleConverter}}"
-                        Clicked="SaveResultsButton_OnClicked" />
-            </StackLayout>
+        <!-- Main test content view -->
+        <views:TestDynamicView Grid.Row="0"
+                               Test="{Binding Test}"
+                               TestRunState="{Binding TestRunState}"
+                               TestItemSelected="TestDynamicPage_OnItemSelected"
+                               RunTestsClicked="TestDynamicPage_OnRunTestsClicked"
+                               SaveResultsClicked="TestDynamicView_OnSaveResultsClicked" />
+
+        <!-- Additional links at the bottom of the page -->
+        <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="End"
+                     IsVisible="{Binding ShowFooterLinks}">
+            <Button Text="{StaticResource AboutPageTitle}"
+                    Clicked="AboutButton_OnClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="Gray"
+                    Width="100" />
         </StackLayout>
-
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <!-- Test result information -->
-            <StackLayout Grid.Row="0" Orientation="Horizontal">
-                <Label Text="{StaticResource TestsPageTestId}"
-                       Style="{StaticResource LabelSubTextStyle}" />
-                <Label Text="{Binding Test.Id, FallbackValue='-'}"
-                       Style="{StaticResource LabelSubTextStyle}" />
-
-                <Label Text="{StaticResource TestsPageTestDuration}"
-                       Style="{StaticResource LabelSubTextStyle}"
-                       IsVisible="{Binding Test.Result.HasTestResult, FallbackValue=false}" />
-                <Label Text="{Binding Test.Result.DurationString, FallbackValue='-'}"
-                       Style="{StaticResource LabelSubTextStyle}"
-                       IsVisible="{Binding Test.Result.HasTestResult, FallbackValue=false}" />
-
-                <Label Text="{StaticResource TestsPageTestAssertionCount}"
-                       Style="{StaticResource LabelSubTextStyle}"
-                       IsVisible="{Binding Test.Result.HasTestResult, FallbackValue=false}" />
-                <Label Text="{Binding Test.Result.Result.AssertCount, FallbackValue='-'}"
-                       Style="{StaticResource LabelSubTextStyle}"
-                       IsVisible="{Binding Test.Result.HasTestResult, FallbackValue=false}" />
-            </StackLayout>
-
-            <!-- Test result status -->
-            <StackLayout Grid.Row="1" Orientation="Horizontal">
-                <Label Text="{StaticResource TestsPageTestResult}"
-                       Style="{StaticResource LabelTextStyle}" />
-                <Label Text="{Binding Test.Result.ResultStateStatus, FallbackValue={StaticResource TestResultNotExecuted}}"
-                       Style="{StaticResource LabelTextStyle}"
-                       TextColor="{Binding Test.Result.TextColor, FallbackValue=Gray}" />
-            </StackLayout>
-
-            <!-- Test result details -->
-            <ScrollView Grid.Row="2">
-                <StackLayout>
-                    <Label Text="{Binding Test.Result.FailedAssertionsString, FallbackValue='Test message'}"
-                           Style="{StaticResource LabelMultiLineTextStyle}"
-                           IsVisible="{Binding Test.Result.HasFailedAssertions, FallbackValue=false}"
-                           Padding="10" />
-
-                    <Label Text="{StaticResource TestsPageTestOutput}"
-                           Style="{StaticResource LabelSubTextStyle}"
-                           IsVisible="{Binding Test.Result.HasOutput, FallbackValue=false}" />
-                    <Label Text="{Binding Test.Result.Result.Output, FallbackValue='Test message'}"
-                           Style="{StaticResource LabelMultiLineTextStyle}"
-                           IsVisible="{Binding Test.Result.HasOutput, FallbackValue=false}"
-                           Padding="10" />
-
-                    <Label Text="{StaticResource TestsPageTestException}"
-                           Style="{StaticResource LabelSubTextStyle}"
-                           IsVisible="{Binding Test.Result.HasMessage, FallbackValue=false}" />
-                    <Label Text="{Binding Test.Result.Result.Message, FallbackValue='Test message'}"
-                           Style="{StaticResource LabelMultiLineTextStyle}"
-                           IsVisible="{Binding Test.Result.HasMessage, FallbackValue=false}"
-                           Padding="10" />
-
-                    <Label Text="{StaticResource TestsPageTestStackTrace}"
-                           Style="{StaticResource LabelSubTextStyle}"
-                           IsVisible="{Binding Test.Result.HasStackTrace, FallbackValue=false}" />
-                    <Label Text="{Binding Test.Result.Result.StackTrace, FallbackValue='Test message'}"
-                           Style="{StaticResource LabelMultiLineTextStyle}"
-                           IsVisible="{Binding Test.Result.HasStackTrace, FallbackValue=false}"
-                           Padding="10" />
-                </StackLayout>
-            </ScrollView>
-        </Grid>
     </Grid>
-</ContentView>
+</ContentPage>
