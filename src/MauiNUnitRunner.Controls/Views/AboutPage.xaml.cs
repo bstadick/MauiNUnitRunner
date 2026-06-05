@@ -42,6 +42,11 @@ public partial class AboutPage : ContentPage
     /// </summary>
     public string AssemblyVersion { get; }
 
+    /// <summary>
+    ///     Gets the <see cref="ImageSource"/> of the header image.
+    /// </summary>
+    public ImageSource HeaderImage { get; }
+
     #endregion
 
     #region Constructors
@@ -52,11 +57,6 @@ public partial class AboutPage : ContentPage
     public AboutPage() : this(true)
     {
     }
-
-    /// <summary>
-    ///     Gets the <see cref="ImageSource"/> of the header image.
-    /// </summary>
-    public ImageSource HeaderImage { get; }
 
     /// <summary>
     ///     Initializes a new <see cref="AboutPage"/> with the option to skip initializing the components.
