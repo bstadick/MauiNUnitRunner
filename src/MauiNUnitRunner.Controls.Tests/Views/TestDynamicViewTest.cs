@@ -241,7 +241,7 @@ public class TestDynamicViewTest
         /// <summary>
         ///     Invokes the <see cref="TestDynamicView.TestDynamicView_OnTestItemSelected"/> method.
         /// </summary>
-        /// <param name="sender">The <see cref="ListView"/> that contains the item.</param>
+        /// <param name="sender">The <see cref="CollectionView"/> that contains the item.</param>
         /// <param name="e">The test selected event arguments.</param>
         public void InvokeOnTestItemSelected(object sender, NUnitTestEventArgs e)
         {
