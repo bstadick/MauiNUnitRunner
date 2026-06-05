@@ -54,12 +54,13 @@ public partial class AboutPage : ContentPage
     /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
     protected AboutPage(bool initializeComponent)
     {
+        // Assign before initializing so binding has value without needing to be notified
+        AssemblyVersion = typeof(AboutPage).Assembly.GetName().Version?.ToString(3) ?? string.Empty;
+
         if (initializeComponent)
         {
             InitializeComponent();
         }
-
-        AssemblyVersion = typeof(AboutPage).Assembly.GetName().Version?.ToString(3) ?? string.Empty;
     }
 
     #endregion
