@@ -3,7 +3,10 @@
   <PropertyGroup>
     <TargetFrameworks>net$(NetFrameworkVersion)-ios</TargetFrameworks>
     <TargetFrameworks Condition="'$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);net$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="'$(Platform)' != 'iPhoneSimulator' And '$(SkipAndroidBuild)'!='true'">$(TargetFrameworks);net$(NetFrameworkVersion)-android</TargetFrameworks>
+    <!-- TODO: In .NET 9+, Android builds in Release are currently broken in certain situations due to XA0035. It is including the win-x64 runtime identifier regardless of what is actually set.
+         Related issue: https://github.com/dotnet/maui/issues/32968#issuecomment-4626260647
+         See also: https://learn.microsoft.com/en-us/dotnet/android/messages/xa0035 -->
+    <TargetFrameworks Condition="'$(Platform)' != 'iPhoneSimulator' And '$(SkipAndroidBuild)'!='true' And '$(Configuration)'!='Release'">$(TargetFrameworks);net$(NetFrameworkVersion)-android</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) And '$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);net$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>
     <Platforms>$(Platforms);iPhoneSimulator</Platforms>
 
@@ -16,6 +19,7 @@
     <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-arm64;maccatalyst-x64</RuntimeIdentifiers>
     <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' And '$(Platform)'!='iPhoneSimulator'">ios-arm64</RuntimeIdentifiers>
     <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' And '$(Platform)'=='iPhoneSimulator'">iossimulator-arm64;iossimulator-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">android-arm64;android-x64</RuntimeIdentifiers>
 
     <OutputType>Exe</OutputType>
     <RootNamespace>MauiNUnitRunner.Examples.Runner</RootNamespace>
