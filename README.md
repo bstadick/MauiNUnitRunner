@@ -123,7 +123,7 @@ The MauiNUnitRunner project can be built and then referenced in a .NET MAUI app 
 
 Example test runner projects can be found in the `./src/MauiNUnitRunner.Examples` project folders. The examples consist of an example test runner app and a separate test sub-assembly to include in the test runner app. The examples can be built from the project's solution or `./src/MauiNUnitRunner.Examples.slnf` solution filter using the **Debug** or **Release** configuration.
 
-See the **Build** section for instructions on building the project.
+See the **Build** section for instructions on building the projects. Refer to the `./.vscode/launch.json` file for `dotnet run` command arguments to deploy and run the example projects for various targets.
 
 > **Note:** While the `MauiNUnitRunner.Controls` library may target multiple .NET versions, the examples will only target the latest .NET version.
 
