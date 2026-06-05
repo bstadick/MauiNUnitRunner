@@ -34,13 +34,14 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v6
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4.0.0
+      uses: actions/setup-dotnet@v5
       with:
         global-json-file: ${{ env.GLOBALJSON }}
     - name: Set workload-set with dotnet
       run: dotnet workload config --update-mode workload-set
+      # Run the workload and info commands from the src directory where the global.json file is found
     - name: Restore workload with dotnet
       run: dotnet workload restore "..\${{ env.SOLUTION }}"
       working-directory: .\src
@@ -48,20 +49,8 @@ jobs:
       if: always()
       run: dotnet --info
       working-directory: .\src
-    - name: Restore with dotnet
-      uses: nick-fields/retry@v3
-      with:
-        timeout_minutes: 15
-        max_attempts: 3
-        retry_on: error
-        command: dotnet restore "${{ env.SOLUTION }}"
     - name: Build with dotnet
-      uses: nick-fields/retry@v3
-      with:
-        timeout_minutes: 15
-        max_attempts: 3
-        retry_on: error
-        command: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }} --no-restore
+      run: dotnet build "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }}
     - name: Test with dotnet
       run: dotnet test "${{ env.SOLUTION }}" -c ${{ env.CONFIGURATION }} --no-build --logger trx
     - name: Pack with dotnet
