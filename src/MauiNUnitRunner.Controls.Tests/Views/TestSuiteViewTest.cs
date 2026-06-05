@@ -89,8 +89,8 @@ public class TestSuiteViewTest
         INUnitTest test = isTestNull ? null : new NUnitTest(testInstance);
         page.Test = test;
 
-        ListViewStub list = new ListViewStub();
-        list.SelectedItem = test;
+        CollectionViewStub collection = new CollectionViewStub();
+        collection.SelectedItem = test;
 
         object eventSender = null;
         NUnitTestEventArgs eventArgs = null;
@@ -102,7 +102,7 @@ public class TestSuiteViewTest
             eventArgs = args;
         };
 
-        page.InvokeOnTestItemSelected(list, new SelectedItemChangedEventArgs(test, 1));
+        page.InvokeOnTestItemSelected(collection, new List<object> { test });
 
         if (isTestNull)
         {
@@ -111,12 +111,12 @@ public class TestSuiteViewTest
         else
         {
             Assert.That(eventInvoked, Is.True);
-            Assert.That(eventSender, Is.SameAs(list));
+            Assert.That(eventSender, Is.SameAs(collection));
             Assert.That(eventArgs, Is.Not.Null);
             Assert.That(eventArgs.Test, Is.SameAs(test));
         }
 
-        Assert.That(list.SelectedItem, Is.Null);
+        Assert.That(collection.SelectedItem, Is.Null);
     }
 
     [Test]
@@ -128,15 +128,15 @@ public class TestSuiteViewTest
         INUnitTest test = isTestNull ? null : new NUnitTest(testInstance);
         page.Test = test;
 
-        ListViewStub list = new ListViewStub();
-        list.SelectedItem = test;
+        CollectionViewStub collection = new CollectionViewStub();
+        collection.SelectedItem = test;
 
         Assert.DoesNotThrow(() =>
         {
-            page.InvokeOnTestItemSelected(list, new SelectedItemChangedEventArgs(test, 1));
+            page.InvokeOnTestItemSelected(collection, new List<object> { test });
         });
 
-        Assert.That(list.SelectedItem, Is.Null);
+        Assert.That(collection.SelectedItem, Is.Null);
     }
 
     [Test]
@@ -146,8 +146,8 @@ public class TestSuiteViewTest
 
         object test = isTestNull ? null : "test";
 
-        ListViewStub list = new ListViewStub();
-        list.SelectedItem = test;
+        CollectionViewStub collection = new CollectionViewStub();
+        collection.SelectedItem = test;
 
         bool eventInvoked = false;
         page.TestItemSelected += (_, _) =>
@@ -155,10 +155,10 @@ public class TestSuiteViewTest
             eventInvoked = true;
         };
 
-        page.InvokeOnTestItemSelected(list, new SelectedItemChangedEventArgs(test, 1));
+        page.InvokeOnTestItemSelected(collection, new List<object> { test });
 
         Assert.That(eventInvoked, Is.False);
-        Assert.That(list.SelectedItem, Is.Null);
+        Assert.That(collection.SelectedItem, Is.Null);
     }
 
     #endregion
@@ -284,11 +284,11 @@ public class TestSuiteViewTest
         /// <summary>
         ///     Invokes the <see cref="TestSuiteView.TestSuiteView_OnTestItemSelected"/> method.
         /// </summary>
-        /// <param name="sender">The <see cref="ListView"/> that contains the item.</param>
-        /// <param name="e">The test selected event arguments.</param>
-        public void InvokeOnTestItemSelected(object sender, SelectedItemChangedEventArgs e)
+        /// <param name="sender">The <see cref="CollectionView"/> that contains the item.</param>
+        /// <param name="currentSelection">The currently selected tests.</param>
+        public void InvokeOnTestItemSelected(object sender, IReadOnlyList<object> currentSelection)
         {
-            TestSuiteView_OnTestItemSelected(sender, e);
+            TestSuiteView_HandleOnTestItemSelected(sender, currentSelection);
         }
 
         /// <summary>
@@ -335,7 +335,7 @@ public class TestSuiteViewTest
         /// <inheritdoc />
         protected override void SetSelectedItem(object sender, object value)
         {
-            ((ListViewStub)sender).SelectedItem = value;
+            ((CollectionViewStub)sender).SelectedItem = value;
         }
 
         #endregion
