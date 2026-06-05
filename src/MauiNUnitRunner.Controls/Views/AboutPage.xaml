@@ -26,7 +26,7 @@
 
         <!-- Logo image header -->
         <Grid Grid.Row="0" BackgroundColor="{StaticResource AboutAccent}" HorizontalOptions="Fill" MaximumHeightRequest="200">
-            <Image x:Name="AboutPageLogoImage" Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Center" MaximumHeightRequest="200" MaximumWidthRequest="600" />
+            <Image Source="{Binding HeaderImage}" Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Center" MaximumHeightRequest="200" MaximumWidthRequest="600" />
         </Grid>
 
         <!-- About content -->
