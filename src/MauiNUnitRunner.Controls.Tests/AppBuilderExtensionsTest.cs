@@ -1,6 +1,10 @@
 // Copyright (c) bstadick and contributors. MIT License - see LICENSE file
 
+#if NET9_0_OR_GREATER
 using CommunityToolkit.Maui;
+#else
+using CommunityToolkit.Maui.Core;
+#endif
 using NUnit.Framework;
 
 namespace MauiNUnitRunner.Controls.Tests;
