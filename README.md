@@ -45,7 +45,7 @@ Features include:
     }
     ```
 
-4. In the .NET MAUI app project's `App.xaml.cs` constructor, create and load an instance of the `MauiNUnitRunner.Controls.TestDynamicPage` **ContentPage** and set as the `App.MainPage`.
+4. In the .NET MAUI app project's `App.xaml.cs` override of `CreateWindow`, create and return an instance of the `MauiNUnitRunner.Controls.TestDynamicPage` **ContentPage** which is wrapped in a **NavigationPage** which is returned as a **Window**.
 5. The `TestDynamicPage` takes in an `INUnitTestRunner` to which test assemblies and test settings are added. This should include the current app's assembly if it contains tests to run.
 
     ```csharp
@@ -56,7 +56,11 @@ Features include:
         public App()
         {
             InitializeComponent();
+        }
 
+        /// <inheritdoc cref="CreateWindow" />
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
             // It is recommended to set the app theme
             UserAppTheme = Current?.RequestedTheme ?? AppTheme.Unspecified;
 
@@ -72,13 +76,13 @@ Features include:
             TestDynamicPage page = new TestDynamicPage(runner);
 
             // Set test page as main page
-            MainPage = new NavigationPage(page);
+            return new Window(new NavigationPage(page));
         }
     }
     ```
 
 6. It is recommended to build the .NET MAUI app project in **Debug**. NUnit will not be able to work correctly on some platforms in **Release** builds.
-7. To add more or change tests that are loaded or change test settings, create and set a new `TestDynamicPage` as the `App.MainPage` or directly access the underlying `INUnitTestRunner` from the `TestDynamicPage.TestRunner` property.
+7. To add more or change tests that are loaded or change test settings, create and set a new `TestDynamicPage` using `Application.Current.OpenWindow(Window)` or directly access the underlying `INUnitTestRunner` from the `TestDynamicPage.TestRunner` property.
 
 ### Test Listener
 
@@ -97,17 +101,39 @@ The `MauiNUnitRunner.Controls` namespace exposes the individual **ContentViews**
 
 ## Build
 
-Use the provided `./src/MauiNUnitRunner.sln` solution (to build everything) or the `./src/MauiNUnitRunner.Controls/MauiNUnitRunner.Controls.csproj` project directly and Visual Studio 2022 with .NET 8 and the .NET MAUI workloads to build the project.
+Use the provided `./src/MauiNUnitRunner.sln` solution (to build everything) or the `./src/MauiNUnitRunner.Controls/MauiNUnitRunner.Controls.csproj` project directly and Visual Studio with .NET SDK and the .NET MAUI workloads to build the project.
 
-The MauiNUnitRunner project can be built and referenced in a .NET MAUI app using the pre-built Nuget package.
+Build the project or solution from Visual Studio or with the command `dotnet build <Solution|Project path> -c <Config>`.
+
+The MauiNUnitRunner project can be built and then referenced in a .NET MAUI app using the produced `BStaSoft.MauiNUnitRunner.Controls.*.nupkg` Nuget package.
+
+### Tools List
+
+| Tool | Tool Version | Purpose | Notes |
+| --- | --- | --- | --- |
+| .NET SDK | Match `global.json` and `Directory.Build.props` for previous versions (recommended latest build versions) | Build, test, and run the solution (`dotnet build`, `dotnet test`, `dotnet run`) | Install from https://dotnet.microsoft.com/en-us/download and ensure `dotnet` is on PATH |
+| .NET MAUI workloads | Latest matching SDK in `global.json` | Provide platform SDKs and build targets for MAUI | Run `dotnet workload restore ./src/MauiNUnitRunner.sln` |
+| Visual Studio / IDE (optional) | Visual Studio 2026 or latest | Develop, debug, and platform-specific packaging (Windows/macOS) | Install MAUI workloads and workload-specific components |
+| Java JDK | 11+ | Required for Android builds | Set `JAVA_HOME` to JDK install path |
+| Android SDK / NDK | Platform-specific (SDK/NDK versions via Visual Studio) | Build and deploy Android apps | Install via Visual Studio or Android Studio SDK manager |
+| Xcode (macOS only) | Latest compatible with target macOS/iOS | Build and deploy macOS/iOS apps | Required on macOS for macOS/iOS builds |
+| Windows SDK (Windows only) | Windows 10/11 SDK matching target | Required for Windows / WinUI targets | Install via Visual Studio installer |
 
 ## Examples
 
 Example test runner projects can be found in the `./src/MauiNUnitRunner.Examples` project folders. The examples consist of an example test runner app and a separate test sub-assembly to include in the test runner app. The examples can be built from the project's solution or `./src/MauiNUnitRunner.Examples.slnf` solution filter using the **Debug** or **Release** configuration.
 
+See the **Build** section for instructions on building the projects. Refer to the `./.vscode/launch.json` file for `dotnet run` command arguments to deploy and run the example projects for various targets.
+
+> **Note:** While the `MauiNUnitRunner.Controls` library may target multiple .NET versions, the examples will only target the latest .NET version.
+
+> **Note:** Android examples built for **Release** are currently disabled due to a .NET SDK build tools issue. To test with Android, build the examples using the **Debug** configuration.
+
 ## Unit Tests
 
 The project includes near complete code coverage of the `MauiNUnitRunner.Controls` namespace found in the `./src/MauiNUnitRunner.Controls.Tests` project folder. Build and run the unit tests using the project's solution or `./src/MauiNUnitRunner.Tests.slnf` solution filter using the **Debug** or **Release** configuration.
+
+Run the tests from Visual Studio or with the command `dotnet test ./src/MauiNUnitRunner.sln -c <Config>`.
 
 ## Future Enhancements
 

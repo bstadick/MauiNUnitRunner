@@ -75,7 +75,7 @@ public partial class TestSuiteView : ContentView
     ///     Initializes a new <see cref="TestSuiteView"/> with the option to skip initializing the components.
     /// </summary>
     /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
-    protected TestSuiteView(bool initializeComponent = true)
+    protected TestSuiteView(bool initializeComponent)
     {
         if (initializeComponent)
         {
@@ -88,19 +88,13 @@ public partial class TestSuiteView : ContentView
     #region Protected Methods
 
     /// <summary>
-    ///     Event callback when a <see cref="INUnitTest"/> item is selected from the test suite list.
+    ///     Event callback when a <see cref="INUnitTest"/> item is selected from the test suite collection.
     /// </summary>
-    /// <param name="sender">The <see cref="ListView"/> that contains the item.</param>
+    /// <param name="sender">The <see cref="CollectionView"/> that contains the item.</param>
     /// <param name="e">The test selected event arguments.</param>
-    protected void TestSuiteView_OnTestItemSelected(object sender, SelectedItemChangedEventArgs e)
+    protected void TestSuiteView_OnTestItemSelected(object sender, SelectionChangedEventArgs e)
     {
-        if (e.SelectedItem is INUnitTest test)
-        {
-            TestItemSelected?.Invoke(sender, new NUnitTestEventArgs(test));
-        }
-
-        // Reset selected item to allow for re-entry
-        SetSelectedItem(sender, null);
+        TestSuiteView_HandleOnTestItemSelected(sender, e.CurrentSelection);
     }
 
     /// <summary>
@@ -145,13 +139,29 @@ public partial class TestSuiteView : ContentView
     }
 
     /// <summary>
-    ///     Sets the selected item of the <see cref="ListView"/>.
+    ///     Handle event callback when a <see cref="INUnitTest"/> item is selected from the test suite collection.
     /// </summary>
-    /// <param name="sender">The <see cref="ListView"/> to set the selected item of.</param>
+    /// <param name="sender">The <see cref="CollectionView"/> that contains the item.</param>
+    /// <param name="currentSelection">The currently selected tests.</param>
+    protected void TestSuiteView_HandleOnTestItemSelected(object sender, IReadOnlyList<object> currentSelection)
+    {
+        if (currentSelection.Count > 0 && currentSelection[0] is INUnitTest test)
+        {
+            TestItemSelected?.Invoke(sender, new NUnitTestEventArgs(test));
+        }
+
+        // Reset selected item to allow for re-entry
+        SetSelectedItem(sender, null);
+    }
+
+    /// <summary>
+    ///     Sets the selected item of the <see cref="CollectionView"/>.
+    /// </summary>
+    /// <param name="sender">The <see cref="CollectionView"/> to set the selected item of.</param>
     /// <param name="value">The value to set the selected item.</param>
     protected virtual void SetSelectedItem(object sender, object value)
     {
-        if (sender is ListView view)
+        if (sender is CollectionView view)
         {
             view.SelectedItem = value;
         }

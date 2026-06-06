@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) bstadick and contributors. MIT License - see LICENSE file -->
 
+<!-- ReSharper disable once Xaml.XamlXamarinFormsDataTypeAndBindingContextTypeMismatchedHighlighting -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:MauiNUnitRunner.Controls.Views"
-             x:Class="MauiNUnitRunner.Controls.Views.TestDynamicPage">
+             x:Class="MauiNUnitRunner.Controls.Views.TestDynamicPage"
+             BindingContext="{Binding Source={RelativeSource Self}, x:DataType={x:Type views:TestDynamicPage}}"
+             x:DataType="views:TestDynamicPage">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -26,19 +29,15 @@
                                TestRunState="{Binding TestRunState}"
                                TestItemSelected="TestDynamicPage_OnItemSelected"
                                RunTestsClicked="TestDynamicPage_OnRunTestsClicked"
-                               SaveResultsClicked="TestDynamicView_OnSaveResultsClicked"
-                               BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicPage}}}"
-                               x:DataType="views:TestDynamicPage" />
+                               SaveResultsClicked="TestDynamicView_OnSaveResultsClicked" />
 
         <!-- Additional links at the bottom of the page -->
         <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="End"
-                     IsVisible="{Binding ShowFooterLinks}"
-                     BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicPage}}}"
-                     x:DataType="views:TestDynamicPage">
+                     IsVisible="{Binding ShowFooterLinks}">
             <Button Text="{StaticResource AboutPageTitle}"
                     Clicked="AboutButton_OnClicked"
                     BackgroundColor="Transparent"
-                    TextColor="Grey"
+                    TextColor="Gray"
                     Width="100" />
         </StackLayout>
     </Grid>

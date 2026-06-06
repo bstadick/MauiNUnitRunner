@@ -1,0 +1,152 @@
+{
+  // VS Code launch configuration for debugging the Runner project
+  // See: https://code.visualstudio.com/docs/debugtest/debugging
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Windows (dotnet run)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/src/MauiNUnitRunner.Examples/Runner/MauiNUnitRunner.Examples.Runner.csproj",
+        "--framework",
+        "net10.0-windows10.0.19041.0",
+        "--runtime",
+        "win-x64",
+        "--configuration",
+        "${input:configuration}",
+        "-p:UseMonoRuntime=false"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false,
+      "env": {},
+      "justMyCode": true
+    },
+    {
+      "name": "Launch Android Emulator (dotnet run)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/src/MauiNUnitRunner.Examples/Runner/MauiNUnitRunner.Examples.Runner.csproj",
+        "--framework",
+        "net10.0-android",
+        "--runtime",
+        "android-x64",
+        "--configuration",
+        "${input:configuration}",
+        "-p:AdbTarget=${input:androidEmulatorUDID}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false,
+      "env": {},
+      "justMyCode": true
+    },
+    {
+      "name": "Launch Android Device (dotnet run)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/src/MauiNUnitRunner.Examples/Runner/MauiNUnitRunner.Examples.Runner.csproj",
+        "--framework",
+        "net10.0-android",
+        "--runtime",
+        "android-arm64",
+        "--configuration",
+        "${input:configuration}",
+        "-p:AdbTarget=${input:androidDeviceUDID}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false,
+      "env": {},
+      "justMyCode": true
+    },
+    {
+      "name": "Launch iOS Simulator (dotnet run)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/src/MauiNUnitRunner.Examples/Runner/MauiNUnitRunner.Examples.Runner.csproj",
+        "--framework",
+        "net10.0-ios",
+        "--runtime",
+        "iossimulator-x64",
+        "--configuration",
+        "${input:configuration}",
+        "-p:Device=${input:iosDeviceUDID}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false,
+      "env": {},
+      "justMyCode": true
+    },
+    {
+      "name": "Launch iOS Device (dotnet run)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/src/MauiNUnitRunner.Examples/Runner/MauiNUnitRunner.Examples.Runner.csproj",
+        "--framework",
+        "net10.0-ios",
+        "--runtime",
+        "ios-arm64",
+        "--configuration",
+        "${input:configuration}",
+        "-p:Device=${input:iosDeviceUDID}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false,
+      "env": {},
+      "justMyCode": true
+    }
+  ],
+  "inputs": [
+    {
+      "id": "configuration",
+      "type": "pickString",
+      "description": "Select build configuration",
+      "options": [
+        "Debug",
+        "Release"
+      ],
+      "default": "Debug"
+    },
+    {
+      "id": "androidEmulatorUDID",
+      "type": "promptString",
+      "description": "Enter device UDID for Android emulator deployment",
+      "default": "-e"
+    },
+    {
+      "id": "androidDeviceUDID",
+      "type": "promptString",
+      "description": "Enter device UDID for Android device deployment",
+      "default": "-d"
+    },
+    {
+      "id": "iosDeviceUDID",
+      "type": "promptString",
+      "description": "Enter device UDID for iOS deployment",
+      "default": ""
+    }
+  ]
+}

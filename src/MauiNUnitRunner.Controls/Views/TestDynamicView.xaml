@@ -14,20 +14,21 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <Grid BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicView}}}"
+    <!-- ReSharper disable once Xaml.XamlXamarinFormsDataTypeAndBindingContextTypeMismatchedHighlighting -->
+    <Grid BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:TestDynamicView}}, x:DataType={x:Type views:TestDynamicView}}"
           x:DataType="views:TestDynamicView">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <!-- Display either the test detail view if a leaf node test (no child tests) or the test suite view -->
         <views:TestDetailView Grid.Row="0"
-                              IsVisible="{Binding Source={RelativeSource Self}, Path=Test.HasNoChildren, FallbackValue=true}"
+                              IsVisible="{Binding Test.HasNoChildren, FallbackValue=true}"
                               Test="{Binding Test}"
                               TestRunState="{Binding TestRunState}"
                               RunTestsClicked="TestDynamicView_OnRunTestsClicked"
                               SaveResultsClicked="TestDynamicView_OnSaveResultsClicked" />
         <views:TestSuiteView Grid.Row="0"
-                             IsVisible="{Binding Source={RelativeSource Self}, Path=Test.HasChildren, FallbackValue=false}"
+                             IsVisible="{Binding Test.HasChildren, FallbackValue=false}"
                              Test="{Binding Test}"
                              TestRunState="{Binding TestRunState}"
                              TestItemSelected="TestDynamicView_OnTestItemSelected"

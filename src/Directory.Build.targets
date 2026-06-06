@@ -5,18 +5,36 @@
   <ItemGroup>
     <!-- Unit test packages -->
     <PackageReference Update="NUnit" Version="3.14.0" />
-    <PackageReference Update="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Update="NUnit3TestAdapter" Version="6.2.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.6.0" />
     <PackageReference Update="NUnit.Analyzers" Version="3.10.0" />
 
-    <!-- Maui packages -->
-    <PackageReference Update="CommunityToolkit.Maui" Version="8.0.0" />
-    <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.14" />
-    <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.14" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-
     <!-- Build packages -->
-    <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.1.1" />
+    <PackageReference Update="DotNet.ReproducibleBuilds" Version="2.0.2" />
+  </ItemGroup>
+
+  <!-- Maui packages for the current target framework -->
+  <ItemGroup Condition="$(TargetFramework.Contains('net$(NetFrameworkVersion)'))">
+    <PackageReference Update="CommunityToolkit.Maui" Version="14.1.1" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="$(NetFrameworkVersion).*" />
+    <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="$(NetFrameworkVersion).*" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(NetFrameworkVersion).*" />
+  </ItemGroup>
+
+  <!-- Maui packages for previous framework 1 -->
+  <ItemGroup Condition="'$(NetFrameworkPrevious1Version)'!='' And $(TargetFramework.Contains('net$(NetFrameworkPrevious1Version)'))">
+    <PackageReference Update="CommunityToolkit.Maui" Version="12.3.0" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="$(NetFrameworkPrevious1Version).*" />
+    <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="$(NetFrameworkPrevious1Version).*" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(NetFrameworkPrevious1Version).*" />
+  </ItemGroup>
+
+  <!-- Maui packages for previous framework 2 -->
+  <ItemGroup Condition="'$(NetFrameworkPrevious2Version)'!='' And $(TargetFramework.Contains('net$(NetFrameworkPrevious2Version)'))">
+    <PackageReference Update="CommunityToolkit.Maui" Version="9.1.1" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="$(NetFrameworkPrevious2Version).*" />
+    <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="$(NetFrameworkPrevious2Version).*" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(NetFrameworkPrevious2Version).*" />
   </ItemGroup>
 
   <!-- Task to remove lines from a file starting with a matching line and removing everything up to a matching end line. -->

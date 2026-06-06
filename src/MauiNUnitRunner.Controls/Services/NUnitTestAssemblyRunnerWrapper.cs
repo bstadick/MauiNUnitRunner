@@ -17,7 +17,7 @@ public interface INUnitTestAssemblyRunner
     /// <summary>
     ///     Gets the underlying unit test assembly runner.
     /// </summary>
-    public NUnitTestAssemblyRunner TestRunner { get; }
+    NUnitTestAssemblyRunner TestRunner { get; }
 
     /// <inheritdoc cref="NUnitTestAssemblyRunner.IsTestRunning"/>
     bool IsTestRunning { get; }

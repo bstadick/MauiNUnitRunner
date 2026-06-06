@@ -28,6 +28,11 @@ public partial class AboutPage : ContentPage
     /// </summary>
     private const string c_ProjectUri = "https://github.com/bstadick/MauiNUnitRunner";
 
+    /// <summary>
+    ///     Path to the about page header image.
+    /// </summary>
+    private const string c_AboutPageImagePath = "MauiNUnitRunner.Controls.Resources.Images.nunit_maui_logo.png";
+
     #endregion
 
     #region Public Members
@@ -36,6 +41,11 @@ public partial class AboutPage : ContentPage
     ///     Gets the version of the <see cref="AboutPage"/> assembly.
     /// </summary>
     public string AssemblyVersion { get; }
+
+    /// <summary>
+    ///     Gets the <see cref="ImageSource"/> of the header image.
+    /// </summary>
+    public ImageSource HeaderImage { get; }
 
     #endregion
 
@@ -52,14 +62,16 @@ public partial class AboutPage : ContentPage
     ///     Initializes a new <see cref="AboutPage"/> with the option to skip initializing the components.
     /// </summary>
     /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
-    protected AboutPage(bool initializeComponent = true)
+    protected AboutPage(bool initializeComponent)
     {
+        // Assign before initializing so binding has value without needing to be notified
+        AssemblyVersion = typeof(AboutPage).Assembly.GetName().Version?.ToString(3) ?? string.Empty;
+        HeaderImage = ImageSource.FromResource(c_AboutPageImagePath, typeof(AboutPage).Assembly);
+
         if (initializeComponent)
         {
             InitializeComponent();
         }
-
-        AssemblyVersion = typeof(AboutPage).Assembly.GetName().Version?.ToString(3) ?? string.Empty;
     }
 
     #endregion
@@ -73,24 +85,31 @@ public partial class AboutPage : ContentPage
     /// <param name="e">The button click event arguments.</param>
     protected async void OpenUrlButton_OnClicked(object sender, EventArgs e)
     {
-        Button button = sender as Button;
-        string uri;
-        switch (button?.StyleId)
+        try
         {
-            case "AboutMauiButton":
-                uri = c_MauiUri;
-                break;
-            case "AboutNUnitButton":
-                uri = c_NUnitUri;
-                break;
-            case "AboutProjectButton":
-                uri = c_ProjectUri;
-                break;
-            default:
-                return;
-        }
+            Button button = sender as Button;
+            string uri;
+            switch (button?.StyleId)
+            {
+                case "AboutMauiButton":
+                    uri = c_MauiUri;
+                    break;
+                case "AboutNUnitButton":
+                    uri = c_NUnitUri;
+                    break;
+                case "AboutProjectButton":
+                    uri = c_ProjectUri;
+                    break;
+                default:
+                    return;
+            }
 
-        await GetDefaultBrowser().OpenAsync(new Uri(uri), BrowserLaunchMode.SystemPreferred).ConfigureAwait(false);
+            await GetDefaultBrowser().OpenAsync(new Uri(uri), BrowserLaunchMode.SystemPreferred).ConfigureAwait(false);
+        }
+        catch
+        {
+            // Ignore exceptions here as navigation to the About page's links is not significant
+        }
     }
 
     /// <summary>

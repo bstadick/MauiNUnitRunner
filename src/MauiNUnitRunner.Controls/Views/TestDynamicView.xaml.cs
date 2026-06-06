@@ -75,7 +75,7 @@ public partial class TestDynamicView : ContentView
     ///     Initializes a new <see cref="TestDynamicView"/> with the option to skip initializing the components.
     /// </summary>
     /// <param name="initializeComponent">true if to initialize the component, otherwise false to skip initialize component.</param>
-    protected TestDynamicView(bool initializeComponent = true)
+    protected TestDynamicView(bool initializeComponent)
     {
         if (initializeComponent)
         {
@@ -88,9 +88,9 @@ public partial class TestDynamicView : ContentView
     #region Protected Methods
 
     /// <summary>
-    ///     Event callback when a <see cref="INUnitTest"/> item is selected from the list of tests in the <see cref="TestSuiteView"/>.
+    ///     Event callback when a <see cref="INUnitTest"/> item is selected from the collection of tests in the <see cref="TestSuiteView"/>.
     /// </summary>
-    /// <param name="sender">The <see cref="ListView"/> that contains the item.</param>
+    /// <param name="sender">The <see cref="CollectionView"/> that contains the item.</param>
     /// <param name="e">The test selected event arguments.</param>
     protected void TestDynamicView_OnTestItemSelected(object sender, NUnitTestEventArgs e)
     {

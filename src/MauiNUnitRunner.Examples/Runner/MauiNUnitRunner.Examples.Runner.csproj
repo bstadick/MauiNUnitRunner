@@ -1,11 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(NetFrameworkVersion)-ios</TargetFrameworks>
-    <TargetFrameworks Condition="'$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);$(NetFrameworkVersion)-android;$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) And '$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>
-    <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-    <!-- <TargetFrameworks>$(TargetFrameworks);$(NetFrameworkVersion)-tizen</TargetFrameworks> -->
+    <TargetFrameworks>net$(NetFrameworkVersion)-ios</TargetFrameworks>
+    <TargetFrameworks Condition="'$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);net$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
+    <!-- TODO: In .NET 9+, Android builds in Release are currently broken in certain situations due to XA0035. It is including the win-x64 runtime identifier regardless of what is actually set.
+         Related issue: https://github.com/dotnet/maui/issues/32968#issuecomment-4626260647
+         See also: https://learn.microsoft.com/en-us/dotnet/android/messages/xa0035 -->
+    <TargetFrameworks Condition="'$(Platform)' != 'iPhoneSimulator' And '$(SkipAndroidBuild)'!='true' And '$(Configuration)'!='Release'">$(TargetFrameworks);net$(NetFrameworkVersion)-android</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) And '$(Platform)' != 'iPhoneSimulator'">$(TargetFrameworks);net$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>
     <Platforms>$(Platforms);iPhoneSimulator</Platforms>
 
     <!-- Note for MacCatalyst:
@@ -17,17 +19,23 @@
     <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-arm64;maccatalyst-x64</RuntimeIdentifiers>
     <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' And '$(Platform)'!='iPhoneSimulator'">ios-arm64</RuntimeIdentifiers>
     <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' And '$(Platform)'=='iPhoneSimulator'">iossimulator-arm64;iossimulator-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">android-arm64;android-x64</RuntimeIdentifiers>
 
     <OutputType>Exe</OutputType>
     <RootNamespace>MauiNUnitRunner.Examples.Runner</RootNamespace>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
+    <IsPublishable>false</IsPublishable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);MCT001</NoWarn>
     <WindowsPackageType>None</WindowsPackageType>
     <BuildIpa>True</BuildIpa>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+
+    <!-- Do not treat as a test project by Visual Studio -->
+    <IsTestProject>false</IsTestProject>
+    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
 
     <!-- Display name -->
     <ApplicationTitle>MauiNUnitRunner.Example</ApplicationTitle>
@@ -43,12 +51,11 @@
     <ApplicationVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">$(Version.Replace('.', ''))</ApplicationVersion>
     <ApplicationVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">$(Version.Replace('.', ''))</ApplicationVersion>
 
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
-    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
-    <!-- <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion> -->
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">$(SupportedOSPlatformVersioniOS)</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">$(SupportedOSPlatformVersionMacCatalyst)</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">$(SupportedOSPlatformVersionAndroid)</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">$(SupportedOSPlatformVersionWindows)</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">$(SupportedOSPlatformVersionWindows)</TargetPlatformMinVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -78,6 +85,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\MauiNUnitRunner.Controls\MauiNUnitRunner.Controls.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Do not treat as a test project by Visual Studio -->
+    <ProjectCapability Remove="TestContainer" />
   </ItemGroup>
 
 </Project>

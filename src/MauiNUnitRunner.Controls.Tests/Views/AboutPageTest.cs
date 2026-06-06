@@ -20,6 +20,9 @@ public class AboutPageTest
         Version expectedVersion = typeof(AboutPage).Assembly.GetName().Version;
         Assert.That(expectedVersion, Is.Not.Null);
         Assert.That(page.AssemblyVersion, Is.EqualTo(expectedVersion.ToString(3)));
+
+        Assert.That(page.HeaderImage, Is.Not.Null);
+        Assert.That(page.HeaderImage.IsEmpty, Is.False);
     }
 
     #endregion

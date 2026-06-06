@@ -74,9 +74,7 @@
     <!--The first line on the About page.-->
     <x:String x:Key="AboutPageLineOne">This app is written in C# and native APIs using the MAUI Platform. It runs unit tests using the NUnit Framework.</x:String>
     <!--The second line on the About page.-->
-    <x:String x:Key="AboutPageLineTwo">It shares code with its iOS, Android, and Windows versions.</x:String>
-    <!--Resource path for the About page logo.-->
-    <x:String x:Key="AboutPageLogoImagePath">nunit_maui_logo.png</x:String>
+    <x:String x:Key="AboutPageLineTwo">It shares code with its iOS, Android, macOS, and Windows versions.</x:String>
     <!--The content of the NUnit button on the About page.-->
     <x:String x:Key="AboutPageNUnitButton">Learn more about NUnit</x:String>
     <!--The content of the Project button on the About page.-->

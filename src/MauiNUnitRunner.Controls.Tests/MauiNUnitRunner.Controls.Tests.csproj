@@ -1,11 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>$(NetFrameworkVersion)</TargetFramework>
+    <TargetFrameworks>net$(NetFrameworkVersion)</TargetFrameworks>
+    <TargetFrameworks Condition="'$(NetFrameworkPrevious1Version)'!=''">$(TargetFrameworks);net$(NetFrameworkPrevious1Version)</TargetFrameworks>
+    <TargetFrameworks Condition="'$(NetFrameworkPrevious2Version)'!=''">$(TargetFrameworks);net$(NetFrameworkPrevious2Version)</TargetFrameworks>
     <RootNamespace>MauiNUnitRunner.Controls.Tests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <DefaultItemExcludes>$(DefaultItemExcludes);TestResults\**</DefaultItemExcludes>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IsPublishable>false</IsPublishable>
   </PropertyGroup>
 
   <ItemGroup>

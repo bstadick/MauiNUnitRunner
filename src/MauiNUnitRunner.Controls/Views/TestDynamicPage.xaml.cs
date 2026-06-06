@@ -165,9 +165,9 @@ public partial class TestDynamicPage : ContentPage
     #region Protected Methods
 
     /// <summary>
-    ///     Event callback when a <see cref="INUnitTest"/> item is selected from the list of tests in the <see cref="TestSuiteView"/>.
+    ///     Event callback when a <see cref="INUnitTest"/> item is selected from the collection of tests in the <see cref="TestSuiteView"/>.
     /// </summary>
-    /// <param name="sender">The <see cref="ListView"/> that contains the item.</param>
+    /// <param name="sender">The <see cref="CollectionView"/> that contains the item.</param>
     /// <param name="e">The test selected event arguments.</param>
     protected virtual async void TestDynamicPage_OnItemSelected(object sender, NUnitTestEventArgs e)
     {
@@ -271,7 +271,14 @@ public partial class TestDynamicPage : ContentPage
     /// <param name="e">The clicked button event arguments.</param>
     protected async void AboutButton_OnClicked(object sender, EventArgs e)
     {
-        await NavigationPushAsync(new AboutPage());
+        try
+        {
+            await NavigationPushAsync(new AboutPage());
+        }
+        catch
+        {
+            // Ignore exceptions here as navigation to the About page is not significant
+        }
     }
 
     /// <summary>
@@ -338,7 +345,11 @@ public partial class TestDynamicPage : ContentPage
     /// <returns>A <see cref="Task"/> to await.</returns>
     protected virtual async Task DisplayAlertMessage(string title, string message, string cancel)
     {
+#if NET10_0_OR_GREATER
+        await DisplayAlertAsync(title, message, cancel);
+#else
         await DisplayAlert(title, message, cancel);
+#endif
     }
 
     #endregion
@@ -351,7 +362,7 @@ public partial class TestDynamicPage : ContentPage
     /// <param name="test">The test to count the number of test cases of</param>
     /// <param name="previousCount">The previous test count to increment.</param>
     /// <returns>The number of test cases.</returns>
-    private int CountTests(INUnitTest test, int previousCount)
+    private static int CountTests(INUnitTest test, int previousCount)
     {
         if (test == null)
         {

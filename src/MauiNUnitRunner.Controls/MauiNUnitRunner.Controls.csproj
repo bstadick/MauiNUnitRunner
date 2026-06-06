@@ -1,12 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(NetFrameworkVersion)</TargetFrameworks>
-    <!-- Can build for each individual target platform if necessary -->
-    <!--<TargetFrameworks>$(TargetFrameworks);$(NetFrameworkVersion)-android;$(NetFrameworkVersion)-ios;$(NetFrameworkVersion)-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(NetFrameworkVersion)-windows10.0.19041.0</TargetFrameworks>-->
-    <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-    <!-- <TargetFrameworks>$(TargetFrameworks);$(NetFrameworkVersion)-tizen</TargetFrameworks> -->
+    <TargetFrameworks>net$(NetFrameworkVersion)</TargetFrameworks>
+    <TargetFrameworks Condition="'$(NetFrameworkPrevious1Version)'!=''">$(TargetFrameworks);net$(NetFrameworkPrevious1Version)</TargetFrameworks>
+    <TargetFrameworks Condition="'$(NetFrameworkPrevious2Version)'!=''">$(TargetFrameworks);net$(NetFrameworkPrevious2Version)</TargetFrameworks>
 
     <OutputType>Library</OutputType>
     <RootNamespace>MauiNUnitRunner.Controls</RootNamespace>
@@ -14,21 +11,25 @@
     <SingleProject>true</SingleProject>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <!-- Do not treat as a test project by Visual Studio -->
+    <IsTestProject>false</IsTestProject>
+    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageId>$(PackagePrefix).$(AssemblyName)</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
 
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.0</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.2</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
-    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">$(SupportedOSPlatformVersioniOS)</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">$(SupportedOSPlatformVersionMacCatalyst)</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">$(SupportedOSPlatformVersionAndroid)</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">$(SupportedOSPlatformVersionWindows)</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">$(SupportedOSPlatformVersionWindows)</TargetPlatformMinVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -44,36 +45,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\TestControlResources.xaml.cs">
-      <DependentUpon>TestControlResources.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\AboutPage.xaml.cs">
-      <DependentUpon>AboutPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TestDynamicPage.xaml.cs">
-      <DependentUpon>TestDynamicPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TestDynamicView.xaml.cs">
-      <DependentUpon>TestDynamicView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TestSuiteView.xaml.cs">
-      <DependentUpon>TestSuiteView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TestSummaryView.xaml.cs">
-      <DependentUpon>TestSummaryView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TestDetailView.xaml.cs">
-      <DependentUpon>TestDetailView.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <!-- About page logo -->
+    <EmbeddedResource Include="Resources\Images\nunit_maui_logo.png" />
 
-  <ItemGroup>
-    <MauiXaml Update="Resources\TestControlResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-  </ItemGroup>
+    <!-- Do not treat as a test project by Visual Studio -->
+    <ProjectCapability Remove="TestContainer" />
 
-  <ItemGroup>
+    <!-- Additional package content-->
     <None Include="build\*.targets">
       <Pack>True</Pack>
       <PackagePath>build</PackagePath>
@@ -82,14 +60,10 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <!-- Do not pack the original as the modified README below will be packed. -->
+    <!-- Do not pack the original as the modified README created in the below PreparePackageReadme target will be packed. -->
     <None Include="..\..\README.md">
       <Pack>False</Pack>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <MauiImage Include="Resources\Images\nunit_maui_logo.png" />
   </ItemGroup>
 
   <!-- Update README to remove sections and lines not necessary for nuget (e.g. build, test, contributing). -->
